@@ -63,18 +63,41 @@
 - **共享包目录**：`<shared-dir>`（如适用；否则填"无"）
 - **测试目录**：`<test-dir>`（例如 `tests/`、`__tests__/`、`*_test.go`）
 
-**示例填法**（仅供参考）：
+**示例填法**（仅供参考，可按项目实际栈选择其一）：
 
 ```markdown
+# JavaScript / TypeScript 项目
 - 包管理器：pnpm
 - 静态检查命令：pnpm lint
 - 类型检查命令：pnpm typecheck
-- 单元测试命令：pnpm --filter @repo/web test
-- 端到端测试命令：pnpm --filter @repo/web-e2e test:e2e
+- 单元测试命令：pnpm test
+- 端到端测试命令：pnpm test:e2e
 - 构建命令：pnpm build
 - 完整验证入口：pnpm verify
 - 主要应用目录：apps/web
 - 入口代码锚点：apps/web/src/main.tsx
+
+# Python 项目
+- 包管理器：uv
+- 静态检查命令：uv run ruff check .
+- 类型检查命令：uv run mypy .
+- 单元测试命令：uv run pytest
+- 端到端测试命令：uv run pytest tests/e2e
+- 构建命令：uv build
+- 完整验证入口：make verify
+- 主要应用目录：src/
+- 入口代码锚点：src/main.py
+
+# Go 项目
+- 包管理器：go
+- 静态检查命令：go vet ./...
+- 类型检查命令：（无；Go 编译时已含类型检查）
+- 单元测试命令：go test ./...
+- 端到端测试命令：go test ./e2e/...
+- 构建命令：go build ./...
+- 完整验证入口：make verify
+- 主要应用目录：cmd/ internal/
+- 入口代码锚点：cmd/server/main.go
 ```
 
 ## 重要边界（不要破坏）
