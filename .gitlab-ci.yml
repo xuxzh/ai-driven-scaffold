@@ -1,0 +1,95 @@
+# =============================================================
+# 占位 GitLab CI 模板
+# -------------------------------------------------------------
+# 用户需根据实际包管理器和运行时替换以下占位符：
+#   <runtime-image>  : 例如 node:20-slim, python:3.12-slim, golang:1.22, rust:1.75
+#   <pm>             : 例如 pnpm, npm, yarn, uv, cargo, go, mix
+#   <pm-install-cmd> : 例如 "npm ci", "pnpm install --frozen-lockfile",
+#                       "uv sync", "go mod download", "cargo fetch"
+#   <pm-cache-dir>   : 缓存路径，例如 node_modules/, .venv/, ~/go/pkg/mod/
+#   <e2e-runtime-image> : 如有 E2E 测试，使用含浏览器/Docker 的镜像
+#
+# 建议：把 verify 命令定义在项目根的 manifest 中，CI 中只调用
+#       <pm> run verify
+# =============================================================
+
+stages:
+  - validate
+
+variables:
+  GIT_DEPTH: "10"
+
+default:
+  image: <runtime-image>
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - <pm-cache-dir>
+
+# ---------- 静态检查 ----------
+lint:
+  stage: validate
+  script:
+    - <pm-install-cmd>
+    - <pm> lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# ---------- 类型检查 ----------
+typecheck:
+  stage: validate
+  script:
+    - <pm-install-cmd>
+    - <pm> typecheck
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  allow_failure: true  # 如项目无 typecheck，删除此 job
+
+# ---------- 单元测试 ----------
+test:
+  stage: validate
+  script:
+    - <pm-install-cmd>
+    - <pm> test
+  artifacts:
+    when: on_failure
+    paths:
+      - test-results/
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# ---------- 端到端测试 ----------
+e2e:
+  stage: validate
+  image: <e2e-runtime-image>
+  script:
+    - <pm-install-cmd>
+    - <pm> test:e2e
+  artifacts:
+    when: always
+    paths:
+      - test-results/
+      - playwright-report/
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  allow_failure: true  # 如项目无 E2E，删除此 job
+
+# ---------- 构建 ----------
+build:
+  stage: validate
+  script:
+    - <pm-install-cmd>
+    - <pm> build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

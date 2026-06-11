@@ -1,0 +1,40 @@
+# =============================================================
+# AI-Driven Scaffold .gitignore
+# 语言无关基线；项目应在此基础上叠加自己的语言/框架特定条目
+# =============================================================
+
+# ---- AI 工具运行时数据 ----
+.superpowers/
+.hermes/
+.trae/rules/
+
+# ---- Worktree ----
+.worktrees/
+
+# ---- 常见构建产物（按需保留，删行即可） ----
+node_modules/
+dist/
+build/
+out/
+target/
+*.log
+*.tmp
+
+# ---- 常见测试产物 ----
+coverage/
+test-results/
+playwright-report/
+*.test-results/
+
+# ---- IDE / 编辑器 ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# ---- 环境变量与密钥 ----
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
