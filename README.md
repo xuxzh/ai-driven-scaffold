@@ -34,7 +34,25 @@ git init -b main
 
 ### 方式 3：把治理层注入既有项目
 
-把 `docs/ai/`、`docs/adr/`、`AGENTS.md` 复制到你的现有项目根目录，然后补全 `AGENTS.md` 顶部的"用户项目元信息"段落。
+```bash
+# 假设你的项目根目录在 ~/my-existing-project
+cd ~/my-existing-project
+
+# 1. 复制治理文档
+cp -r <this-repo>/docs/ai docs/
+cp -r <this-repo>/docs/adr docs/
+cp <this-repo>/AGENTS.md AGENTS.md
+
+# 2. 如果项目还没有 docs/specs/ 和 docs/plans/，创建它们
+mkdir -p docs/specs docs/plans
+touch docs/specs/.gitkeep docs/plans/.gitkeep
+
+# 3. 编辑 AGENTS.md 顶部的"用户项目元信息"段落
+#    把 5 个占位符（⟪pm⟫ / ⟪app-dir⟫ / ⟪entry-file⟫ / ⟪shared-dir⟫ / ⟪test-dir⟫）
+#    替换为你的项目实际值，并删除"参考示例"代码块
+```
+
+> **注意**：`cp -r docs/ai docs/` 要求 `docs/` 目录已存在；如不存在，先 `mkdir -p docs/` 再复制。
 
 ## 接入后的 4 步
 

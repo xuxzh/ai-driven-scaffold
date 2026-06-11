@@ -51,54 +51,48 @@
 
 > 以下信息由本项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确执行验证。
 
-- **包管理器**：`<pm>`（例如 pnpm / npm / yarn / uv / cargo / go / mix）
-- **静态检查命令**：`<pm> lint`（如不适用填"无"）
-- **类型检查命令**：`<pm> typecheck`（如不适用填"无"）
-- **单元测试命令**：`<pm> test`
-- **端到端测试命令**：`<pm> test:e2e`（如不适用填"无"）
-- **构建命令**：`<pm> build`
-- **完整验证入口**：建议在根 `package.json` / `Makefile` / `Cargo.toml` 等定义 `verify` 串联上述步骤
-- **主要应用目录**：`<app-dir>`（例如 `src/`、`apps/web/`、`internal/`、`cmd/`）
-- **入口代码锚点**：`<entry-file>`（例如 `src/main.ts`、`cmd/server/main.go`）
-- **共享包目录**：`<shared-dir>`（如适用；否则填"无"）
-- **测试目录**：`<test-dir>`（例如 `tests/`、`__tests__/`、`*_test.go`）
+**填写方式**：
+- 把下面 6 行的占位符（`⟪pm⟫` / `⟪app-dir⟫` / `⟪entry-file⟫` / `⟪shared-dir⟫` / `⟪test-dir⟫`）替换为本项目的实际值
+- 替换完成后，**删除本段下方的"参考示例"代码块**（避免示例值与填写值混淆）
+- 如不适用某项，填"无"
 
-**示例填法**（仅供参考，可按项目实际栈选择其一）：
+| 字段 | 占位符 | 你的项目值 |
+|---|---|---|
+| 包管理器 | `⟪pm⟫` | （填 pnpm / npm / yarn / uv / cargo / go / mix 等） |
+| 主要应用目录 | `⟪app-dir⟫` | （填 src/、apps/web/、internal/、cmd/ 等） |
+| 入口代码锚点 | `⟪entry-file⟫` | （填主入口文件路径） |
+| 共享包目录 | `⟪shared-dir⟫` | （如不适用填"无"） |
+| 测试目录 | `⟪test-dir⟫` | （填 tests/、__tests__/、*_test.go 等） |
+| 完整验证入口 | （自由文本） | （建议在 manifest 中定义 `verify` 串联 lint → typecheck → test → build） |
 
-```markdown
+填写完成后，AGENTS.md 中应**不再出现** `⟪...⟫` 占位符。
+
+**参考示例**（填写完成后请删除本代码块）：
+
+````markdown
+```text
 # JavaScript / TypeScript 项目
 - 包管理器：pnpm
-- 静态检查命令：pnpm lint
-- 类型检查命令：pnpm typecheck
-- 单元测试命令：pnpm test
-- 端到端测试命令：pnpm test:e2e
-- 构建命令：pnpm build
-- 完整验证入口：pnpm verify
 - 主要应用目录：apps/web
 - 入口代码锚点：apps/web/src/main.tsx
+- 共享包目录：packages/
+- 测试目录：apps/web/src/
 
 # Python 项目
 - 包管理器：uv
-- 静态检查命令：uv run ruff check .
-- 类型检查命令：uv run mypy .
-- 单元测试命令：uv run pytest
-- 端到端测试命令：uv run pytest tests/e2e
-- 构建命令：uv build
-- 完整验证入口：make verify
 - 主要应用目录：src/
 - 入口代码锚点：src/main.py
+- 共享包目录：（无）
+- 测试目录：tests/
 
 # Go 项目
 - 包管理器：go
-- 静态检查命令：go vet ./...
-- 类型检查命令：（无；Go 编译时已含类型检查）
-- 单元测试命令：go test ./...
-- 端到端测试命令：go test ./e2e/...
-- 构建命令：go build ./...
-- 完整验证入口：make verify
 - 主要应用目录：cmd/ internal/
 - 入口代码锚点：cmd/server/main.go
+- 共享包目录：internal/
+- 测试目录：（与源码同目录，*_test.go）
 ```
+````
 
 ## 重要边界（不要破坏）
 
