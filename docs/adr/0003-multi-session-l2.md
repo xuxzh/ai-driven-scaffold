@@ -87,6 +87,6 @@ L2+ 任务的会话边界是**角色边界**：
 
 ### 其它
 
-- Runbook（待重写）：[../ai/runbooks/feature-delivery-runbook.md](../ai/runbooks/feature-delivery-runbook.md)
+- Runbook：[../ai/runbooks/l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md)（2026-06-15 拆分自原 `feature-delivery-runbook.md` 的通用 4 session 纪律；原 `feature-delivery-runbook.md` 收缩为 feature-specific 补充）
 - 评审清单：[../ai/checklists/review-checklist.md](../ai/checklists/review-checklist.md)
 - 上下文导航（待更新）：[../ai/context-index.md](../ai/context-index.md)

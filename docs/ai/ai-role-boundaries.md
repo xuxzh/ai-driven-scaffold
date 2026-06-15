@@ -65,6 +65,15 @@ L2+ 任务**不得**由一个 session 串完全部 4 个角色——实施者自
 
 L0 / L1 任务可单 session 串完——多 session 是 L2+ 的入场费，不向下传递。
 
+### 角色合并原则
+
+5 个 AI 角色中，**判断被 ADR / 单点文件严格约束**的角色可与相邻 session 合并，不强制独立。当前实例：
+
+- **实施者 + 文档维护者 = 1 session**
+  - 合并依据：[doc-rewriting-rules.md](./doc-rewriting-rules.md) 的 4 条触发条件把"是否回写文档"约束到是/否
+  - 兜底机制：评审 session 必查"是否有遗漏的文档回写"（[review-checklist.md](./checklists/review-checklist.md)）
+  - 后续若新增被强约束的角色，可继续合并；新增原则写入 [CONTEXT.md](../CONTEXT.md) 的"角色边界 = 会话边界"段
+
 ## 关联
 
 - 完成定义：[completion-criteria.md](./completion-criteria.md)

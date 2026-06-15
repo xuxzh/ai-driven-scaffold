@@ -14,12 +14,23 @@
 ## 分支命名约定
 
 - 默认使用任务分支，分支名格式：`<prefix>-<task-slug>`
-- `<prefix>` 推荐使用 AI 工具代号（便于区分 AI 协助创建的分支），例如：
-  - `codex-<task-slug>`（默认建议）
-  - `claude-<task-slug>`
-  - `cursor-<task-slug>`
+- `<prefix>` 按**改动类型**而非 AI 工具（避免分支名锁定到具体 AI 厂商）；采用 conventional commits 风格：
+
+  | 前缀 | 适用改动 |
+  |---|---|
+  | `feat-` | 新功能、可见行为新增 |
+  | `fix-` | 缺陷修复 |
+  | `refactor-` | 重构（行为不变） |
+  | `chore-` | 仓库级维护（不属以上三类） |
+  | `docs-` | 纯文档改动 |
+  | `test-` | 仅补测试 |
+  | `perf-` | 性能优化 |
+  | `build-` | 构建系统 / 依赖调整 |
+  | `ci-` | CI 配置调整 |
+
 - `<task-slug>` 使用小写字母、数字和短横线，长度控制在 3-6 个单词
 - 同一任务内的多次提交可保留在同一分支，避免无意义的分支膨胀
+- 不使用 AI 工具代号作为前缀（如 `codex-` / `claude-` / `cursor-`），原因见上
 
 ## worktree 使用约定
 

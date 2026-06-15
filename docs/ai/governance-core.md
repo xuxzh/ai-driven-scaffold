@@ -35,7 +35,7 @@
 
 ## 单点文件索引
 
-以下单点文件承载本治理的核心定义，所有其他文档（AGENTS.md、README、context-index、runbook、checklist）应链接到它们而不是各自复述：
+以下单点文件承载本治理的核心定义，所有其他文档（AGENTS.md、context-index、runbook、checklist）应链接到它们而不是各自复述：
 
 - 任务分级 [task-levels.md](./task-levels.md)
 - 完成定义 [completion-criteria.md](./completion-criteria.md)
@@ -53,59 +53,22 @@
 - [ADR-0004 L2 任务默认 spec + plan 都写](../adr/0004-l2-spec-and-plan.md)（修订 ADR-0001 L2 段）
 - [ADR-0005 L3 任务 Pre-Implementation Approval Gate](../adr/0005-l3-approval-gate.md)
 
-仓库级术语（如"锚点"、"准入门禁"、"验证层 vs 准入层"、"verify 报告"等）定义在 `docs/CONTEXT.md`（如已创建）。
+仓库级术语（如"锚点"、"准入门禁"、"验证层 vs 准入层"、"verify 报告"、"## 验证证据"等）定义在 `docs/CONTEXT.md`。
 
-## 标准工作流
+## 工作流入口
 
-为仓库内常见开发活动定义四条默认路径：`功能`、`缺陷修复`、`重构`、`评审`。它们共享同一原则：先确认任务级别，再决定是否需要 spec 或 plan，然后进入最小可验证的实现闭环。
+仓库内工作按四类分流入口，**所有工作流详细内容在 runbook / checklist，不再此文档复述**：
 
-### 功能工作流
+| 工作流 | 入口 runbook | 模板 |
+|---|---|---|
+| 功能 | [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](./runbooks/feature-delivery-runbook.md) | [feature-spec.md](./templates/feature-spec.md)、[implementation-plan.md](./templates/implementation-plan.md) |
+| 缺陷修复 | [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md) + [bugfix-delivery-runbook.md](./runbooks/bugfix-delivery-runbook.md) | [bugfix-brief.md](./templates/bugfix-brief.md) |
+| 重构 | [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md) + [refactor-delivery-runbook.md](./runbooks/refactor-delivery-runbook.md) | [refactor-brief.md](./templates/refactor-brief.md) |
+| 评审 | [checklists/review-checklist.md](./checklists/review-checklist.md) | — |
 
-用于新增页面、入口、交互、数据读取能力或用户可见行为。
+四类工作流共享同一原则：先确认任务级别，再决定是否需要 spec 或 plan，然后进入最小可验证的实现闭环。
 
-- 达到 `L2` 的功能改动，默认先写 spec，必要时再写 implementation plan，然后再进入实现
-- 实现必须围绕明确锚点展开（route、service、模型、入口等）
-- 实现完成后，必须执行与变更范围匹配的验证
-- 如改动影响长期约定，必须按 [doc-rewriting-rules.md](./doc-rewriting-rules.md) 同步补文档
-
-### 缺陷修复工作流
-
-优先处理问题定义，而不是直接写修复。
-
-- 先记录现象、预期、最小复现面和一个可证伪假设
-- 选择最接近行为控制处的文件作为锚点
-- `L0` 或 `L1` 问题可在局部假设成立后直接修复并立即验证
-- 如问题影响跨路由、跨装配或跨数据边界，则提升为 `L2`
-
-AI 在缺陷修复中的职责是帮助定位、提出局部修复和补测试，不拥有"顺手重构附近代码"的权限。
-
-### 重构工作流
-
-重构默认比功能开发更保守。只有在目标、边界和不变量明确时，才允许进入实现。
-
-重构开始前必须明确：
-
-- 哪些行为不能变
-- 哪些文件是主战场
-- 用什么验证"行为未变"
-
-如触及共享边界、入口装配、通用组件接口、脚手架约定或 workspace 结构，至少按 `L2` 处理。
-
-L1 重构使用 [refactor-brief.md](./templates/refactor-brief.md)；L2+ 重构按 L2+ 标准工作流走。
-
-### 评审工作流
-
-AI 进入评审模式时，关注点按优先级排序：
-
-1. 行为回归
-2. 边界破坏
-3. 验证缺失
-4. 测试空洞
-5. 风格与可读性
-
-AI 评审的主要职责不是解释代码写了什么，而是判断"这次变更哪里可能出事"。如果没有发现问题，也应明确指出仍然存在的测试盲区或未覆盖风险，避免给出空泛通过结论。详细清单见 [checklists/review-checklist.md](./checklists/review-checklist.md)。
-
-### 贯穿式要求
+## 贯穿式要求
 
 任何一轮 AI 实现之后，下一步优先是验证，而不是继续找更多优化点。AI 不得在没有验证结果的情况下宣称"已完成"或"应该没问题"。
 

@@ -24,14 +24,14 @@
 - 分支与 worktree：[docs/ai/branch-strategy.md](docs/ai/branch-strategy.md)
 - AI 角色边界：[docs/ai/ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)
 - 文档回写规则：[docs/ai/doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)
-- 术语表：[docs/CONTEXT.md](docs/CONTEXT.md)（如已创建）
+- 术语表：[docs/CONTEXT.md](docs/CONTEXT.md)
 - 长期决策：[docs/adr/](docs/adr/)（其中 ADR-0002 / 0003 / 0004 / 0005 是本治理基线的硬约束依据）
 
 ## AI 工作规则（执行前必读）
 
 1. **任何代码改动前，先说明变更级别**：`L0` / `L1` / `L2` / `L3`（详见 [task-levels.md](docs/ai/task-levels.md)）
 2. **实质性编辑前先检查当前分支**：不得在 `main` / `master` 直接提交开发改动（详见 [branch-strategy.md](docs/ai/branch-strategy.md)）
-3. **默认使用任务分支** `codex-<task-slug>`；`L2`/`L3` 推荐使用 `.worktrees/` 下的 worktree
+3. **默认使用任务分支** `<prefix>-<task-slug>`（前缀按改动类型：`feat-` / `fix-` / `refactor-` / `chore-` / `docs-` / `test-` / `perf-` / `build-` / `ci-`，详见 [branch-strategy.md](docs/ai/branch-strategy.md)）；`L2`/`L3` 推荐使用 `.worktrees/` 下的 worktree
 4. **`L2` 默认 spec 和 plan 双份都需提交**（详见 [task-levels.md](docs/ai/task-levels.md) 与 [ADR-0004](docs/adr/0004-l2-spec-and-plan.md)）
 5. **`L2+` 任务必须按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**（详见 [ADR-0003](docs/adr/0003-multi-session-l2.md)）
 6. **`L3` 实施 session 启动前必须收用户明确批准信号**（详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md)）
@@ -47,9 +47,9 @@
 | `L0` 单文件、不跨模块的轻量改动 | 直接做 + 最小验证 | — |
 | `L1` 单目标常规改动（2-4 文件） | task packet 先行 | [task-packet.md](docs/ai/templates/task-packet.md) |
 | `L2` 新功能、跨文件行为、数据流、入口流转 | spec **和** plan 双份都需提交；L2+ 强制多 session 串行 | [feature-spec.md](docs/ai/templates/feature-spec.md) / [implementation-plan.md](docs/ai/templates/implementation-plan.md) |
-| 业务功能 + API/UI 原型 | 4 会话串行 runbook | [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) |
-| 缺陷修复 | bugfix brief 先行 | [bugfix-brief.md](docs/ai/templates/bugfix-brief.md) |
-| 重构 | refactor brief 先行 | [refactor-brief.md](docs/ai/templates/refactor-brief.md) |
+| 业务功能 + API/UI 原型 | 通用 L2+ 4 session + feature-specific | [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) |
+| 缺陷修复 | bugfix brief 先行；L2+ 走通用 4 session + bugfix-specific | [bugfix-brief.md](docs/ai/templates/bugfix-brief.md) / [bugfix-delivery-runbook.md](docs/ai/runbooks/bugfix-delivery-runbook.md) |
+| 重构 | refactor brief 先行；L2+ 走通用 4 session + refactor-specific | [refactor-brief.md](docs/ai/templates/refactor-brief.md) / [refactor-delivery-runbook.md](docs/ai/runbooks/refactor-delivery-runbook.md) |
 | 评审 | review checklist（建议开新 session） | [review-checklist.md](docs/ai/checklists/review-checklist.md) |
 | `L3` CI、依赖、安全、跨 workspace、仓库级约定 | 人工主导 + spec/plan + **Pre-Implementation Approval Gate** | 详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md) |
 
@@ -58,47 +58,20 @@
 > 以下信息由本项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确执行验证。
 
 **填写方式**：
-- 把下面 5 行的占位符（`⟪pm⟫` / `⟪app-dir⟫` / `⟪entry-file⟫` / `⟪shared-dir⟫` / `⟪test-dir⟫`）替换为本项目的实际值
+- 把下面 5 行的占位符（`<pm>` / `<app-dir>` / `<entry-file>` / `<shared-dir>` / `<test-dir>`）替换为本项目的实际值
 - 替换完成后，**删除本段下方的"参考示例"代码块**（避免示例值与填写值混淆）
 - 如不适用某项，填"无"
 
 | 字段 | 占位符 | 你的项目值 |
 |---|---|---|
-| 包管理器 | `⟪pm⟫` | （填 pnpm / npm / yarn / uv / cargo / go / mix 等） |
-| 主要应用目录 | `⟪app-dir⟫` | （填 src/、apps/web/、internal/、cmd/ 等） |
-| 入口代码锚点 | `⟪entry-file⟫` | （填主入口文件路径） |
-| 共享包目录 | `⟪shared-dir⟫` | （如不适用填"无"） |
-| 测试目录 | `⟪test-dir⟫` | （填 tests/、__tests__/、*_test.go 等） |
+| 包管理器 | `<pm>` | （填 pnpm / npm / yarn / uv / cargo / go / mix 等） |
+| 主要应用目录 | `<app-dir>` | （填 src/、apps/web/、internal/、cmd/ 等） |
+| 入口代码锚点 | `<entry-file>` | （填主入口文件路径） |
+| 共享包目录 | `<shared-dir>` | （如不适用填"无"） |
+| 测试目录 | `<test-dir>` | （填 tests/、__tests__/、*_test.go 等） |
 | 完整验证入口 | （自由文本） | （**必须**在 manifest 中定义 `verify` 串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
 
-填写完成后，AGENTS.md 中应**不再出现** `⟪...⟫` 占位符。
-
-**参考示例**（填写完成后请删除本代码块）：
-
-````markdown
-```text
-# JavaScript / TypeScript 项目
-- 包管理器：pnpm
-- 主要应用目录：apps/web
-- 入口代码锚点：apps/web/src/main.tsx
-- 共享包目录：packages/
-- 测试目录：apps/web/src/
-
-# Python 项目
-- 包管理器：uv
-- 主要应用目录：src/
-- 入口代码锚点：src/main.py
-- 共享包目录：（无）
-- 测试目录：tests/
-
-# Go 项目
-- 包管理器：go
-- 主要应用目录：cmd/ internal/
-- 入口代码锚点：cmd/server/main.go
-- 共享包目录：internal/
-- 测试目录：（与源码同目录，*_test.go）
-```
-````
+填写完成后，AGENTS.md 中应**不再出现** `<...>` 占位符。
 
 ## 重要边界（不要破坏）
 

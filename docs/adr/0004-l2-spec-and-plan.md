@@ -96,4 +96,4 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
 ### 其它
 
 - 模板：[../ai/templates/feature-spec.md](../ai/templates/feature-spec.md)、[../ai/templates/implementation-plan.md](../ai/templates/implementation-plan.md)
-- Runbook：[../ai/runbooks/feature-delivery-runbook.md](../ai/runbooks/feature-delivery-runbook.md)
+- Runbook：[../ai/runbooks/l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md)（通用 4 session 纪律入口）

@@ -51,8 +51,8 @@ mkdir -p docs/specs docs/plans
 touch docs/specs/.gitkeep docs/plans/.gitkeep
 
 # 3. 编辑 AGENTS.md 顶部的"用户项目元信息"段落
-#    把 5 个占位符（⟪pm⟫ / ⟪app-dir⟫ / ⟪entry-file⟫ / ⟪shared-dir⟫ / ⟪test-dir⟫）
-#    替换为你的项目实际值，并删除"参考示例"代码块
+#    把 5 个占位符（<pm> / <app-dir> / <entry-file> / <shared-dir> / <test-dir>）
+#    替换为你的项目实际值
 
 # 4. 清理临时克隆
 rm -rf /tmp/ai-scaffold
@@ -65,7 +65,7 @@ rm -rf /tmp/ai-scaffold
 1. **补全项目元信息**——编辑 `AGENTS.md` 顶部的"用户项目元信息"，填入包管理器、命令、入口等
 2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
 3. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
-4. **跑一次 L2 任务验证流程**——按 [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
+4. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
 
 ## 核心治理机制
 
@@ -132,9 +132,8 @@ rm -rf /tmp/ai-scaffold
 ├── docs/
 │   ├── CONTEXT.md                  # 仓库术语表（新增）
 │   ├── ai/                         # AI 治理与工作流
-│   │   ├── README.md
-│   │   ├── context-index.md
-│   │   ├── governance-core.md
+│   │   ├── context-index.md        # AI 会话入口导航
+│   │   ├── governance-core.md      # 治理基线
 │   │   ├── task-levels.md          # ★ 单点：L0-L3
 │   │   ├── completion-criteria.md  # ★ 单点：完成定义
 │   │   ├── verification-baseline.md# ★ 单点：验证基线
@@ -146,10 +145,13 @@ rm -rf /tmp/ai-scaffold
 │   │   │   ├── feature-spec.md
 │   │   │   ├── implementation-plan.md
 │   │   │   ├── bugfix-brief.md
-│   │   │   └── refactor-brief.md   # 新增
+│   │   │   └── refactor-brief.md
 │   │   ├── runbooks/
-│   │   │   ├── development-runbook.md
-│   │   │   └── feature-delivery-runbook.md
+│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2+ 4 session 纪律
+│   │   │   ├── feature-delivery-runbook.md   # feature-specific
+│   │   │   ├── bugfix-delivery-runbook.md    # bugfix-specific
+│   │   │   ├── refactor-delivery-runbook.md  # refactor-specific
+│   │   │   └── development-runbook.md
 │   │   └── checklists/
 │   │       └── review-checklist.md
 │   ├── adr/                        # 长期决策

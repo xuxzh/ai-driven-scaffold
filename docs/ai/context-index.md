@@ -79,8 +79,9 @@ L3 任务的实施 session 在启动前还需读 [ADR-0005](../adr/0005-l3-appro
 | `L0` 文案、注释、局部测试修复 | `AGENTS.md`、本文件、相关代码锚点 | 可直接做；必须运行与改动直接相关的最小验证。 |
 | `L1` 单目标常规改动 | [task-packet.md](./templates/task-packet.md)、相关规范和代码锚点 | 先明确目标、锚点、假设、验证和非目标，再实施。 |
 | `L2` 新功能、跨文件行为、数据流或入口变化 | [task-levels.md](./task-levels.md)、[feature-spec.md](./templates/feature-spec.md) 或 [implementation-plan.md](./templates/implementation-plan.md) | 先写正式 spec 或 plan，再进入实现；AI 不得自行降级。 |
-| 业务功能 + API/UI 原型 | [feature-delivery-runbook.md](./runbooks/feature-delivery-runbook.md) | 按 spec、plan、可验证切片推进。 |
-| 缺陷修复 | [bugfix-brief.md](./templates/bugfix-brief.md) | 先写现象、预期和假设。 |
+| 业务功能 + API/UI 原型 | [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](./runbooks/feature-delivery-runbook.md) | 按 spec、plan、可验证切片推进。 |
+| 缺陷修复 | [bugfix-brief.md](./templates/bugfix-brief.md) / [bugfix-delivery-runbook.md](./runbooks/bugfix-delivery-runbook.md) | L0/L1 走 bugfix-brief；L2+ 走通用 4 session + bugfix-specific。 |
+| 重构 | [refactor-brief.md](./templates/refactor-brief.md) / [refactor-delivery-runbook.md](./runbooks/refactor-delivery-runbook.md) | L0/L1 走 refactor-brief；L2+ 走通用 4 session + refactor-specific。 |
 | 评审 | [review-checklist.md](./checklists/review-checklist.md) | 先找行为回归、边界破坏、验证缺失和测试缺口。 |
 | `L3` CI、依赖、鉴权、安全、仓库级约定 | [task-levels.md](./task-levels.md)、相关 ADR | 人工主导；先查验正式 spec 或 plan，AI 只做分析、草案、验证辅助和明确批准范围内的受控 patch。 |
 
