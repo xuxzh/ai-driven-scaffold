@@ -24,35 +24,41 @@
 - 分支与 worktree：[docs/ai/branch-strategy.md](docs/ai/branch-strategy.md)
 - AI 角色边界：[docs/ai/ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)
 - 文档回写规则：[docs/ai/doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)
+- 术语表：[docs/CONTEXT.md](docs/CONTEXT.md)（如已创建）
+- 长期决策：[docs/adr/](docs/adr/)（其中 ADR-0002 / 0003 / 0004 / 0005 是本治理基线的硬约束依据）
 
 ## AI 工作规则（执行前必读）
 
 1. **任何代码改动前，先说明变更级别**：`L0` / `L1` / `L2` / `L3`（详见 [task-levels.md](docs/ai/task-levels.md)）
 2. **实质性编辑前先检查当前分支**：不得在 `main` / `master` 直接提交开发改动（详见 [branch-strategy.md](docs/ai/branch-strategy.md)）
 3. **默认使用任务分支** `codex-<task-slug>`；`L2`/`L3` 推荐使用 `.worktrees/` 下的 worktree
-4. **`L2` 及以上必须先有正式 spec 或 plan**：`docs/specs/` 或 `docs/plans/`
-5. **完成后必须给出验证证据**：实际跑了哪些命令、哪些通过、哪些未跑及原因
-6. **触及长期约定时按回写规则更新文档**（[doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)）
-7. **不得自行扩大任务范围**（详见 [ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)）
+4. **`L2` 默认 spec 和 plan 双份都需提交**（详见 [task-levels.md](docs/ai/task-levels.md) 与 [ADR-0004](docs/adr/0004-l2-spec-and-plan.md)）
+5. **`L2+` 任务必须按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**（详见 [ADR-0003](docs/adr/0003-multi-session-l2.md)）
+6. **`L3` 实施 session 启动前必须收用户明确批准信号**（详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md)）
+7. **L1+ 任务完成前必须运行 `verify` 并写入汇报**（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
+8. **完成后必须给出验证证据**：实际跑了哪些命令、哪些通过、哪些未跑及原因
+9. **触及长期约定时按回写规则更新文档**（[doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)）
+10. **不得自行扩大任务范围**（详见 [ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)）
 
 ## 任务入口速查
 
 | 任务类型 | 入口 | 模板 |
 |---|---|---|
-| `L0` 文案、注释、局部测试修复 | 直接做 + 最小验证 | — |
-| `L1` 单目标常规改动 | task packet 先行 | [task-packet.md](docs/ai/templates/task-packet.md) |
-| `L2` 新功能、跨文件行为 | spec 或 plan 先行 | [feature-spec.md](docs/ai/templates/feature-spec.md) / [implementation-plan.md](docs/ai/templates/implementation-plan.md) |
-| 业务功能 + API/UI 原型 | 8 步交付 runbook | [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) |
+| `L0` 单文件、不跨模块的轻量改动 | 直接做 + 最小验证 | — |
+| `L1` 单目标常规改动（2-4 文件） | task packet 先行 | [task-packet.md](docs/ai/templates/task-packet.md) |
+| `L2` 新功能、跨文件行为、数据流、入口流转 | spec **和** plan 双份都需提交；L2+ 强制多 session 串行 | [feature-spec.md](docs/ai/templates/feature-spec.md) / [implementation-plan.md](docs/ai/templates/implementation-plan.md) |
+| 业务功能 + API/UI 原型 | 4 会话串行 runbook | [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) |
 | 缺陷修复 | bugfix brief 先行 | [bugfix-brief.md](docs/ai/templates/bugfix-brief.md) |
-| 评审 | review checklist | [review-checklist.md](docs/ai/checklists/review-checklist.md) |
-| `L3` CI、依赖、安全、跨 workspace | 人工主导 + spec/plan | — |
+| 重构 | refactor brief 先行 | [refactor-brief.md](docs/ai/templates/refactor-brief.md) |
+| 评审 | review checklist（建议开新 session） | [review-checklist.md](docs/ai/checklists/review-checklist.md) |
+| `L3` CI、依赖、安全、跨 workspace、仓库级约定 | 人工主导 + spec/plan + **Pre-Implementation Approval Gate** | 详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md) |
 
 ## 用户项目元信息（clone 后必须补充）
 
 > 以下信息由本项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确执行验证。
 
 **填写方式**：
-- 把下面 6 行的占位符（`⟪pm⟫` / `⟪app-dir⟫` / `⟪entry-file⟫` / `⟪shared-dir⟫` / `⟪test-dir⟫`）替换为本项目的实际值
+- 把下面 5 行的占位符（`⟪pm⟫` / `⟪app-dir⟫` / `⟪entry-file⟫` / `⟪shared-dir⟫` / `⟪test-dir⟫`）替换为本项目的实际值
 - 替换完成后，**删除本段下方的"参考示例"代码块**（避免示例值与填写值混淆）
 - 如不适用某项，填"无"
 
@@ -63,7 +69,7 @@
 | 入口代码锚点 | `⟪entry-file⟫` | （填主入口文件路径） |
 | 共享包目录 | `⟪shared-dir⟫` | （如不适用填"无"） |
 | 测试目录 | `⟪test-dir⟫` | （填 tests/、__tests__/、*_test.go 等） |
-| 完整验证入口 | （自由文本） | （建议在 manifest 中定义 `verify` 串联 lint → typecheck → test → build） |
+| 完整验证入口 | （自由文本） | （**必须**在 manifest 中定义 `verify` 串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
 
 填写完成后，AGENTS.md 中应**不再出现** `⟪...⟫` 占位符。
 
@@ -106,6 +112,7 @@
 | 关注点 | 位置 |
 |---|---|
 | 仓库级高频规则、AI 会话入口 | `AGENTS.md`（本文件） |
+| 仓库术语表 | `docs/CONTEXT.md`（如适用） |
 | AI 治理与工作流 | `docs/ai/` |
 | 单次任务设计 | `docs/specs/` |
 | 实施计划 | `docs/plans/` |

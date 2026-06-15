@@ -63,22 +63,28 @@ rm -rf /tmp/ai-scaffold
 ## 接入后的 4 步
 
 1. **补全项目元信息**——编辑 `AGENTS.md` 顶部的"用户项目元信息"，填入包管理器、命令、入口等
-2. **确认 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build
+2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
 3. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
-4. **跑一次 L2 任务验证流程**——按 [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能
+4. **跑一次 L2 任务验证流程**——按 [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
 
 ## 核心治理机制
 
 - **任务分级 L0/L1/L2/L3**：见 [docs/ai/task-levels.md](docs/ai/task-levels.md)
-  - `L0` 直接做 + 最小验证
-  - `L1` task packet 先行
-  - `L2` spec 或 plan 先行
-  - `L3` 人工主导
+  - `L0` 单文件 + 不跨模块的轻量改动，直接做 + 最小验证
+  - `L1` 2-4 文件的常规改动，task packet 先行
+  - `L2` 跨文件 / 数据流 / 入口流转，spec **和** plan 双份都需提交，强制多 session 串行
+  - `L3` 高风险改动，人工主导 + spec/plan + **Pre-Implementation Approval Gate**
 - **完成定义 5 条件**：见 [docs/ai/completion-criteria.md](docs/ai/completion-criteria.md)
-- **验证基线分层**：见 [docs/ai/verification-baseline.md](docs/ai/verification-baseline.md)
+- **验证基线分层**：见 [docs/ai/verification-baseline.md](docs/ai/verification-baseline.md)（L1+ AI 必跑 verify）
 - **分支与 worktree 策略**：见 [docs/ai/branch-strategy.md](docs/ai/branch-strategy.md)
-- **AI 角色边界**：见 [docs/ai/ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)
+- **AI 角色边界**：见 [docs/ai/ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)（L2+ 角色边界=会话边界）
 - **文档回写规则**：见 [docs/ai/doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)
+- **仓库术语表**：[docs/CONTEXT.md](docs/CONTEXT.md)
+- **硬约束 ADR**：
+  - [ADR-0002 verify 硬门禁](docs/adr/0002-verify-hard-gate.md)
+  - [ADR-0003 L2+ 多 session](docs/adr/0003-multi-session-l2.md)
+  - [ADR-0004 L2 spec + plan](docs/adr/0004-l2-spec-and-plan.md)
+  - [ADR-0005 L3 审批门禁](docs/adr/0005-l3-approval-gate.md)
 
 ## 模板与清单
 
@@ -86,6 +92,7 @@ rm -rf /tmp/ai-scaffold
 - 功能设计（L2 spec）：[docs/ai/templates/feature-spec.md](docs/ai/templates/feature-spec.md)
 - 实施计划（L2 plan）：[docs/ai/templates/implementation-plan.md](docs/ai/templates/implementation-plan.md)
 - 缺陷修复：[docs/ai/templates/bugfix-brief.md](docs/ai/templates/bugfix-brief.md)
+- 重构：[docs/ai/templates/refactor-brief.md](docs/ai/templates/refactor-brief.md)
 - 评审清单：[docs/ai/checklists/review-checklist.md](docs/ai/checklists/review-checklist.md)
 - ADR 模板：[docs/adr/adr-template.md](docs/adr/adr-template.md)
 
@@ -101,12 +108,14 @@ rm -rf /tmp/ai-scaffold
 
 可选的 Claude Code hooks 占位见 [.claude/hooks/README.md](.claude/hooks/README.md)。
 
-## CI 占位
+## CI 占位（验证层，非准入层）
 
 - GitLab CI：[.gitlab-ci.yml](.gitlab-ci.yml)
 - GitHub Actions：[.github/workflows/ci.yml](.github/workflows/ci.yml)
 
 两个 CI 模板都使用 `<pm>` / `<runtime-image>` 占位符，请按项目实际包管理器和运行时替换。
+
+**CI 是验证层，不是准入层**——CI 模板可在阶段 0 接入用于加固 verify 必跑纪律（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）。CI 跑出的结果可作为 verify 报告的事实证据；CI **不**替代 L3 Pre-Implementation Approval Gate（详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md)，这是准入层）。
 
 ## 目录结构
 
@@ -121,6 +130,7 @@ rm -rf /tmp/ai-scaffold
 │   ├── settings.json               # Claude Code 占位权限
 │   └── hooks/README.md             # 占位 hooks 端口说明
 ├── docs/
+│   ├── CONTEXT.md                  # 仓库术语表（新增）
 │   ├── ai/                         # AI 治理与工作流
 │   │   ├── README.md
 │   │   ├── context-index.md
@@ -132,9 +142,22 @@ rm -rf /tmp/ai-scaffold
 │   │   ├── ai-role-boundaries.md   # ★ 单点：AI 边界
 │   │   ├── doc-rewriting-rules.md  # ★ 单点：回写规则
 │   │   ├── templates/
+│   │   │   ├── task-packet.md
+│   │   │   ├── feature-spec.md
+│   │   │   ├── implementation-plan.md
+│   │   │   ├── bugfix-brief.md
+│   │   │   └── refactor-brief.md   # 新增
 │   │   ├── runbooks/
+│   │   │   ├── development-runbook.md
+│   │   │   └── feature-delivery-runbook.md
 │   │   └── checklists/
+│   │       └── review-checklist.md
 │   ├── adr/                        # 长期决策
+│   │   ├── 0001-task-level-governance.md  # 被 ADR-0004 修订 L2 段
+│   │   ├── 0002-verify-hard-gate.md
+│   │   ├── 0003-multi-session-l2.md
+│   │   ├── 0004-l2-spec-and-plan.md
+│   │   └── 0005-l3-approval-gate.md
 │   ├── specs/                      # 单次任务设计（用户填充）
 │   └── plans/                      # 实施计划（用户填充）
 ├── .gitlab-ci.yml                  # 占位 GitLab CI
