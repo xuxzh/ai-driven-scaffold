@@ -41,15 +41,32 @@ worktree 与任务分支的区别：
 - 任务分支：直接在工作区切换，适合短平快的 L0/L1 改动
 - worktree：独立的工作区副本，适合需要并行任务、长时间独占或 L2/L3 重构
 
+## 会话起点（多 session 串行）
+
+L2+ 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行（详见 [ADR-0003](../adr/0003-multi-session-l2.md)）。每个新 session 启动时：
+
+1. **必须**确认当前在哪个任务分支 / worktree 上（`git branch --show-current`）
+2. **必须**从仓库文档读取上一 session 的交付物：
+   - 设计 session 后：`docs/specs/<date>-<name>.md`
+   - 计划 session 后：`docs/plans/<date>-<name>.md`
+   - 实施 session 后：代码 + spec / plan 末尾的 `## 验证证据` 段
+3. **不允许**依赖会话历史推断上一 session 意图；新 session 没有上一 session 的记忆
+4. 评审 session **建议**从新开的 session 开始，避免实施上下文污染
+
+L0 / L1 任务保持单 session；本节约束不向下传递。
+
 ## 汇报要求
 
 每次任务汇报中**必须**说明：
 
 - 实际使用的是任务分支还是 worktree
+- L2+ 任务当前是哪个 session（设计 / 计划 / 实施 / 评审）
 - 列出执行过的验证命令
 - 列出未执行的验证及其原因
+- L3 任务的"已批准"信号来源（issue / 评论 / 显式消息）
 
 ## 关联
 
 - 任务分级：[task-levels.md](./task-levels.md)
 - 治理基线：[governance-core.md](./governance-core.md)
+- ADR：[../adr/0003-multi-session-l2.md](../adr/0003-multi-session-l2.md)、[../adr/0005-l3-approval-gate.md](../adr/0005-l3-approval-gate.md)

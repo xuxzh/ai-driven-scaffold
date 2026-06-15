@@ -4,7 +4,7 @@
 
 ## 阅读路径
 
-### 3 分钟短路径
+### 3 分钟短路径（L0 / L1 单 session 用）
 
 用于 `L0`、低风险 `L1`、评审前快速定位或已经熟悉仓库的新会话。
 
@@ -12,16 +12,38 @@
 2. 本文件（context-index.md）：判断任务类型、阅读分支、代码锚点和验证入口。
 3. 当前任务对应入口：按下方"按任务类型分流"选择具体模板、Runbook、规范或代码锚点。
 
-### 深路径
+### 深路径（L2+ 多 session 用）
 
-用于 `L2`、`L3`、新功能、跨边界改动、业务功能或对仓库不熟悉的新会话。
+L2+ 任务按 [ADR-0003](../adr/0003-multi-session-l2.md) 串行 4 个 session。每个 session 的阅读入口**按角色**分流：
 
-1. `docs/ai/README.md`：AI 开发日常入口、任务级别和完成定义。
-2. `docs/ai/governance-core.md`：治理基线与单点索引。
-3. `docs/adr/README.md`：长期决策索引；只打开与当前任务相关的 ADR。
-4. `docs/ai/runbooks/development-runbook.md`：常见执行陷阱和验证习惯。
-5. `docs/ai/runbooks/feature-delivery-runbook.md`：业务功能分步交付流程。
-6. 按任务需要读取对应的 spec、plan、规范或代码锚点。
+#### 设计 session（设计辅助者）
+1. `AGENTS.md`（边界）
+2. 本文件（context-index.md）
+3. `docs/ai/task-levels.md`（确认 L 级别）
+4. `docs/ai/templates/feature-spec.md`（spec 模板）
+5. `docs/adr/0004-l2-spec-and-plan.md`（spec/plan 内容分工）
+
+#### 计划 session（计划拆解者）
+1. `AGENTS.md`（边界）
+2. 上一 session 交付物：`docs/specs/<date>-<name>.md`
+3. `docs/ai/templates/implementation-plan.md`（plan 模板）
+4. `docs/ai/verification-baseline.md`（每切片的 verify 命令）
+
+#### 实施 session（实施者 + 文档维护者）
+1. `AGENTS.md`（边界）
+2. 上一 session 交付物：`docs/specs/...` + `docs/plans/...` 双份
+3. `docs/ai/branch-strategy.md`（分支 / worktree 选择）
+4. 项目 verify 命令
+5. 跑 `verify` 并写入 `## 验证证据` 段
+
+#### 评审 session（审查者，默认新开）
+1. `AGENTS.md`（边界）
+2. 上一 session 交付物：`git diff <base>..HEAD` + spec + plan + `## 验证证据` 段
+3. `docs/ai/checklists/review-checklist.md`（评审清单）
+4. `docs/adr/0002-verify-hard-gate.md`（verify 必跑纪律检查）
+5. **不**预读实施 session 的中间对话
+
+L3 任务的实施 session 在启动前还需读 [ADR-0005](../adr/0005-l3-approval-gate.md) 并等待用户批准。
 
 ## 单点定义（核心规则）
 
