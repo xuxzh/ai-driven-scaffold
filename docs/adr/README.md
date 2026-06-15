@@ -5,6 +5,10 @@
 ## 索引
 
 - [0001 使用任务分级治理 AI 改动风险](0001-task-level-governance.md)
+- [0002 将 verify 升级为 AI 必跑 + 必汇报的硬门禁](0002-verify-hard-gate.md)
+- [0003 L2+ 任务强制多 session 串行（设计 / 计划 / 实施 / 评审）](0003-multi-session-l2.md)
+- [0004 L2 任务默认 spec + plan 都写（修订 ADR-0001 L2 段）](0004-l2-spec-and-plan.md)
+- [0005 L3 任务 Pre-Implementation Approval Gate（L3 实施 session 启动前必须收用户批准）](0005-l3-approval-gate.md)
 
 ## 何时新增 ADR
 
