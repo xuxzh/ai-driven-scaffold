@@ -1,6 +1,7 @@
 # ADR-0004 L2 任务默认 spec + plan 都写（修订 ADR-0001 L2 段）
 
 日期：2026-06-15
+适用等级：L2
 
 ## 状态
 
@@ -45,6 +46,8 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
 > 原句："`L2`：跨文件行为、路由、数据流、共享边界等中等风险改动，**必须先有正式 spec 或 plan**。"
 > 修订为："`L2`：跨文件行为、路由、数据流、共享边界等中等风险改动，**默认必须先有正式 spec 和 plan 双份**（详见 `ADR-0004`）。"
 
+### 硬约束范式（可选）
+
 按 ADR-0002 沉淀的"硬约束三件套"句式落地：
 
 > **在 (进入实施 session) 之前**，AI 必须 **(从仓库读到 spec + plan 双份就位)**；**汇报 (双份文档的路径与状态)** 于 (verify 报告)；**缺 (任一份) 时 AI 必须停在 (回到设计 / 计划 session)**。
@@ -60,25 +63,37 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
 
 ## 后果
 
-- **正向影响**：
+- 正向影响：
   - L2 任务的"做不做 / 做什么"由 spec 锁定，"怎么做"由 plan 锁定；两者**不互相替代**
   - 与 ADR-0003 的"设计 session 出 spec / 计划 session 出 plan"自然衔接
   - 与 ADR-0002 的 verify 必跑衔接：plan 中"每切片的命令"直接成为 verify 报告的"实际跑的项"
   - 备选方案与拒绝理由被 spec 强制记录，未来 AI 不会反复重新建议被显式拒绝的方案（呼应 ADR 索引里"某个方案被明确拒绝"的触发条件）
-- **约束或成本**：
+- 约束或成本：
   - L2 任务的文档成本从 1 份升到 2 份
   - spec 与 plan 之间需要保持引用一致；维护成本上升
   - L1 → L2 升级时需要"展开 packet 为 spec + plan"——这是新增的中途流程
-- **后续触发条件**：
+- 后续触发条件：
   - 若 `docs/specs/` 与 `docs/plans/` 出现大量"快速通道"标注且比例 > 50%，需评估 L2 阈值是否需要上调
   - 若 spec 与 plan 出现内容漂移（spec 改了 plan 没改，或反之），需要回到本 ADR 评估"是否需要在 CI 加双向链接检查"
   - 若 L1 → L2 升级频繁发生且展开过程被打断，需要评估 L1 阈值是否需要收紧
 
 ## 关联
 
-- 前置 ADR：[0001-task-level-governance.md](0001-task-level-governance.md)（本 ADR 修订其 L2 段"或"为"和"）
-- 关联 ADR：[0002-verify-hard-gate.md](0002-verify-hard-gate.md)（verify 必跑）、[0003-multi-session-l2.md](0003-multi-session-l2.md)（多 session）
-- 后续 ADR：0005（L3 Pre-Implementation Approval Gate）
-- 基线文档：[../ai/task-levels.md](../ai/task-levels.md)（同步修订 L2 段）
+### 前置 ADR
+
+- [ADR-0001](0001-task-level-governance.md)：本 ADR 修订其 L2 段"或"为"和"。
+- [ADR-0002](0002-verify-hard-gate.md)：本 ADR 继承其"硬约束三件套"句式。
+- [ADR-0003](0003-multi-session-l2.md)：本 ADR 的"spec + plan 双份"与多 session 框架的"设计 + 计划"双 session 对齐。
+
+### 后续 ADR
+
+- [ADR-0005](0005-l3-approval-gate.md)：L3 任务在 spec + plan 双份基础上叠加 Pre-Implementation Approval Gate。
+
+### 基线文档
+
+- [../ai/task-levels.md](../ai/task-levels.md)（同步修订 L2 段）
+
+### 其它
+
 - 模板：[../ai/templates/feature-spec.md](../ai/templates/feature-spec.md)、[../ai/templates/implementation-plan.md](../ai/templates/implementation-plan.md)
 - Runbook：[../ai/runbooks/feature-delivery-runbook.md](../ai/runbooks/feature-delivery-runbook.md)

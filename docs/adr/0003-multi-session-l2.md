@@ -1,6 +1,7 @@
 # ADR-0003 L2+ 任务强制多 session 串行（设计 / 计划 / 实施 / 评审）
 
 日期：2026-06-15
+适用等级：L2 / L3
 
 ## 状态
 
@@ -36,6 +37,8 @@ L2+ 任务的会话边界是**角色边界**：
 - 实施 session = 实施者 + 文档维护者（合并：实施过程中的文档回写是实施的一部分）
 - 评审 session = 审查者
 
+### 硬约束范式（可选）
+
 按 ADR-0002 沉淀的"硬约束三件套"句式落地：
 
 > **在 (开始下一 session) 之前**，AI 必须 **(从仓库文档读取上一 session 交付物，而非依赖会话历史)**；**汇报 (本次 session 必交付物)** 于 (spec / plan / 验证证据 / review report)；**缺 (上一 session 完成信号) 时 AI 必须停在 (等待用户确认状态)**。
@@ -50,27 +53,40 @@ L2+ 任务的会话边界是**角色边界**：
 
 ## 后果
 
-- **正向影响**：
+- 正向影响：
   - 实施者自审盲点被新 session 的"零上下文"消除；reviewer session 看到的只有交付物，没有合理化路径
   - 4 份独立交付物（spec / plan / 验证证据 / review report）都进仓库；知识沉淀更厚
   - 与 ADR-0002 的 verify 必跑天然契合：每 session 跑一次 verify
   - 与 ADR-0004 的 spec + plan 都写衔接：双 session（设计 + 计划）让 spec 与 plan 的分离变得自然
   - 与 ADR-0005 的 L3 审批门禁衔接：L3 在多 session 框架下加入"实施 session 启动前必须收用户批准"信号
-- **约束或成本**：
+- 约束或成本：
   - L2+ 任务的完成时间被切碎：单 session 不再能 30 分钟结束一个 L2
   - 实施 session 之外的 3 个 session 都需要"重新读仓库上下文"——这本身是开销
   - 用户需要主动管理会话切换；如果只在 1 个 session 内"假装"换了角色，治理失效
   - 小 L2 的快速通道例外需要 spec 顶部声明；这是新增的轻量流程
-- **后续触发条件**：
+- 后续触发条件：
   - 若 `.claude/hooks/` 引入 session boundary 提示（如 `PreCompact` / `SessionStart`），本 ADR 的"必读上一 session 产出"可由 hook 强制读取而非依赖 AI 自律
   - 若 `docs/specs/` / `docs/plans/` 出现大量"快速通道"标注且频繁触发，需要评估"快速通道"是否被滥用为绕过入口
   - 若评审 session 的"测试盲区清单"被实施 session 反驳，需要回到本 ADR 评估是否要引入"评审独立性"硬约束
 
 ## 关联
 
-- 前置 ADR：[0002-verify-hard-gate.md](0002-verify-hard-gate.md)——本 ADR 继承其"硬约束三件套"句式
-- 后续 ADR：0004（L2 spec + plan）、0005（L3 Pre-Implementation Approval Gate）
-- 基线文档：[../ai/ai-role-boundaries.md](../ai/ai-role-boundaries.md)
+### 前置 ADR
+
+- [ADR-0001](0001-task-level-governance.md)：本 ADR 的 "L2+" 作用域来自其分级模型。
+- [ADR-0002](0002-verify-hard-gate.md)：本 ADR 继承其"硬约束三件套"句式；实施 session 的 verify 必跑继承自 ADR-0002。
+
+### 后续 ADR
+
+- [ADR-0004](0004-l2-spec-and-plan.md)：L2 任务默认 spec + plan 双份作为硬门禁；本 ADR 的"设计 + 计划"双 session 与之衔接。
+- [ADR-0005](0005-l3-approval-gate.md)：L3 任务叠加 Pre-Implementation Approval Gate；本 ADR 的多 session 框架为其提供 session 切换点。
+
+### 基线文档
+
+- [../ai/ai-role-boundaries.md](../ai/ai-role-boundaries.md)
+
+### 其它
+
 - Runbook（待重写）：[../ai/runbooks/feature-delivery-runbook.md](../ai/runbooks/feature-delivery-runbook.md)
 - 评审清单：[../ai/checklists/review-checklist.md](../ai/checklists/review-checklist.md)
 - 上下文导航（待更新）：[../ai/context-index.md](../ai/context-index.md)

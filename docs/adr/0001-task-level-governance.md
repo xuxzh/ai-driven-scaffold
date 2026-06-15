@@ -1,14 +1,17 @@
 # ADR-0001 使用任务分级治理 AI 改动风险
 
 日期：2026-05-25
+适用等级：全部
 
 ## 状态
 
-Accepted（部分被 [ADR-0004](0004-l2-spec-and-plan.md) 修订）
+Amended
+
+> 本 ADR 已被 [ADR-0004](0004-l2-spec-and-plan.md) 局部修订；具体修订范围见 ## 修订记录。
 
 ## 修订记录
 
-- **2026-06-15**：[ADR-0004](0004-l2-spec-and-plan.md) 通过；本 ADR 决策段中 `L2` 行的"或"被修订为"和"。本 ADR 的 L0 / L1 / L3 行不受影响。详见 [ADR-0004](0004-l2-spec-and-plan.md)。
+- 2026-06-15：触发 ADR [0004](0004-l2-spec-and-plan.md)，变更类型（局部修订），本 ADR 决策段中 L2 行的"或"被修订为"和"。L0 / L1 / L3 行不受影响。
 
 ## 背景
 
@@ -35,7 +38,21 @@ Accepted（部分被 [ADR-0004](0004-l2-spec-and-plan.md) 修订）
 
 ## 关联
 
-- 基线文档：[../ai/task-levels.md](../ai/task-levels.md)
+### 前置 ADR
+
+> 列表为空——本 ADR 是仓库内首批 ADR。
+
+### 后续 ADR
+
+- [ADR-0002](0002-verify-hard-gate.md)：本 ADR 的 L1+ 任务在 verify 上落地为硬门禁。
+- [ADR-0003](0003-multi-session-l2.md)：本 ADR 的 L2+ 任务在多 session 串行上落地为硬门禁。
+- [ADR-0004](0004-l2-spec-and-plan.md)：局部修订本 ADR 的 L2 段（详见 ## 修订记录）。
+- [ADR-0005](0005-l3-approval-gate.md)：本 ADR 的 L3 任务叠加 Pre-Implementation Approval Gate。
+
+### 基线文档
+
+- [../ai/task-levels.md](../ai/task-levels.md)：本 ADR 建立的 L0/L1/L2/L3 分级模型的单点定义。
+
+### 其它
+
 - Runbook：[../ai/runbooks/development-runbook.md](../ai/runbooks/development-runbook.md)
-- 修订本 ADR 的 ADR：[0004-l2-spec-and-plan.md](0004-l2-spec-and-plan.md)
-- 引用本 ADR 的 ADR：[0002-verify-hard-gate.md](0002-verify-hard-gate.md)、[0003-multi-session-l2.md](0003-multi-session-l2.md)、[0005-l3-approval-gate.md](0005-l3-approval-gate.md)

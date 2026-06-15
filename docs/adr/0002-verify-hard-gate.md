@@ -1,6 +1,7 @@
 # ADR-0002 将 verify 升级为 AI 必跑 + 必汇报的硬门禁
 
 日期：2026-06-15
+适用等级：L1 / L2 / L3
 
 ## 状态
 
@@ -43,22 +44,7 @@ verify 升级为**硬门禁**，由三件不可省略的子约束组成：
 - `completion-criteria.md` 的"必要验证已经执行"段增加"对应 verify 报告"的引用
 - `development-runbook.md` 增加"verify 报告"段，说明报告结构与位置
 
-## 后果
-
-- **正向影响**：
-  - AI 不能口头 claim 完成；任何"完成"声明都有命令输出可证
-  - 与 governance-core 的"AI 是受控执行者"立场一致
-  - 把软治理升级为"软治理 + 汇报纪律"，不引入 CI 硬门禁，与 governance-core "不引入过重自动化"的原则兼容
-- **约束或成本**：
-  - AI 的"完成"响应变慢（每个 L1+ 必须跑 verify）
-  - verify 跑得慢的项目（例如长时 E2E 套件）会拉高任务完成成本
-  - verify 命令必须真实存在；项目若没定义 verify，本 ADR 强制暴露该缺口
-- **后续触发条件**：
-  - 若项目引入 CI 门禁且 CI 跑的 `verify` 与本 ADR 的 `verify` 是同一份命令，本 ADR 的 AI 必跑可降为"AI 必须引用 CI 报告"
-  - 若 verify 命令本身设计失败（例如命令经常挂掉或假阳性），需要回到本 ADR 评估是否回退为"AI 必跑 + 必标注失败"
-  - 若要进一步硬化为强制门禁，需新增 ADR（不在本 ADR 范围）
-
-## 硬约束范式（供 ADR-0003 / 0004 / 0005 复用）
+### 硬约束范式（可选）
 
 本 ADR 建立"硬约束三件套"句式：
 
@@ -70,9 +56,38 @@ verify 升级为**硬门禁**，由三件不可省略的子约束组成：
 - **ADR-0004（L2 spec+plan）**：在 (进入实施 session) 之前，AI 必须 (收到 spec + plan 双份就位)；汇报 (准入检查结果) 于 (verify 报告)；缺 (任一份) 时 AI 必须停在 (L1 阶段)
 - **ADR-0005（L3 Pre-Implementation Approval Gate）**：在 (L3 实施 session 开始) 之前，AI 必须 (收到用户"已批准"信号)；汇报 (批准来源) 于 (会话汇报)；缺 (批准信号) 时 AI 必须停在 (spec/plan)
 
+## 后果
+
+- 正向影响：
+  - AI 不能口头 claim 完成；任何"完成"声明都有命令输出可证
+  - 与 governance-core 的"AI 是受控执行者"立场一致
+  - 把软治理升级为"软治理 + 汇报纪律"，不引入 CI 硬门禁，与 governance-core "不引入过重自动化"的原则兼容
+- 约束或成本：
+  - AI 的"完成"响应变慢（每个 L1+ 必须跑 verify）
+  - verify 跑得慢的项目（例如长时 E2E 套件）会拉高任务完成成本
+  - verify 命令必须真实存在；项目若没定义 verify，本 ADR 强制暴露该缺口
+- 后续触发条件：
+  - 若项目引入 CI 门禁且 CI 跑的 `verify` 与本 ADR 的 `verify` 是同一份命令，本 ADR 的 AI 必跑可降为"AI 必须引用 CI 报告"
+  - 若 verify 命令本身设计失败（例如命令经常挂掉或假阳性），需要回到本 ADR 评估是否回退为"AI 必跑 + 必标注失败"
+  - 若要进一步硬化为强制门禁，需新增 ADR（不在本 ADR 范围）
+
 ## 关联
 
-- 基线文档：[../ai/verification-baseline.md](../ai/verification-baseline.md)
-- 完成定义：[../ai/completion-criteria.md](../ai/completion-criteria.md)
+### 前置 ADR
+
+- [ADR-0001](0001-task-level-governance.md)：本 ADR 的 "L1+" 作用域来自其分级模型。
+
+### 后续 ADR
+
+- [ADR-0003](0003-multi-session-l2.md)：L2+ 任务在多 session 串行上落地为硬门禁。
+- [ADR-0004](0004-l2-spec-and-plan.md)：L2 任务默认 spec + plan 双份作为硬门禁。
+- [ADR-0005](0005-l3-approval-gate.md)：L3 任务叠加 Pre-Implementation Approval Gate。
+
+### 基线文档
+
+- [../ai/verification-baseline.md](../ai/verification-baseline.md)
+- [../ai/completion-criteria.md](../ai/completion-criteria.md)
+
+### 其它
+
 - Runbook：[../ai/runbooks/development-runbook.md](../ai/runbooks/development-runbook.md)
-- 后续 ADR：0003（L2+ 强制多 session）、0004（L2 默认 spec + plan 都写）、0005（L3 Pre-Implementation Approval Gate）
