@@ -46,6 +46,8 @@
 
 **禁止在其他文档中复述这些规则**。如需引用，用相对链接指向单点文件。
 
+`scripts/scaffold-doctor.sh` 只能做只读检查，不得自动修改用户项目文件或引入具体语言运行时依赖。
+
 ## 新增单点定义时的检查清单
 
 1. 是否真的需要新单点？（能否合并到已有单点？）
@@ -77,6 +79,8 @@
 - [ ] 跑 `grep -rE 'pnpm|react|vue|svelte|tailwind|vitest|jest|axios' --include='*.md' .`（应只在"示例"语境中命中）
 - [ ] 检查所有相对链接可达：`grep -oE '\]\([^)]+\.md\)' AGENTS.md docs/ai/*.md`
 - [ ] 检查目录树：`find . -type d | sort`
+- [ ] 跑 `bash -n scripts/scaffold-doctor.sh`
+- [ ] 跑 `bash scripts/scaffold-doctor.sh`，确认输出中的 `FAIL` / `WARN` 与当前模板状态一致
 - [ ] 跑 YAML 语法校验：`.gitlab-ci.yml` 和 `.github/workflows/ci.yml`
 
 ## 提交信息规范

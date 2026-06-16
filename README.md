@@ -60,12 +60,13 @@ rm -rf /tmp/ai-scaffold
 
 > **注意**：`cp -r docs/ai docs/` 要求 `docs/` 目录已存在；如不存在，先 `mkdir -p docs/` 再复制。
 
-## 接入后的 4 步
+## 接入后的 5 步
 
 1. **补全项目元信息**——编辑 `AGENTS.md` 顶部的"用户项目元信息"，填入包管理器、命令、入口等
 2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
-3. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
-4. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
+3. **运行接入自检**——执行 `bash scripts/scaffold-doctor.sh`，并按 [adoption-checklist.md](docs/ai/checklists/adoption-checklist.md) 处理 `FAIL` / `WARN`；doctor 只检查脚手架接入状态，不替代项目 `verify`
+4. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
+5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
 
 ## 核心治理机制
 
@@ -93,6 +94,7 @@ rm -rf /tmp/ai-scaffold
 - 实施计划（L2 plan）：[docs/ai/templates/implementation-plan.md](docs/ai/templates/implementation-plan.md)
 - 缺陷修复：[docs/ai/templates/bugfix-brief.md](docs/ai/templates/bugfix-brief.md)
 - 重构：[docs/ai/templates/refactor-brief.md](docs/ai/templates/refactor-brief.md)
+- 接入自检清单：[docs/ai/checklists/adoption-checklist.md](docs/ai/checklists/adoption-checklist.md)
 - 评审清单：[docs/ai/checklists/review-checklist.md](docs/ai/checklists/review-checklist.md)
 - ADR 模板：[docs/adr/adr-template.md](docs/adr/adr-template.md)
 
@@ -126,6 +128,8 @@ rm -rf /tmp/ai-scaffold
 ├── CONTRIBUTING.md                 # 模板仓库维护说明
 ├── LICENSE                         # MIT
 ├── .gitignore
+├── scripts/
+│   └── scaffold-doctor.sh          # 只读接入自检脚本
 ├── .claude/
 │   ├── settings.json               # Claude Code 占位权限
 │   └── hooks/README.md             # 占位 hooks 端口说明
@@ -153,6 +157,7 @@ rm -rf /tmp/ai-scaffold
 │   │   │   ├── refactor-delivery-runbook.md  # refactor-specific
 │   │   │   └── development-runbook.md
 │   │   └── checklists/
+│   │       ├── adoption-checklist.md
 │   │       └── review-checklist.md
 │   ├── adr/                        # 长期决策
 │   │   ├── 0001-task-level-governance.md  # 被 ADR-0004 修订 L2 段
