@@ -264,11 +264,14 @@ check_adr_status() {
       in_status && NF { print; exit }
     ' "$adr")
 
-    if [ "$status" = "Proposed" ]; then
+    case "$status" in
+      Proposed*)
       warn "$adr is Proposed while AGENTS.md treats it as a hard constraint"
-    else
+      ;;
+      *)
       pass "$adr status is not Proposed"
-    fi
+      ;;
+    esac
   done
 }
 
@@ -532,9 +535,13 @@ git commit -m "docs(plan): record adoption self-check verification"
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| | | | |
+| `bash -n scripts/scaffold-doctor.sh` | 0 | `EXIT_CODE=0` | shell 语法检查通过 |
+| `bash scripts/scaffold-doctor.sh` | 1 | `Summary: 1 fail(s), 7 warning(s)` | 预期失败；模板仓库保留 `AGENTS.md` 项目元信息占位符，并报告 manifest / CI / ADR 状态提示 |
+| `rg -n '<[^>]+>' README.md CONTRIBUTING.md docs/ai/checklists/adoption-checklist.md scripts/scaffold-doctor.sh` | 0 | 命中 README 示例占位符、CONTRIBUTING 提交信息示例、checklist 检查目标和脚本正则 | 未发现未解释的新增必填占位 |
+| `rg -n 'scaffold-doctor|adoption-checklist|接入自检' README.md CONTRIBUTING.md docs/ai/checklists/adoption-checklist.md` | 0 | README、CONTRIBUTING、adoption checklist 均有命中 | 接入入口可检索 |
+| `git status --short` | 0 | `M docs/plans/2026-06-16-adoption-self-check.md` | 写入验证证据前，除 plan 同步修正外无未提交实现文件 |
 
-未跑项：
+未跑项：项目根 `verify` 未运行；当前模板仓库无项目 manifest / verify 入口，doctor 已以 `WARN no common project manifest found` 暴露该接入缺口。本次按 plan 使用脚本语法、doctor、占位符扫描和关键词扫描作为替代验证。
 
 ## 批准（L3 任务必填，其他任务留空）
 
