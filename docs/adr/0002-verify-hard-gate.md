@@ -9,19 +9,7 @@ Proposed
 
 ## 背景
 
-仓库最初的 verify 设计是**软建议**：
-
-- `AGENTS.md` 把 `verify` 入口描述为"**建议**在 manifest 中定义 `verify` 串联 lint → typecheck → test → build"
-- `verification-baseline.md` 写"各项目**应在**根级 package/manifest 中定义一个 `verify` 命令"
-- `completion-criteria.md` 把"必要验证已经执行"列为完成的**硬条件之一**
-
-两处软建议 + 一处硬条件，**三者语气不一致**。在 `.claude/settings.json` 仅限制 `--force` push、`.claude/hooks/README.md` 明确"当前未配置任何 hook"的情况下，AI 在 L1+ 任务完成时**完全可能跳过 verify 后口头宣称完成**——这正是 governance-core.md 写"AI 不是默认决策者，而是受控执行者"想避免的反模式。
-
-更具体地：
-
-- 软建议让 AI 实质上成为自我裁判，与"AI 受控执行"立场相悖
-- 完成定义写着"必须"，但执行全靠 AI 自律，文档纪律落不到运行时
-- 真实场景中，"应该没问题" 式的口头完成结论比"verify 跑通了 X 命令"更常见
+verify 原为软建议（"建议"/"应在"），与 completion-criteria 的硬条件矛盾，且无运行时约束，AI 可能跳过 verify 口头 claim 完成。
 
 ## 决策
 
