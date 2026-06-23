@@ -5,7 +5,7 @@
 
 ## 状态
 
-Proposed
+Accepted
 
 ## 背景
 

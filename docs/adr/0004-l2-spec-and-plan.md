@@ -5,7 +5,7 @@
 
 ## 状态
 
-Proposed（Amends ADR-0001 L2 段）
+Accepted（Amends ADR-0001 L2 段）
 
 ## 背景
 

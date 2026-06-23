@@ -53,9 +53,9 @@
 | 评审 | review checklist（建议开新 session） | [review-checklist.md](docs/ai/checklists/review-checklist.md) |
 | `L3` CI、依赖、安全、跨 workspace、仓库级约定 | 人工主导 + spec/plan + **Pre-Implementation Approval Gate** | 详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md) |
 
-## 用户项目元信息（clone 后必须补充）
+## 用户项目元信息（Adoption Profile，clone 后必须补充）
 
-> 以下信息由本项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确执行验证。
+> 本段是目标项目的 **Adoption Profile**，由项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确定位锚点和验证入口。
 
 **填写方式**：
 - 把下面 5 行的占位符（`<pm>` / `<app-dir>` / `<entry-file>` / `<shared-dir>` / `<test-dir>`）替换为本项目的实际值

@@ -33,6 +33,13 @@
 - 流程：先在 `docs/adr/` 写 ADR 解释为什么需要打破"语言无关"承诺
 - 必须人工主导
 
+### 引入 AI 工具专属配置
+
+- 等级：`L3`
+- 流程：先写 spec / plan，并在 `docs/adr/` 解释为什么需要打破"工具无关"承诺
+- 必须人工主导
+- 默认不在脚手架中维护 Claude / Cursor / Aider / Copilot 等任一工具的专属配置；项目可自行添加可选加固层
+
 ## 单点化原则
 
 本脚手架的治理规则**单点化**：
@@ -73,6 +80,7 @@
 - 默认 i18n 库为 i18next
 - 默认 HTTP 客户端为 fetch / axios
 - 默认 CI 为 GitLab CI（应同时提供 GitHub Actions）
+- 默认 AI 工具为 Claude / Cursor / Aider / Copilot
 
 ## 验证清单（修改后自检）
 

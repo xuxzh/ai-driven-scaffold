@@ -50,7 +50,7 @@ cp /tmp/ai-scaffold/AGENTS.md AGENTS.md
 mkdir -p docs/specs docs/plans
 touch docs/specs/.gitkeep docs/plans/.gitkeep
 
-# 3. 编辑 AGENTS.md 顶部的"用户项目元信息"段落
+# 3. 编辑 AGENTS.md 顶部的"用户项目元信息（Adoption Profile）"段落
 #    把 5 个占位符（<pm> / <app-dir> / <entry-file> / <shared-dir> / <test-dir>）
 #    替换为你的项目实际值
 
@@ -62,9 +62,9 @@ rm -rf /tmp/ai-scaffold
 
 ## 接入后的 5 步
 
-1. **补全项目元信息**——编辑 `AGENTS.md` 顶部的"用户项目元信息"，填入包管理器、命令、入口等
+1. **补全 Adoption Profile**——编辑 `AGENTS.md` 顶部的"用户项目元信息（Adoption Profile）"，填入包管理器、命令、入口等
 2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
-3. **运行接入自检**——执行 `bash scripts/scaffold-doctor.sh`，并按 [adoption-checklist.md](docs/ai/checklists/adoption-checklist.md) 处理 `FAIL` / `WARN`；doctor 只检查脚手架接入状态，不替代项目 `verify`
+3. **运行接入自检**——执行 `bash scripts/scaffold-doctor.sh`（等价于 `--adopted`），并按 [adoption-checklist.md](docs/ai/checklists/adoption-checklist.md) 处理 `FAIL` / `WARN`；doctor 只检查脚手架接入状态，不替代项目 `verify`
 4. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
 5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
 
@@ -108,7 +108,7 @@ rm -rf /tmp/ai-scaffold
 - **GitHub Copilot**：读取仓库根指令
 - **其他**：参考各工具的"项目级指令"机制
 
-可选的 Claude Code hooks 占位见 [.claude/hooks/README.md](.claude/hooks/README.md)。
+本脚手架不提供任何 AI 工具专属配置。L3 审批、verify 必跑和多 session 串行等约束都通过 `AGENTS.md`、`docs/ai/` 与 `docs/adr/` 表达；具体工具的 hook、rule 或插件只能作为项目自行添加的可选加固层。
 
 ## CI 占位（验证层，非准入层）
 
@@ -130,9 +130,6 @@ rm -rf /tmp/ai-scaffold
 ├── .gitignore
 ├── scripts/
 │   └── scaffold-doctor.sh          # 只读接入自检脚本
-├── .claude/
-│   ├── settings.json               # Claude Code 占位权限
-│   └── hooks/README.md             # 占位 hooks 端口说明
 ├── docs/
 │   ├── CONTEXT.md                  # 仓库术语表（新增）
 │   ├── ai/                         # AI 治理与工作流
@@ -177,6 +174,7 @@ rm -rf /tmp/ai-scaffold
 
 - 触及长期边界、默认做法、跨工具兼容性时，按 [docs/ai/doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md) 回写文档
 - 新增单点定义时，把已有的重复引用全部改链到新单点
+- 维护模板仓库时使用 `bash scripts/scaffold-doctor.sh --template`；接入目标项目时使用默认 `bash scripts/scaffold-doctor.sh`
 - 修改前先看 [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 许可证

@@ -4,6 +4,14 @@ set -u
 
 fail_count=0
 warn_count=0
+mode=adopted
+
+usage() {
+  printf 'Usage: bash scripts/scaffold-doctor.sh [--adopted|--template]\n'
+  printf '\n'
+  printf '  --adopted   Check a target project after scaffold adoption (default).\n'
+  printf '  --template  Check this scaffold template repository.\n'
+}
 
 pass() {
   printf 'PASS %s\n' "$1"
@@ -18,6 +26,32 @@ fail() {
   fail_count=$((fail_count + 1))
   printf 'FAIL %s\n' "$1"
 }
+
+case "${1:-}" in
+  ""|--adopted)
+    mode=adopted
+    ;;
+  --template)
+    mode=template
+    ;;
+  -h|--help)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    fail "unsupported mode: $1"
+    printf '\nSummary: %s fail(s), %s warning(s)\n' "$fail_count" "$warn_count"
+    exit 1
+    ;;
+esac
+
+if [ "${2:-}" ]; then
+  usage
+  fail "too many arguments"
+  printf '\nSummary: %s fail(s), %s warning(s)\n' "$fail_count" "$warn_count"
+  exit 1
+fi
 
 file_contains() {
   file=$1
@@ -35,9 +69,13 @@ check_agents_md() {
   pass 'AGENTS.md exists'
 
   if grep -Eq '<(pm|app-dir|entry-file|shared-dir|test-dir)>' AGENTS.md; then
-    fail 'AGENTS.md still contains required project metadata placeholders'
+    if [ "$mode" = template ]; then
+      warn 'AGENTS.md contains Adoption Profile placeholders; allowed in template mode'
+    else
+      fail 'AGENTS.md still contains required Adoption Profile placeholders'
+    fi
   else
-    pass 'AGENTS.md required project metadata placeholders are filled'
+    pass 'AGENTS.md required Adoption Profile placeholders are filled'
   fi
 }
 
@@ -87,7 +125,11 @@ check_ci_placeholders() {
     if [ -f "$ci_file" ]; then
       found_ci=1
       if grep -Eq '<[^>]+>' "$ci_file"; then
-        warn "$ci_file still contains angle-bracket placeholders"
+        if [ "$mode" = template ]; then
+          warn "$ci_file contains template placeholders; allowed in template mode"
+        else
+          warn "$ci_file still contains angle-bracket placeholders"
+        fi
       else
         pass "$ci_file has no angle-bracket placeholders"
       fi

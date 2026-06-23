@@ -78,7 +78,7 @@ spec 与 plan 的内容分工：
 
 plan 抬头必须 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行，否则视为与 spec 失联。
 
-聊天计划、临时 TODO、`update_plan` 输出不算正式 spec 或 plan。
+聊天计划、临时 TODO、`update_plan` 输出不算正式 spec，也不算正式 plan。
 
 L2+ 任务**强制按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**（详见 [ADR-0003](../adr/0003-multi-session-l2.md)）。每个 session 必须从仓库读上一 session 的交付物，不允许依赖会话历史。
 

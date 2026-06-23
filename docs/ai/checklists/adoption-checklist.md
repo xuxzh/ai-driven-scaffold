@@ -6,11 +6,11 @@
 
 - 新项目从模板创建后。
 - 既有项目复制 `AGENTS.md`、`docs/ai/`、`docs/adr/` 后。
-- 修改脚手架接入规则、CI 模板或项目元信息后。
+- 修改脚手架接入规则、CI 模板或 Adoption Profile 后。
 
 ## 人工检查
 
-- [ ] `AGENTS.md` 存在，并且用户项目元信息已按项目实际情况填写。
+- [ ] `AGENTS.md` 存在，并且 Adoption Profile（用户项目元信息）已按项目实际情况填写。
 - [ ] `AGENTS.md` 不再保留必填占位符：`<pm>`、`<app-dir>`、`<entry-file>`、`<shared-dir>`、`<test-dir>`。
 - [ ] 项目 manifest 中存在 `verify` 入口，且该入口能覆盖当前项目的 lint、typecheck、test、build 需求。
 - [ ] `docs/specs/` 和 `docs/plans/` 存在，用于承接 L2+ 任务交付物。
@@ -25,6 +25,18 @@
 bash scripts/scaffold-doctor.sh
 ```
 
+默认模式等价于：
+
+```bash
+bash scripts/scaffold-doctor.sh --adopted
+```
+
+维护本模板仓库时运行：
+
+```bash
+bash scripts/scaffold-doctor.sh --template
+```
+
 结果含义：
 
 | 标记 | 含义 |
@@ -37,4 +49,5 @@ bash scripts/scaffold-doctor.sh
 
 - doctor 只读文件，不自动修复。
 - doctor 只检查脚手架接入状态，不证明业务代码正确。
+- `--template` 允许模板仓库保留 Adoption Profile 和 CI 模板占位符；`--adopted` 用于目标项目接入验收。
 - doctor 通过后，L1+ 任务仍必须按 `verification-baseline.md` 运行项目 `verify`。

@@ -5,7 +5,7 @@
 
 ## 状态
 
-Proposed
+Accepted
 
 ## 背景
 
@@ -46,7 +46,7 @@ L2+ 任务的会话边界是**角色边界**：
 具体的强制规则：
 
 1. **新 session 不允许依赖会话历史推断上一 session 意图**——必须从仓库内 `docs/specs/`、`docs/plans/`、`## 验证证据` 段读取
-2. **评审 session 默认开新 session**（在 `.claude/hooks/` 或外部触发），且**不**预读实施 session 的中间对话；只读 `git diff <base>..HEAD`、spec、plan、`## 验证证据`
+2. **评审 session 默认开新 session**（由人工或外部会话工具触发），且**不**预读实施 session 的中间对话；只读 `git diff <base>..HEAD`、spec、plan、`## 验证证据`
 3. **每个 session 结束前必须显式输出"本 session 完成信号"**（一段文字"设计 session 完成，交付物：spec at <path>"），下一 session 看到该信号才能开始
 4. **L0 / L1 任务保持单 session**——多 session 是 L2+ 的入场费，不向下传递到 L1
 5. **小 L2 例外**：若 L2 任务规模 < 半天（用户判断），可申请把"设计 + 计划"合并为 1 session，但仍需"实施 + 评审"分离；此例外需在 spec 顶部标注 `## 快速通道` 段
@@ -65,7 +65,7 @@ L2+ 任务的会话边界是**角色边界**：
   - 用户需要主动管理会话切换；如果只在 1 个 session 内"假装"换了角色，治理失效
   - 小 L2 的快速通道例外需要 spec 顶部声明；这是新增的轻量流程
 - 后续触发条件：
-  - 若 `.claude/hooks/` 引入 session boundary 提示（如 `PreCompact` / `SessionStart`），本 ADR 的"必读上一 session 产出"可由 hook 强制读取而非依赖 AI 自律
+  - 若后续引入工具无关的 session boundary 提示，本 ADR 的"必读上一 session 产出"可由外部机制强制读取而非依赖 AI 自律
   - 若 `docs/specs/` / `docs/plans/` 出现大量"快速通道"标注且频繁触发，需要评估"快速通道"是否被滥用为绕过入口
   - 若评审 session 的"测试盲区清单"被实施 session 反驳，需要回到本 ADR 评估是否要引入"评审独立性"硬约束
 

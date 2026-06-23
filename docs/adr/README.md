@@ -10,6 +10,8 @@
 - [0004 L2 任务默认 spec + plan 都写（修订 ADR-0001 L2 段）](0004-l2-spec-and-plan.md)
 - [0005 L3 任务 Pre-Implementation Approval Gate（L3 实施 session 启动前必须收用户批准）](0005-l3-approval-gate.md)
 
+ADR-0002 至 ADR-0005 是当前治理基线的硬约束依据，状态应保持为 `Accepted` 或后续更明确的修订状态。
+
 ## 何时新增 ADR
 
 当某个决定会长期影响后续 AI 或人工开发判断时，新增 ADR。典型场景包括：
