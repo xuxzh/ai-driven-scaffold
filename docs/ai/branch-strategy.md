@@ -8,8 +8,8 @@
 
 1. 运行 `git branch --show-current` 确认当前分支
 2. 运行 `git status --short` 确认工作区状态干净
-3. 不在主分支时：继续在当前任务分支上工作
-4. 在主分支时：先切到任务分支或创建隔离 worktree
+3. 若当前为 `main` / `master`：确认本次改动属于 **L0**（见 [task-levels.md](./task-levels.md)）且满足 on-main 条件，否则先切到任务分支或创建隔离 worktree
+4. 若当前不在主分支：继续在当前任务分支上工作
 
 ## 分支命名约定
 
@@ -34,10 +34,9 @@
 
 ## worktree 使用约定
 
-| 任务级别 | 默认工作方式 |
-|---|---|
-| `L0` / `L1` | 独立任务分支，不需要 worktree |
-| `L2` / `L3` | 仓库级 worktree，路径为仓库根目录下的 `.worktrees/` |
+各任务级别的默认工作方式见 [task-levels.md](./task-levels.md)。本文件聚焦执行机制。
+
+L2+ 的 spec/plan 阶段（设计 / 计划 session）仅需任务分支，**进入实施 session 时才必须切换到 worktree**。原因：写文档风险极低，worktree 的隔离成本应发生在真正开始写代码之前。
 
 worktree 路径示例：
 
@@ -49,12 +48,12 @@ worktree 默认放在仓库根目录下的 `.worktrees/`；只有磁盘空间、
 
 worktree 与任务分支的区别：
 
-- 任务分支：直接在工作区切换，适合短平快的 L0/L1 改动
-- worktree：独立的工作区副本，适合需要并行任务、长时间独占或 L2/L3 重构
+- 任务分支：直接在工作区切换，适合 L0/L1 改动，以及 L2+ 的 spec/plan 阶段
+- worktree：独立的工作区副本，适合 L2+ 实施阶段及 L3 重构
 
 ## 会话起点（多 session 串行）
 
-L2+ 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行（详见 [ADR-0003](../adr/0003-multi-session-l2.md)）。每个新 session 启动时：
+L2+ 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行（详见 [ADR-0003](../adr/0003-multi-session-l2.md)，级别定义见 [task-levels.md](./task-levels.md)）。每个新 session 启动时：
 
 1. **必须**确认当前在哪个任务分支 / worktree 上（`git branch --show-current`）
 2. **必须**从仓库文档读取上一 session 的交付物：
