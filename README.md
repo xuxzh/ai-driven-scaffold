@@ -60,6 +60,23 @@ rm -rf /tmp/ai-scaffold
 
 > **注意**：`cp -r docs/ai docs/` 要求 `docs/` 目录已存在；如不存在，先 `mkdir -p docs/` 再复制。
 
+### 接入后必做清理（三种方式通用）
+
+`docs/specs/` 和 `docs/plans/` 在本脚手架自身演进时承载了脚手架的 spec/plan 历史（如 `adoption-self-check`、`scaffold-governance-tightening`）。这些是脚手架自身的演进记录，**不应**跟到你的目标项目。接入完成后：
+
+```bash
+# 保留 .gitkeep 作为空目录占位，删除其他所有历史文件
+find docs/specs docs/plans -type f ! -name '.gitkeep' -delete
+```
+
+清理后两个目录应只剩 `.gitkeep`，等待你的目标项目首次 L2 任务生成 `docs/specs/<date>-<name>.md` 与 `docs/plans/<date>-<name>.md`。如果只想保留脚手架自身治理（不需要 docs/specs、docs/plans 这两个空目录），可以直接：
+
+```bash
+rm -rf docs/specs docs/plans
+```
+
+但**不推荐**——L2+ 任务需要它们承载 spec/plan 交付物，提前建好可避免后续流程卡壳。
+
 ## 接入后的 5 步
 
 1. **补全 Adoption Profile**——编辑 `AGENTS.md` 顶部的"用户项目元信息（Adoption Profile）"，填入包管理器、命令、入口等
