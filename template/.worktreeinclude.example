@@ -1,0 +1,15 @@
+# .worktreeinclude — propagated by scripts/worktree-add.sh
+#
+# Format: one path per line, relative to repo root. Both files and
+# directories are supported (the wrapper uses `cp -R`).
+#
+# - Lines starting with `#` and blank lines are silently ignored.
+# - Missing source paths are silently skipped (no error).
+# - Propagation failures do NOT block worktree creation itself.
+#
+# Common ignore-propagation candidates:
+#   .env.local        local env overrides (NEVER commit real secrets)
+#   secrets/          gitignored credentials directory
+
+.env.local
+secrets/
