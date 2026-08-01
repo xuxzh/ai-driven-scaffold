@@ -40,7 +40,11 @@ verify 报告中表格化的命令结果，是 verify 报告在 spec / plan 末�
 ## 会话 / 角色术语
 
 ### 多 session 串行（Multi-Session Serialization）
-L2+ 任务**必须**按"设计 / 计划 / 实施 / 评审" 4 个 session 串行推进，会话边界 = 角色边界。详见 [ADR-0003](adr/0003-multi-session-l2.md)。
+L2 任务按"规划 / 实施 / 评审" 3 个 session 串行推进；会话边界 = 角色边界。详见 [ADR-0003](adr/0003-multi-session-l2.md) 与 [l2-multi-session-runbook.md](ai/runbooks/l2-multi-session-runbook.md)。
+
+L3 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行推进（在 L2 三 Session 之上叠加"设计 + 计划"双 Session 与 Pre-Implementation Approval Gate）。详见 [ADR-0003](adr/0003-multi-session-l2.md) 与 [ADR-0005](adr/0005-l3-approval-gate.md)。
+
+> **已取代**：本术语原描述为"L2+ 任务**必须**按'设计 / 计划 / 实施 / 评审' 4 个 session 串行推进"——该措辞将 L2 与 L3 合并为同一 4 Session 模型，与 [ADR-0003](adr/0003-multi-session-l2.md) 2026-08-01 修订（**L2 = 三 Session；L3 = 四 Session**）不相容。现行表述以本节首段为准。
 
 ### 设计 / 计划 / 实施 / 评审 session
 - **设计 session**（设计辅助者）：产出 spec
@@ -83,13 +87,15 @@ L3 任务实施 session 启动前必须收用户"明确批准"信号的硬门禁
 > 模板（含 5 个 `<...>` 占位符与填写方式说明）在 [`template/AGENTS.md`](../template/AGENTS.md)；仓库根 [`AGENTS.md`](../AGENTS.md) 是本仓库专用入口（已按脚手架自身事实填好）。
 
 ### spec vs plan
-- **spec**（feature-spec）：设计准入。必含背景、目标、非目标、受影响边界、备选方案、风险、验证计划
-- **plan**（implementation-plan）：执行切片。必含文件清单、任务切片、每切片步骤 / 命令 / 预期结果
-- L2 任务**默认**两者都写（详见 [ADR-0004](adr/0004-l2-spec-and-plan.md)）
+- **spec**（feature-spec）：设计准入。最小必含接口：目标 / 行为 / 非目标 / 验收；附加字段：受影响边界、备选方案与拒绝理由、风险、验证计划（策略层）。详见 [feature-spec.md](ai/templates/feature-spec.md) 与 [ADR-0004](adr/0004-l2-spec-and-plan.md)。
+- **plan**（implementation-plan）：执行切片。最小必含接口：文件清单 / 任务切片 / 步骤与命令 / 验证 / 回滚 / 顶部精确 spec 路径引用。详见 [implementation-plan.md](ai/templates/implementation-plan.md) 与 [ADR-0004](adr/0004-l2-spec-and-plan.md)。
+- L2 任务**默认**两者都写；spec 与 plan 始终是两份独立文件（详见 [ADR-0004](adr/0004-l2-spec-and-plan.md)）
 - plan 抬头必须 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行
+- 验证落点统一：实施 session 跑项目根目录 `verify`、结果**同时**写入 spec 与 plan 双份末尾的 `## 验证证据` 段（[l2-multi-session-runbook.md](ai/runbooks/l2-multi-session-runbook.md)）；规划 session 不写 `## 验证证据`
 
 ### 快速通道
-小 L2 任务（< 半天）的例外：合并"设计 + 计划"为 1 session。spec 顶部加 `## 快速通道` 段并简述理由。**此例外不豁免 spec**——快速通道 spec 必须同时含 spec 与 plan 的必含字段。
+
+> **已取代**：本术语原描述为"小 L2 任务（< 半天）的例外：合并'设计 + 计划'为 1 session。spec 顶部加 `## 快速通道` 段并简述理由"——该例外（合并设计与计划为 1 session）已被 [ADR-0003](adr/0003-multi-session-l2.md) 2026-08-01 修订显式废止：**L2 任务始终按"规划 / 实施 / 评审" 3 Session 串行推进；spec 与 plan 始终是两份独立文件，不存在小 L2 例外**。本术语现仅作历史标记；现行规则如需了解请直接参考 [ADR-0003](adr/0003-multi-session-l2.md) 与 [ADR-0004](adr/0004-l2-spec-and-plan.md)。
 
 ### L1 → L2 升级
 L1 `task-packet` 执行中发现需升级为 L2，必须先把 packet 内容**展开为 spec + plan 双份**进入仓库再继续实施；不允许"边写代码边补 spec"。

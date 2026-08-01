@@ -87,7 +87,9 @@ rm -rf docs/specs docs/plans
 2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
 3. **运行接入自检**——执行 `bash scripts/scaffold-doctor.sh`（等价于 `--adopted`），并按 [adoption-checklist.md](docs/ai/checklists/adoption-checklist.md) 处理 `FAIL` / `WARN`；doctor 只检查脚手架接入状态，不替代项目 `verify`
 4. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
-5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
+5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（3 session 串行：规划 → 实施 → 评审；spec + plan 物理分离，验证证据统一落点到两份文件）
+
+> **已取代**：本节原表述为"4 session 串行：设计 → 计划 → 实施 → 评审"——该 4 Session 措辞将 L2 与 L3 合并为同一模型，与 [ADR-0003](docs/adr/0003-multi-session-l2.md) 2026-08-01 修订（**L2 = 三 Session；L3 = 四 Session**）不相容。现行 L2 流程以本节首段为准。
 
 ## 核心治理机制
 
@@ -173,7 +175,7 @@ rm -rf docs/specs docs/plans
 │   │   │   ├── bugfix-brief.md
 │   │   │   └── refactor-brief.md
 │   │   ├── runbooks/
-│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2+ 4 session 纪律
+│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2 三 Session 纪律（规划/实施/评审）；L3 在此基础上叠加设计+计划双 Session（共四 Session）与实施前明确批准
 │   │   │   ├── feature-delivery-runbook.md   # feature-specific
 │   │   │   ├── bugfix-delivery-runbook.md    # bugfix-specific
 │   │   │   ├── refactor-delivery-runbook.md  # refactor-specific

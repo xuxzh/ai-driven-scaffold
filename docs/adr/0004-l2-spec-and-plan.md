@@ -26,16 +26,25 @@ Accepted（Amends ADR-0001 L2 段）
 
 而且，从 spec 与 plan 的内容互补性看：
 
-| 内容项 | spec 必含 | plan 必含 |
-|---|---|---|
-| 背景 / 目标 / 非目标 | ✓ | — |
-| 受影响边界（路由 / 数据流 / 状态 / 共享组件） | ✓ | — |
-| 备选方案与拒绝理由 | ✓ | — |
-| 风险与未决问题 | ✓ | — |
-| 文件清单 | — | ✓ |
-| 任务切片（按可验证切片拆分） | — | ✓ |
-| 每切片的步骤 / 命令 / 预期结果 | — | ✓ |
-| 验证计划 | 总体策略 | 具体命令 |
+**spec 解决的是"做不做、做什么、不做什么、是否被验收"——设计准入。**其最小必含接口为：
+
+- **目标**：期望结果的一句话描述
+- **行为**：哪些行为会发生、哪些不会（非目标 / 边界）
+- **非目标**：明确列出这次变更不做什么
+- **验收**：可被外部判断的验收标准（与计划的"验证命令"对齐但不互相替代）
+- 影响因素的边界描述（路由 / 数据流 / 状态 / 共享组件 / 工具链）
+- 备选方案与拒绝理由、风险与未决问题
+
+**plan 解决的是"按什么文件、什么步骤、什么验证、什么回滚路径执行"——执行切片。**其最小必含接口为：
+
+- **文件清单**：新建 / 修改 / 测试三类
+- **任务切片**（按可验证切片拆分；每个切片独立可验证）
+- **每切片的步骤 / 命令 / 预期结果**
+- **验证**：具体命令 + 退出码 + 关键输出（落字于 `## 验证证据`）
+- **回滚**：任何引入新文件 / 依赖 / 配置的切片的回滚路径
+- **与 spec 的精确引用**：plan 顶部必须有 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行；缺该行视为与 spec 失联
+
+> **已取代**：原"备选方案 / 文件清单 / 验证策略 / 具体命令"行列混排的对照表已被本节最小接口定义取代——spec 锁定设计准入（目标/行为/非目标/验收），plan 锁定执行切片（文件/步骤/验证/回滚）。两份文件**不**互相替代，**不**互相省略字段。
 
 如果 L2 只写 plan，"备选方案 / 拒绝理由"等设计决策无处落字；如果 L2 只写 spec，"按什么步骤执行"无着落点。两者写才能让设计与执行**都留痕**。
 
@@ -54,12 +63,16 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
 
 具体的强制规则：
 
-1. **spec 与 plan 的内容边界**——按本 ADR 背景段表格的"必含列"分工；任一份缺关键字段，视为该份"未就位"
+1. **spec 与 plan 的内容边界**——按本 ADR "spec 与 plan 最小接口"段分工：spec 必含目标 / 行为 / 非目标 / 验收；plan 必含文件清单 / 任务切片 / 步骤与命令 / 验证 / 回滚 / 精确 spec 路径引用。任一份缺关键字段，视为该份"未就位"
 2. **顺序**：spec 先于 plan；plan 必须在 spec 完成后才开始写（与 ADR-0003 的"设计 session → 计划 session"对齐）
 3. **修订 ADR-0001 的范围**：仅 L2 段的"或"→"和"；L0 / L1 / L3 段不被本 ADR 改动
-4. **快速通道例外**：与 ADR-0003 一致——若 L2 任务规模 < 半天，可在 spec 顶部声明 `## 快速通道` 段并简述合并理由；**例外不豁免 spec**，只豁免"spec 与 plan 必须分两份"的物理分离
+4. ~~**快速通道例外**：与 ADR-0003 一致——若 L2 任务规模 < 半天，可在 spec 顶部声明 `## 快速通道` 段并简述合并理由；**例外不豁免 spec**，只豁免"spec 与 plan 必须分两份"的物理分离~~
+
+   > **已取代**：原"快速通道例外"（允许小 L2 在 spec 顶部声明合并理由、合并 spec 与 plan 物理分离）已被 [ADR-0003](0003-multi-session-l2.md) 2026-08-01 修订显式废止——**spec 与 plan 物理分离是 L2 的硬门禁，不存在规模豁免**。本 ADR 的第 4 条作为"小 L2 合并 spec/plan 物理分离"的现行规则已不再生效；如需替代，请改用本 ADR 的 `approval` 注释记录常规规格问题，而非合并物理文件。
+
 5. **L1 → L2 升级**：若 L1 `task-packet` 在执行中发现需升级为 L2，必须先把 packet 内容**展开为 spec + plan 双份**进入仓库，再继续实施；不允许"边写代码边补 spec"
-6. **plan 必须引用 spec 的 `<date>-<name>` 标识**——plan 文件抬头必须有 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行，否则视为与 spec 失联
+6. **plan 必须引用 spec 的 `<date>-<name>` 标识**——plan 文件抬头必须有 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行；缺该行视为与 spec 失联
+7. **不替代**：spec 与 plan 任何一方都不得携带对方的必含字段——spec 不得包含"任务切片 / 每切片步骤 / 文件清单"等 plan 必含字段；plan 不得包含"备选方案 / 拒绝理由 / 非目标"等 spec 必含字段
 
 ## 后果
 
@@ -72,6 +85,9 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
   - L2 任务的文档成本从 1 份升到 2 份
   - spec 与 plan 之间需要保持引用一致；维护成本上升
   - L1 → L2 升级时需要"展开 packet 为 spec + plan"——这是新增的中途流程
+- 模板层面约束：
+  - [feature-spec.md](../ai/templates/feature-spec.md) 顶部声明"本模板仅生成 spec，不替代 plan"；保留"非目标"与"验收"段；不允许包含实现清单（任务切片 / 步骤 / 文件清单）
+  - [implementation-plan.md](../ai/templates/implementation-plan.md) 顶部声明"本模板仅用于生成 plan，不替代 spec"；`## 批准` 段顺序在 `## 验证证据` 之前
 - 后续触发条件：
   - 若 `docs/specs/` 与 `docs/plans/` 出现大量"快速通道"标注且比例 > 50%，需评估 L2 阈值是否需要上调
   - 若 spec 与 plan 出现内容漂移（spec 改了 plan 没改，或反之），需要回到本 ADR 评估"是否需要在 CI 加双向链接检查"
@@ -95,5 +111,7 @@ L2 任务**默认**必须 `docs/specs/<date>-<name>.md`（spec）与 `docs/plans
 
 ### 其它
 
-- 模板：[../ai/templates/feature-spec.md](../ai/templates/feature-spec.md)、[../ai/templates/implementation-plan.md](../ai/templates/implementation-plan.md)
-- Runbook：[../ai/runbooks/l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md)（通用 4 session 纪律入口）
+- 模板：[../ai/templates/feature-spec.md](../ai/templates/feature-spec.md)（不替代 plan）、[../ai/templates/implementation-plan.md](../ai/templates/implementation-plan.md)（不替代 spec；顶部必须含精确 spec 路径引用）
+- Runbook：[../ai/runbooks/l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md)（L2 三 Session 通用纪律入口：规划 / 实施 / 评审；L3 在此基础上叠加 [ADR-0005](0005-l3-approval-gate.md) 的 Pre-Implementation Approval Gate）
+
+> **已取代**：本 ADR 的"其它"段早前写法（"通用 4 session 纪律入口"）与 [ADR-0003](0003-multi-session-l2.md) 2026-08-01 修订（**L2 = 三 Session；L3 = 四 Session**）不相容；现行表述以本段为准。
