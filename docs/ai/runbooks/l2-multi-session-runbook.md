@@ -43,9 +43,9 @@ L2 任务的适用情形详见 [task-levels.md](../task-levels.md) 与 [ADR-0004
 
 | Session | 角色 | 必读输入 | 必交付物 | 必跑 verify |
 |---|---|---|---|---|
-| **规划** | 设计辅助者 + 计划拆解者 | AGENTS.md + context-index + task-levels + 接口/UI 文档 | `docs/specs/<date>-<name>.md`（仅 spec）→ 用户确认 → `docs/plans/<date>-<name>.md`（仅 plan）；不写 `## 验证证据` 段 | **不要求**（规划 session 仅接力交付物） |
-| **实施** | 实施者 + 文档维护者 | 上一 session 的 spec + plan 双份 | 代码 + 测试 + spec 与 plan 双份末尾的 `## 验证证据` 段 | **必须**跑 `verify` 并写回两份 `## 验证证据` |
-| **评审** | 审查者（**默认新开 session**） | 实施交付物 + 不读实施 session 中间对话 | review report（按 [review-checklist.md](../checklists/review-checklist.md)）；验证 `## 验证证据` 段双份齐 | 含"测试盲区"清单 |
+| **规划** | 设计辅助者 + 计划拆解者 | AGENTS.md + context-index + task-levels + 接口/UI 文档 | `docs/specs/<date>-<name>.md`（仅 spec）→ 用户确认 → `docs/plans/<date>-<name>.md`（仅 plan）；不写 `## 验证证据` 段；按 [`session-handoff-protocol.md`](./session-handoff-protocol.md) 在 plan 末尾写 Handoff | **不要求**（规划 session 仅接力交付物） |
+| **实施** | 实施者 + 文档维护者 | 上一 session 的 spec + plan 双份 | 代码 + 测试 + spec 与 plan 双份末尾的 `## 验证证据` 段；更新同一 plan 的 Handoff | **必须**跑 `verify` 并写回两份 `## 验证证据` |
+| **评审** | 审查者（**默认新开 session**） | 实施交付物 + 不读实施 session 中间对话 | review report（按 [review-checklist.md](../checklists/review-checklist.md)）；验证 `## 验证证据` 段双份齐；按协议写 plan review 段或独立 report 回链 plan | 含"测试盲区"清单 |
 
 L3 任务在"实施 session 启动前"增加一道门：必须先收用户"已批准"信号，详见 [ADR-0005](../../adr/0005-l3-approval-gate.md)。
 
@@ -209,6 +209,10 @@ L3 任务在"实施 session 启动前"增加一道门：必须先收用户"已�
 **必输出信号**：本 session 末尾输出"实施 session 完成，交付物：code at <branch> + 验证证据 at <spec-path>#验证证据 与 <plan-path>#验证证据 双份均齐"。
 
 ---
+
+### Session Handoff 落地说明
+
+每个 Session 结束前，按 [`session-handoff-protocol.md`](./session-handoff-protocol.md) 填写或更新物理 Handoff；下一 Session 开始先执行协议门禁，门禁失败必须停止。
 
 ## 第 3 Session：评审（审查者，默认新开 session）
 

@@ -117,4 +117,20 @@ git commit -m "<message>"
 
 未跑项：
 
+## Session Handoff
+
+> 按 [`session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 的 11 字段 schema 填写。本段是 plan 的最终部分；规划 Session 结束时首次回填；实施 Session 结束时更新同一段并将 verify 结果引用到上方 `## 验证证据`；评审 Session 将结果写入 plan review 段或独立 review report 并回链本文。
+
+- Task Level:
+- Current Phase:
+- Status:
+- Completed:
+- Artifacts:
+- Decisions:
+- Assumptions:
+- Open Questions:
+- Verification:
+- Next Allowed Actions:
+- Prohibited Scope:
+
 > **本段必须落到此位置（`## 批准` 之后）**：spec 与 plan 双份的批准在前、验证证据在后；任何颠倒（如"先验证证据后批准"）视为模板顺序错误。

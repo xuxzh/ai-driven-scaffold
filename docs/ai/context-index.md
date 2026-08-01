@@ -15,6 +15,8 @@
 
 ### 深路径（L2+ 多 session 用）
 
+新会话必须先读取 [`docs/ai/runbooks/session-handoff-protocol.md`](./runbooks/session-handoff-protocol.md) 再读 Handoff，按当前阶段取不同落点：L2 设计与实施 Session 在 `docs/plans/<date>-<name>.md` 末尾的 `## Session Handoff` 恢复；L3 设计 Session 仅有 spec、无 plan 时，则在 `docs/specs/<date>-<name>.md` 的 `## Session Handoff` 恢复（feature-spec 模板里明确写了"仅 L2 任务使用；非 L2 任务可删除本段"——L3 设计 Session 也要填该段，再流转到 plan；该含义与 template 原文有出入，本节以本节为准）。仅凭 Handoff 中的阶段、产物、验证和允许动作恢复状态；任一协议门禁失败时停止，不读取聊天历史补足。
+
 L2 任务按 [ADR-0003](../adr/0003-multi-session-l2.md) 串行 3 个 session（规划 / 实施 / 评审）；L3 任务将 L2 的"规划 Session"拆为"设计 / 计划"双 Session，并在实施 Session 启动前收用户明确批准信号（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）。每个 session 的阅读入口**按角色**分流——会话边界 = 角色边界，详见 [`docs/ai/ai-role-boundaries.md`](./ai-role-boundaries.md)。
 
 #### L2 规划 session（设计辅助者 + 计划拆解者）
@@ -66,6 +68,8 @@ L2 与 L3 都不允许规划者把 spec 与 plan 合并为一份文件；两者�
 | 分支与 worktree 策略 | [branch-strategy.md](./branch-strategy.md) |
 | AI 角色边界 | [ai-role-boundaries.md](./ai-role-boundaries.md) |
 | 文档回写规则 | [doc-rewriting-rules.md](./doc-rewriting-rules.md) |
+| Session Handoff 接力协议 | [session-handoff-protocol.md](./runbooks/session-handoff-protocol.md) |
+| 批量 AI 执行（多 agent 并行） | [batch-ai-execution-runbook.md](./runbooks/batch-ai-execution-runbook.md) |
 | spec / plan 命名与元信息 | [spec-and-plan-naming.md](./spec-and-plan-naming.md) |
 
 ## 主要代码锚点（按任务方向）
@@ -90,6 +94,7 @@ L2 与 L3 都不允许规划者把 spec 与 plan 合并为一份文件；两者�
 | `L1` 单目标常规改动 | [task-packet.md](./templates/task-packet.md)、相关规范和代码锚点 | 先明确目标、锚点、假设、验证和非目标，再实施。 |
 | `L2` 跨文件行为、数据流或入口变化 | [task-levels.md](./task-levels.md)、[feature-spec.md](./templates/feature-spec.md) 和 [implementation-plan.md](./templates/implementation-plan.md) | 先按 spec 模板写 spec → 用户确认 → 按 plan 模板写 plan → 进入实施；spec 与 plan **始终是两份独立文件**，无规模豁免；走 L2 三 Session（规划 / 实施 / 评审，详见 [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md)） |
 | 业务功能 + API/UI 原型 | [l2-multi-session-runbook.md](./runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](./runbooks/feature-delivery-runbook.md) | 按 spec、plan、可验证切片推进。 |
+| L2+ 批量多 agent 协作 | [batch-ai-execution-runbook.md](./runbooks/batch-ai-execution-runbook.md) | 满足可并行 4 条件才允许拆给多 worker；按 task-packet.md 的 8 字段声明所有权；Shared Paths 由 Integration Owner 独占；单任务失败不污染整批。 |
 | 缺陷修复 | [bugfix-brief.md](./templates/bugfix-brief.md) / [bugfix-delivery-runbook.md](./runbooks/bugfix-delivery-runbook.md) | L0/L1 走 bugfix-brief；L2 走通用 3 session + bugfix-specific；L3 走 4 session + 实施前明确批准 + bugfix-specific。 |
 | 重构 | [refactor-brief.md](./templates/refactor-brief.md) / [refactor-delivery-runbook.md](./runbooks/refactor-delivery-runbook.md) | L0/L1 走 refactor-brief；L2 走通用 3 session + refactor-specific；L3 走 4 session + 实施前明确批准 + refactor-specific。 |
 | 评审 | [review-checklist.md](./checklists/review-checklist.md) | 先找行为回归、边界破坏、验证缺失和测试缺口；review report 必含测试盲区 + 未跑项确认。 |

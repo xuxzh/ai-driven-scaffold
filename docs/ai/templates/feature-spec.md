@@ -85,7 +85,23 @@
 - `docs/plans/...`
 - 如有需要，补充 `docs/ai/runbooks/...` 或 `docs/ai/checklists/...`
 
-## 批准（L3 任务必填，其他任务留空）
+## Session Handoff
+
+> L2 与 L3 设计 Session 使用；L2 规划结束后流转到 plan 末尾，L3 设计 Session 仅有 spec 时在本段保留。L3 计划 Session 开始后，由 plan 末尾的 `## Session Handoff` 承接，本段可删除。按 [`session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 填写 11 个必填字段；本 spec 仅作为状态入口。
+
+- Task Level:
+- Current Phase:
+- Status:
+- Completed:
+- Artifacts:
+- Decisions:
+- Assumptions:
+- Open Questions:
+- Verification:
+- Next Allowed Actions:
+- Prohibited Scope:
+
+## 批准（L3 任务必填）
 
 批准记录的最小必含项详见 [ADR-0005](../../adr/0005-l3-approval-gate.md)；任何字段缺失视为未批准。
 
