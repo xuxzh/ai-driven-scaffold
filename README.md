@@ -21,6 +21,8 @@
 ```bash
 gh repo create my-project --template https://github.com/xuxzh/ai-driven-scaffold --private --clone
 cd my-project
+# 仓库根 AGENTS.md 是脚手架本仓库专用，采用前先换成模板版
+mv template/AGENTS.md AGENTS.md
 ```
 
 ### 方式 2：手动克隆并裁剪
@@ -28,6 +30,8 @@ cd my-project
 ```bash
 git clone https://github.com/xuxzh/ai-driven-scaffold my-project
 cd my-project
+# 仓库根 AGENTS.md 是脚手架本仓库专用，采用前先换成模板版
+mv template/AGENTS.md AGENTS.md
 rm -rf .git
 git init -b main
 ```
@@ -44,7 +48,7 @@ git clone https://github.com/xuxzh/ai-driven-scaffold /tmp/ai-scaffold
 # 1. 复制治理文档
 cp -r /tmp/ai-scaffold/docs/ai docs/
 cp -r /tmp/ai-scaffold/docs/adr docs/
-cp /tmp/ai-scaffold/AGENTS.md AGENTS.md
+cp /tmp/ai-scaffold/template/AGENTS.md AGENTS.md
 
 # 2. 如果项目还没有 docs/specs/ 和 docs/plans/，创建它们
 mkdir -p docs/specs docs/plans
@@ -125,6 +129,8 @@ rm -rf docs/specs docs/plans
 - **GitHub Copilot**：读取仓库根指令
 - **其他**：参考各工具的"项目级指令"机制
 
+> 仓库根 `AGENTS.md` 是**本仓库专用**入口（已按脚手架自身事实填好 Adoption Profile）；采用本脚手架的项目的模板在 [`template/AGENTS.md`](template/AGENTS.md)，三种接入方式都会先把它替换到根。
+
 本脚手架不提供任何 AI 工具专属配置。L3 审批、verify 必跑和多 session 串行等约束都通过 `AGENTS.md`、`docs/ai/` 与 `docs/adr/` 表达；具体工具的 hook、rule 或插件只能作为项目自行添加的可选加固层。
 
 ## CI 占位（验证层，非准入层）
@@ -140,13 +146,15 @@ rm -rf docs/specs docs/plans
 
 ```
 .
-├── AGENTS.md                       # 跨 AI 工具的统一入口
+├── AGENTS.md                       # 本仓库专用入口（采用者模板在 template/AGENTS.md）
 ├── README.md                       # 本文件
 ├── CONTRIBUTING.md                 # 模板仓库维护说明
 ├── LICENSE                         # MIT
 ├── .gitignore
 ├── scripts/
 │   └── scaffold-doctor.sh          # 只读接入自检脚本
+├── template/
+│   └── AGENTS.md                   # 采用本脚手架的项目复制源（含 5 个 <...> 占位符）
 ├── docs/
 │   ├── CONTEXT.md                  # 仓库术语表（新增）
 │   ├── ai/                         # AI 治理与工作流

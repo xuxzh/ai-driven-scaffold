@@ -53,20 +53,25 @@
 | 评审 | review checklist（建议开新 session） | [review-checklist.md](docs/ai/checklists/review-checklist.md) |
 | `L3` CI、依赖、安全、跨 workspace、仓库级约定 | 人工主导 + spec/plan + **Pre-Implementation Approval Gate** | 详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md) |
 
-## 用户项目元信息（本仓库的项目画像）
+## 用户项目元信息（Adoption Profile，clone 后必须补充）
 
-> 本仓库是脚手架自身，采用本治理时按以下事实推进；非"默认推荐"——任何项目在按 [template/AGENTS.md](template/AGENTS.md) 接入时必须按自身情况重填。
+> 本段是目标项目的 **Adoption Profile**，由项目维护者补充。AI 工具在执行任何命令前必须读取本段，否则无法正确定位锚点和验证入口。
 
-| 字段 | 本仓库值 |
-|---|---|
-| 包管理器 | pnpm（本仓库事实，非脚手架默认推荐） |
-| 主要应用目录 | `docs/` |
-| 入口代码锚点 | 无（纯文档仓库） |
-| 共享包目录 | 无 |
-| 测试目录 | 无 |
-| 完整验证入口 | `bash scripts/scaffold-doctor.sh --template`（L0 可选、L1+ 必跑；本仓库无 manifest verify，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
+**填写方式**：
+- 把下面 5 行的占位符（`<pm>` / `<app-dir>` / `<entry-file>` / `<shared-dir>` / `<test-dir>`）替换为本项目的实际值
+- 替换完成后，**删除本段下方的"参考示例"代码块**（避免示例值与填写值混淆）
+- 如不适用某项，填"无"
 
-> 采用本脚手架的新项目请复制 [template/AGENTS.md](template/AGENTS.md) → 根 `AGENTS.md`，按自身情况重填 6 个字段。
+| 字段 | 占位符 | 你的项目值 |
+|---|---|---|
+| 包管理器 | `<pm>` | （填 pnpm / npm / yarn / uv / cargo / go / mix 等） |
+| 主要应用目录 | `<app-dir>` | （填 src/、apps/web/、internal/、cmd/ 等） |
+| 入口代码锚点 | `<entry-file>` | （填主入口文件路径） |
+| 共享包目录 | `<shared-dir>` | （如不适用填"无"） |
+| 测试目录 | `<test-dir>` | （填 tests/、__tests__/、*_test.go 等） |
+| 完整验证入口 | （自由文本） | （**必须**在 manifest 中定义 `verify` 串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
+
+填写完成后，AGENTS.md 中应**不再出现** `<...>` 占位符。
 
 ## 重要边界（不要破坏）
 

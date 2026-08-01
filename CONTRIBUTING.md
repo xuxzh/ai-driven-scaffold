@@ -84,7 +84,7 @@
 
 ## 验证清单（修改后自检）
 
-- [ ] 跑 `grep -rE 'pnpm|react|vue|svelte|tailwind|vitest|jest|axios' --include='*.md' .`（应只在"示例"语境中命中）
+- [ ] 跑 `grep -rE 'pnpm|react|vue|svelte|tailwind|vitest|jest|axios' --include='*.md' --exclude=AGENTS.md .`（应只在"示例"语境中命中；`AGENTS.md` 的 Adoption Profile 是本仓库事实陈述，非默认推荐；`template/AGENTS.md` 仍被检查，因其只含 `<...>` 占位符）
 - [ ] 检查所有相对链接可达：`grep -oE '\]\([^)]+\.md\)' AGENTS.md docs/ai/*.md`
 - [ ] 检查目录树：`find . -type d | sort`
 - [ ] 跑 `bash -n scripts/scaffold-doctor.sh`
