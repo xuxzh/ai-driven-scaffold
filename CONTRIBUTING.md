@@ -84,12 +84,38 @@
 
 ## 验证清单（修改后自检）
 
+> **与 CI 同口径**：下面这一组命令与 [.github/workflows/ci.yml](.github/workflows/ci.yml) / [.gitlab-ci.yml](.gitlab-ci.yml) 的 5 个 job 等价。本地跑通后即可声称"已自检通过"，无需再额外跑 CI。
+
+```bash
+# lint-shell —— bash 语法校验（不执行）
+bash -n scripts/scaffold-doctor.sh
+bash -n scripts/worktree-add.sh
+bash -n scripts/hooks/rewrite-worktree-add.sh
+
+# lint-python —— Python 检查器与单测
+python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+
+# check-links —— Markdown 相对链接检查（template 模式）
+python3 scripts/check-markdown-links.py --root . --template
+
+# check-governance —— 治理规则一致性（GOV001-GOV004）
+python3 scripts/check-governance-consistency.py --root . --template
+
+# check-doctor —— 聚合自检 + 集成测试
+bash scripts/scaffold-doctor.sh --template
+bash scripts/tests/scaffold-doctor-test.sh
+bash scripts/tests/worktree-add-test.sh
+```
+
+本仓库属于**脚手架自身**，跑 `--template` 模式；接入本脚手架的目标项目跑默认 `bash scripts/scaffold-doctor.sh`（等价 `--adopted`）。
+
+补充检查项（CI 未覆盖、但维护者建议跑一遍）：
+
 - [ ] 跑 `grep -rE 'pnpm|react|vue|svelte|tailwind|vitest|jest|axios' --include='*.md' --exclude=AGENTS.md .`（应只在"示例"语境中命中；`AGENTS.md` 的 Adoption Profile 是本仓库事实陈述，非默认推荐；`template/AGENTS.md` 仍被检查，因其只含 `<...>` 占位符）
 - [ ] 检查所有相对链接可达：`grep -oE '\]\([^)]+\.md\)' AGENTS.md docs/ai/*.md`
 - [ ] 检查目录树：`find . -type d | sort`
-- [ ] 跑 `bash -n scripts/scaffold-doctor.sh`
-- [ ] 跑 `bash scripts/scaffold-doctor.sh`，确认输出中的 `FAIL` / `WARN` 与当前模板状态一致
-- [ ] 跑 YAML 语法校验：`.gitlab-ci.yml` 和 `.github/workflows/ci.yml`
+- [ ] 跑 `git diff --check`，确认无尾随空格 / 冲突标记
+- [ ] 跑 YAML 语法校验：`.gitlab-ci.yml` 和 `.github/workflows/ci.yml`（`python3 -c "import yaml; yaml.safe_load(open('.gitlab-ci.yml'))"`；GitHub Actions YAML 由 CI 自身校验）
 
 ## 提交信息规范
 
