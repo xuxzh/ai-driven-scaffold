@@ -47,7 +47,10 @@ count_pwf() {
 }
 
 # Build the canonical structured fixture: AGENTS.md + docs/specs + docs/plans +
-# docs/adr/0002..0005 stubs. Each scenario extends or trims this.
+# docs/adr/0002..0005 stubs + docs/adr/README.md 索引（含全部 ADR 文件名）。
+# GOV005 要求 docs/adr/README.md 存在并与同目录 ADR 文件名集合一致；
+# 各 scenario 默认走此结构，单文件缺失型 scenario 会复用此 fixture
+# 并在 run_scenario 之前删除对应文件。
 make_structured_root() {
   local root="$1"
   mkdir -p "$root/docs/specs" "$root/docs/plans" "$root/docs/adr"
@@ -62,6 +65,14 @@ make_structured_root() {
 Accepted
 EOF
   done
+  cat > "$root/docs/adr/README.md" <<'EOF'
+# ADR 索引
+
+- [0002 verify](0002-verify-hard-gate.md)
+- [0003 sessions](0003-multi-session-l2.md)
+- [0004 spec+plan](0004-l2-spec-and-plan.md)
+- [0005 L3 approval](0005-l3-approval-gate.md)
+EOF
 }
 
 # Track the latest temp dir so a safety-net trap can clean up.

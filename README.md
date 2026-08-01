@@ -106,7 +106,7 @@ rm -rf docs/specs docs/plans
 - **仓库术语表**：[docs/CONTEXT.md](docs/CONTEXT.md)
 - **硬约束 ADR**：
   - [ADR-0002 verify 硬门禁](docs/adr/0002-verify-hard-gate.md)
-  - [ADR-0003 L2+ 多 session](docs/adr/0003-multi-session-l2.md)
+  - [ADR-0003 L2 三 Session / L3 四 Session](docs/adr/0003-multi-session-l2.md)
   - [ADR-0004 L2 spec + plan](docs/adr/0004-l2-spec-and-plan.md)
   - [ADR-0005 L3 审批门禁](docs/adr/0005-l3-approval-gate.md)
 

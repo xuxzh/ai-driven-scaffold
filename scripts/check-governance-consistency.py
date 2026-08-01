@@ -4,7 +4,9 @@
 仅做模式匹配 + 块级豁免（`> **已取代**` 包裹段落、`> 入口级说明` 等元说明豁免），
 不解析自然语言，不理解语义。
 
-仅扫描以下固定文件集（不在此集合中的文件一概不扫描）：
+扫描范围：
+
+固定核心扫描文件（GOV001–GOV004，不在此集合中的文件一概不扫描）：
 
 - AGENTS.md
 - template/AGENTS.md
@@ -16,12 +18,19 @@
 - docs/adr/0004-l2-spec-and-plan.md
 - docs/adr/0005-l3-approval-gate.md
 
+GOV005 额外动态检查（不收口于固定文件集）：
+
+- ``docs/adr/README.md``（按需存在；缺失即 FAIL）
+- ``docs/adr/`` 下所有匹配 ``NNNN-<name>.md`` 的 ADR Markdown 文件
+  （``README.md`` 与 ``adr-template.md`` 因数字前缀不符而被天然排除）。
+
 规则 ID（固定）：
 
 - GOV001 contradictory-main-policy
 - GOV002 contradictory-l2-session-count
 - GOV003 merged-spec-plan-fast-path
 - GOV004 missing-l3-approval-gate
+- GOV005 adr-index-mismatch
 
 退出码：0 = OK（无失败）；1 = Found failures（至少一条 GOV0XX 命中）；
        2 = 参数错误（如 `--root` 指向非目录）。
@@ -34,6 +43,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 from typing import List, Tuple
@@ -279,6 +289,37 @@ def check_gov004(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     return findings
 
 
+def check_gov005(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
+    """GOV005 adr-index-mismatch:
+    ``docs/adr/README.md`` 索引的同目录 ADR 文件名集合必须与实际文件集合相等。
+    """
+    del template_mode  # GOV005 没有模板豁免语义
+    rel = "docs/adr/README.md"
+    readme = root / rel
+    if not readme.is_file():
+        return [("GOV005", f"{rel}:0", "ADR 索引文件缺失")]
+
+    name_pattern = re.compile(r"[0-9]{4}-[^/\s]+\.md")
+    actual = {
+        path.name
+        for path in readme.parent.iterdir()
+        if path.is_file() and name_pattern.fullmatch(path.name)
+    }
+    raw = read_file_or_empty(root, rel)
+    indexed: dict[str, int] = {}
+    link_pattern = re.compile(r"\]\(([0-9]{4}-[^/)\s]+\.md)\)")
+    for line_no, line in iter_check_lines(raw, template_mode=False):
+        for match in link_pattern.finditer(line):
+            indexed.setdefault(match.group(1), line_no)
+
+    findings: List[Tuple[str, str, str]] = []
+    for name in sorted(actual - indexed.keys()):
+        findings.append(("GOV005", f"docs/adr/{name}:0", f"ADR 未在 {rel} 中索引: {name}"))
+    for name in sorted(indexed.keys() - actual):
+        findings.append(("GOV005", f"{rel}:{indexed[name]}", f"索引目标不存在: {name}"))
+    return findings
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -304,6 +345,7 @@ def main(argv: List[str] | None = None) -> int:
     all_findings.extend(check_gov002(root, args.template))
     all_findings.extend(check_gov003(root, args.template))
     all_findings.extend(check_gov004(root, args.template))
+    all_findings.extend(check_gov005(root, args.template))
 
     for rule_id, loc, reason in all_findings:
         print(f"{rule_id}  {loc}  ->  {reason}")

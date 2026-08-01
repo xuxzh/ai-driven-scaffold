@@ -7,6 +7,7 @@
 - GOV002 contradictory-l2-session-count
 - GOV003 merged-spec-plan-fast-path
 - GOV004 missing-l3-approval-gate
+- GOV005 adr-index-mismatch
 
 每个失败 fixture 都用 tempfile.TemporaryDirectory() 构造 mini repo，
 只写入触发该规则的最小文件集，避免其他规则误触发。
@@ -18,6 +19,7 @@
 只读：所有 fixture 在临时目录创建，测试结束自动清理。
 """
 
+import re
 import subprocess
 import sys
 import tempfile
@@ -40,6 +42,7 @@ class _FixtureBase(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
         self.tmpdir = Path(self._tmp.name)
+        self.write("docs/adr/README.md", "")
 
     def tearDown(self):
         self._tmp.cleanup()
@@ -48,6 +51,11 @@ class _FixtureBase(unittest.TestCase):
         path = self.tmpdir / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
+        if rel.startswith("docs/adr/") and re.fullmatch(r"[0-9]{4}-[^/]+\.md", path.name):
+            readme = self.tmpdir / "docs/adr/README.md"
+            if readme.is_file():
+                names = sorted(p.name for p in readme.parent.glob("[0-9][0-9][0-9][0-9]-*.md"))
+                readme.write_text("".join(f"[{name}]({name})\n" for name in names), encoding="utf-8")
         return path
 
 
@@ -296,6 +304,50 @@ class TestGOV004MissingL3ApprovalGate(_FixtureBase):
             0,
             msg=f"stdout={result.stdout!r}\nstderr={result.stderr!r}",
         )
+
+
+# ----------------------------------------------------------------------
+# GOV005 adr-index-mismatch
+# ----------------------------------------------------------------------
+class TestGOV005AdrIndexMismatch(_FixtureBase):
+    """README 索引必须与 docs/adr/ 下实际 ADR 文件名集合完全一致。"""
+
+    def test_missing_readme_fails(self):
+        (self.tmpdir / "docs/adr/README.md").unlink()
+        self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
+        result = run_checker(self.tmpdir, template=True)
+        self.assertEqual(result.returncode, 1, msg=result.stdout + result.stderr)
+        self.assertIn("GOV005  docs/adr/README.md:0", result.stdout)
+
+    def test_actual_adr_absent_from_index_fails(self):
+        self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
+        self.write("docs/adr/README.md", "# ADR index\n")
+        result = run_checker(self.tmpdir, template=True)
+        self.assertEqual(result.returncode, 1, msg=result.stdout + result.stderr)
+        self.assertIn("GOV005", result.stdout)
+        self.assertIn("0005-l3-approval-gate.md", result.stdout)
+
+    def test_indexed_target_without_actual_adr_fails(self):
+        self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
+        self.write(
+            "docs/adr/README.md",
+            "[ADR-0005](0005-l3-approval-gate.md)\n"
+            "[ADR-0006](0006-nonexistent.md)\n",
+        )
+        result = run_checker(self.tmpdir, template=True)
+        self.assertEqual(result.returncode, 1, msg=result.stdout + result.stderr)
+        self.assertIn("GOV005", result.stdout)
+        self.assertIn("0006-nonexistent.md", result.stdout)
+
+    def test_matching_sets_have_no_gov005_finding(self):
+        self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
+        self.write(
+            "docs/adr/README.md",
+            "[ADR-0005](0005-l3-approval-gate.md)\n",
+        )
+        result = run_checker(self.tmpdir, template=True)
+        self.assertEqual(result.returncode, 0, msg=result.stdout + result.stderr)
+        self.assertNotIn("GOV005", result.stdout + result.stderr)
 
 
 # ----------------------------------------------------------------------
