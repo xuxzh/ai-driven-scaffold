@@ -24,6 +24,12 @@ verify 升级为**硬门禁**，由三件不可省略的子约束组成：
 3. **缺 verify 信号时，AI 必须停在"未完成"状态**。
    - 即"环境限制无法跑 verify"也必须显式标注；不允许把缺失验证包装成成功
    - 后续动作（merge / 推进下一阶段）由用户决定
+4. **`verify` 入口采用分层档位（minimal / l1 / fast / full）**。
+   - 4 档由 `AGENTS.md` 顶部"用户项目元信息"段登记的实际命令承载，档位语义在 [verification-baseline.md](../ai/verification-baseline.md) 统一约束
+   - 任务等级与档位的最小对应：L0=minimal；L1=l1；L2（无主链路风险）=fast；L2（触及主链路 / 数据流 / 入口 / 构建）=full；L3=full + 人工专项确认
+   - `full` 必填；`minimal` 必填；`l1` 与 `fast` 可选（不适用时需写"不适用 + 理由"）
+   - 任一档位实际未跑时，**必须**在 verify 报告 / spec/plan 末尾的 `## 验证证据` 段显式标注：`未跑项 = <档位>: <原因>`；缺标注视为"已跑但未报告"，按未跑处理
+   - 仓库内 doctor 在 `--adopted` 模式下检查 Adoption Profile 是否登记 4 档；缺字段 / 仍含占位符 / 命令未在 manifest 中可定位三类情况分别按 FAIL / WARN / FAIL 处理（详见 [verification-baseline.md](../ai/verification-baseline.md)）
 
 仓库内所有"建议"或"应在"的 verify 措辞，**全部替换为"必须"**：
 

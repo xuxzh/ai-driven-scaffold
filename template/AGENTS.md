@@ -74,10 +74,15 @@
 | 入口代码锚点 | `<entry-file>` | （填主入口文件路径） |
 | 共享包目录 | `<shared-dir>` | （如不适用填"无"） |
 | 测试目录 | `<test-dir>` | （填 tests/、__tests__/、*_test.go 等） |
-| 完整验证入口 | （自由文本） | （**必须**在 manifest 中定义 `verify` 串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑，详见 [ADR-0002](../docs/adr/0002-verify-hard-gate.md)） |
+| 最小验证入口 | `<command>` | （必填；L0 任务的最小验证命令；不适用需写"不适用 + 理由"） |
+| L1 验证入口 | `<command>` | （可选；L1 任务的受影响层验证命令；不适用填"无"） |
+| 快速验证入口 | `<command>` | （可选；L2 无主链路 / 构建风险时的快速验证命令；不适用填"无"） |
+| 完整验证入口 | `<command>` | （**必须**；L2 触及主链路 / 数据流 / 入口 / 构建 + L3 必填；`full` 必填，必须显式串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑，详见 [ADR-0002](../docs/adr/0002-verify-hard-gate.md)） |
 | Isolation Profile | `default` 或 `strict` | （`default`：L0 可选 worktree，L1+ 强制；`strict`：所有等级强制 worktree，详见 [branch-strategy.md](../docs/ai/branch-strategy.md)） |
 
 填写完成后，AGENTS.md 中应**不再出现** `<...>` 占位符。
+
+> **档位语义**：4 个验证入口字段对应 [verification-baseline.md](../docs/ai/verification-baseline.md) 的 `minimal / l1 / fast / full` 4 档。`minimal` 与 `full` 必填；`l1` 与 `fast` 不适用时填"无"并写明理由。未跑任一档位时必须在 verify 报告 / `## 验证证据` 段显式标注（详见 [ADR-0002](../docs/adr/0002-verify-hard-gate.md)）。
 
 ## 重要边界（不要破坏）
 

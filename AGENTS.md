@@ -68,10 +68,15 @@
 | 入口代码锚点 | 无（纯文档仓库） |
 | 共享包目录 | 无 |
 | 测试目录 | 无 |
-| 完整验证入口 | `bash scripts/scaffold-doctor.sh --template`（L0 可选、L1+ 必跑；本仓库无 manifest verify，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
+| 最小验证入口 | `bash scripts/scaffold-doctor.sh --template`（必填；纯文档仓库的最小验证即 doctor 本体） |
+| L1 验证入口 | 无（不适用，理由：纯文档仓库无独立 L1 层验证，与 minimal 等价） |
+| 快速验证入口 | 无（不适用，理由：纯文档仓库无主链路 / 构建风险分层） |
+| 完整验证入口 | `bash scripts/scaffold-doctor.sh --template`（必填；本仓库无 manifest verify，详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)） |
 | Isolation Profile | 默认策略（L0 可选 worktree；L1+ 强制独立 worktree）。如需 Strict Isolation Profile（所有等级强制 worktree），按 [branch-strategy.md](docs/ai/branch-strategy.md) 启用 |
 
-> 采用本脚手架的新项目请复制 [template/AGENTS.md](template/AGENTS.md) → 根 `AGENTS.md`，按自身情况重填 7 个字段（含 Isolation Profile）。
+> **档位语义**：4 个验证入口字段对应 [verification-baseline.md](docs/ai/verification-baseline.md) 的 `minimal / l1 / fast / full` 4 档。`minimal` 与 `full` 必填；`l1` 与 `fast` 不适用时填"无"并写明理由。未跑任一档位时必须在 verify 报告 / `## 验证证据` 段显式标注（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）。
+
+> 采用本脚手架的新项目请复制 [template/AGENTS.md](template/AGENTS.md) → 根 `AGENTS.md`，按自身情况重填 10 个 Adoption Profile 字段（含 4 个验证入口、Isolation Profile、入口主文件、测试目录等）。
 
 ## 重要边界（不要破坏）
 
