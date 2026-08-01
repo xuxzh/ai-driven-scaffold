@@ -12,8 +12,8 @@
 2. **改动与任务级别匹配**
    - `L0`/`L1` 没有被不当扩大为 `L2`/`L3`
    - `L2`/`L3` 走完了 spec/plan 准入流程
-   - `L2+` 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行完成（详见 [ADR-0003](./../adr/0003-multi-session-l2.md)）
-   - `L3` 任务在实施 session 启动前收过用户明确批准（详见 [ADR-0005](./../adr/0005-l3-approval-gate.md)）
+   - `L2` 任务按"规划 / 实施 / 评审" 3 个 session 串行完成（详见 [ADR-0003](./../adr/0003-multi-session-l2.md)）
+   - `L3` 任务在 L2 之上叠加"设计 + 计划"双 Session（共四 Session），并在实施 session 启动前收用户明确批准信号（详见 [ADR-0005](./../adr/0005-l3-approval-gate.md)）
 3. **必要验证已经执行**
    - L1+ 任务在汇报"完成"之前**必须**运行项目根目录的 `verify` 入口（详见 [ADR-0002](./../adr/0002-verify-hard-gate.md)）
    - L0 任务至少跑过与改动直接相关的最小验证

@@ -1,14 +1,16 @@
 # 业务功能交付运行手册（feature-specific）
 
-> **本文档只描述"功能（feature）"工作流相对通用 L2+ 纪律的差异**。通用 4 session 纪律见 [l2-multi-session-runbook.md](./l2-multi-session-runbook.md)。
+> **本文档只描述"功能（feature）"工作流相对通用 L2 三 Session 纪律的差异**。通用 L2 三 Session 纪律见 [l2-multi-session-runbook.md](./l2-multi-session-runbook.md)。
 
 ## 范围
 
-本文档适用于"业务功能 + API/UI 原型"的 L2+ 任务。L0 / L1 任务不强制走 4 session，可直接做。
+本文档适用于"业务功能 + API/UI 原型"的 L2+ 任务。L0 / L1 任务不强制走多 session，可直接做。
 
-## 推荐切片顺序
+> **已取代**：本 runbook 早前版本的"L2+ 强制 4 session"措辞已被 [ADR-0003](../../adr/0003-multi-session-l2.md) 2026-08-01 修订取代。**L2 现行规则是"规划 / 实施 / 评审"三 Session；spec 与 plan 始终是两份独立文件。**
 
-第 2 会话（计划）的任务切片建议按以下顺序拆分：
+## 规划 session 内的推荐切片顺序
+
+规划 session 写 plan 时，建议按以下顺序拆分任务切片：
 
 1. 数据模型和字段定义
 2. 适配层（service）和接口响应处理
@@ -42,7 +44,7 @@
 
 ## 关联
 
-- 通用 L2+ 4 session 纪律：[l2-multi-session-runbook.md](./l2-multi-session-runbook.md)
+- 通用 L2 三 Session 纪律：[l2-multi-session-runbook.md](./l2-multi-session-runbook.md)
 - 任务分级：[../task-levels.md](../task-levels.md)
 - 完成定义：[../completion-criteria.md](../completion-criteria.md)
 - 评审清单：[../checklists/review-checklist.md](../checklists/review-checklist.md)
