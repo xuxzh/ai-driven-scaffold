@@ -18,12 +18,13 @@
 
 按以下顺序阅读，建立对仓库的最小必要理解：
 
-- 上下文导航：[docs/ai/context-index.md](docs/ai/context-index.md)
+- 上下文导航（快速摘要）：[docs/ai/context-index-summary.md](docs/ai/context-index-summary.md) · 完整版：[docs/ai/context-index.md](docs/ai/context-index.md)
 - 治理基线：[docs/ai/governance-core.md](docs/ai/governance-core.md)
-- 任务分级 L0/L1/L2/L3：[docs/ai/task-levels.md](docs/ai/task-levels.md)
+- 任务分级 L0/L1/L2/L3（快速摘要）：[docs/ai/task-levels-summary.md](docs/ai/task-levels-summary.md) · 完整版：[docs/ai/task-levels.md](docs/ai/task-levels.md)
 - 完成定义：[docs/ai/completion-criteria.md](docs/ai/completion-criteria.md)
 - 验证基线：[docs/ai/verification-baseline.md](docs/ai/verification-baseline.md)
-- 分支与 worktree：[docs/ai/branch-strategy.md](docs/ai/branch-strategy.md)
+- 分支与 worktree（快速摘要）：[docs/ai/branch-strategy-summary.md](docs/ai/branch-strategy-summary.md) · 完整版：[docs/ai/branch-strategy.md](docs/ai/branch-strategy.md)
+- 提交边界与规范（快速摘要）：[docs/ai/commit-convention-summary.md](docs/ai/commit-convention-summary.md) · 完整版：[docs/ai/commit-convention.md](docs/ai/commit-convention.md)
 - AI 角色边界：[docs/ai/ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)
 - 文档回写规则：[docs/ai/doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md)
 - 术语表：[docs/CONTEXT.md](docs/CONTEXT.md)
@@ -81,6 +82,7 @@
 ## 重要边界（不要破坏）
 
 - **不得在主分支直接提交开发改动**——见 [branch-strategy.md](docs/ai/branch-strategy.md)
+- **AI 默认不得自动 commit / 不得跳过 hooks / 不得 amend 未授权提交**——见 [commit-convention.md](docs/ai/commit-convention.md)
 - **不得自行扩大任务范围**——见 [ai-role-boundaries.md](docs/ai/ai-role-boundaries.md)
 - **不得在没有验证证据时宣称完成**——见 [completion-criteria.md](docs/ai/completion-criteria.md)
 - **不得把聊天结论当作长期知识资产**——按 [doc-rewriting-rules.md](docs/ai/doc-rewriting-rules.md) 回写

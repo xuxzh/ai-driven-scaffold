@@ -47,6 +47,16 @@ L2+ 任务的评审 session **默认新开**，且**不**预读实施 session �
 - [ ] **批准范围未扩张**：实施变更严格落在 spec `## 目标` / `## 行为` / `## 非目标` 范围内；任何"超出范围"的改动记为"批准范围扩张，需重新批准"
 - [ ] **批准未跨任务复用**：本次批准仅约束当次任务；历史批准不能覆盖本次变更
 
+### 提交边界与 verify 证据（[commit-convention.md](../commit-convention.md)、[ADR-0002](../../adr/0002-verify-hard-gate.md)）
+
+- [ ] **提交边界清晰**：一次提交对应一个可独立验证的切片；spec / plan / implementation / review follow-up 不混合；不得为"提交整齐"塞入无关修改（如 typo 修复、调试代码、未通过 verify 的实验性代码）
+- [ ] **Conventional Commit type 合规**：使用 11 类白名单（`feat` / `fix` / `docs` / `style` / `refactor` / `perf` / `test` / `build` / `ci` / `chore` / `revert`）之一；自定义 type（如 `feat!` 单独写、`bug` / `wip` / `misc`）视为不合规
+- [ ] **subject 合规**：≤ 72 字符；祈使语气；不写句号；不堆 emoji / 装饰字符
+- [ ] **breaking change 标记一致**：感叹号与 `BREAKING CHANGE:` footer 至少出现一处；若两处皆有，须一致
+- [ ] **AI 行为硬约束守住**：未发现 AI 自动 commit（用户未明确要求）、`--no-verify` 跳过 hooks、未授权 `git commit --amend`、`git push --force`、擅自改 `user.name` / `user.email`
+- [ ] **PR / MR 描述最小字段齐全**：目标 / 范围 / 非目标 / 验证证据 / 风险·回滚；L2+ 含 `Refs:` 到 spec + plan；引用 issue 时使用 `Closes:` / `Refs:`
+- [ ] **verify 证据回链一致**：PR 描述的"验证证据"段与 spec / plan 双份末尾的 `## 验证证据` 段互相引用；评审者按 [commit-convention.md](../commit-convention.md) 的"PR/MR 描述最小字段"段核对
+
 ## 审查顺序
 
 1. 行为回归
