@@ -41,6 +41,7 @@
 | AI 治理或工作流变化 | `docs/ai/`（含本文档） |
 | 单次任务的关键决策 | `docs/specs/<date>-<name>.md` |
 | 可执行切片与验证 | `docs/plans/<date>-<name>.md` |
+| spec / plan 命名约定 | `docs/ai/spec-and-plan-naming.md` |
 | 长期架构或流程决策 | `docs/adr/NNNN-<name>.md` |
 | 高频执行陷阱 | `docs/ai/runbooks/` |
 | 评审发现的新盲区 | `docs/ai/checklists/` |

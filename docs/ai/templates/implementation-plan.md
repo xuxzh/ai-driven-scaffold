@@ -3,6 +3,14 @@
 > **基于 spec**：[docs/specs/<date>-<name>.md](...)
 > （此行**必填**，否则视为与 spec 失联，详见 [ADR-0004](../../adr/0004-l2-spec-and-plan.md)）
 
+## 元信息
+
+- 主题：(逗号分隔,2–5 个小写关键词,应与基于的 spec 保持一致)
+- 状态：`draft` | `accepted` | `superseded`
+- 关联 ADR：(可省略)
+
+> 命名规范见 [../spec-and-plan-naming.md](../spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
+
 > **面向 Agent 执行者：** 步骤使用复选框 `- [ ]` 语法跟踪；如当前会话支持多 agent 调度，可拆给子 agent；否则按手工清单逐任务执行，并保持同样的逐任务验证纪律。
 
 **目标：**

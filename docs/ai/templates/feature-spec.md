@@ -1,5 +1,13 @@
 # 功能设计模板
 
+## 元信息
+
+- 主题：(逗号分隔,2–5 个小写关键词,例:`auth, jwt, middleware`)
+- 状态：`draft` | `accepted` | `superseded`
+- 关联 ADR：(可省略,例:`ADR-0004`)
+
+> 命名规范见 [spec-and-plan-naming.md](../spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
+
 ## 快速通道（小 L2 可选）
 
 > 仅当 L2 任务规模 < 半天时填写。说明为什么可合并 spec + plan 为单 session。
