@@ -61,6 +61,7 @@ L3 任务的实施 session 在启动前还需读 [ADR-0005](../adr/0005-l3-appro
 | 分支与 worktree 策略 | [branch-strategy.md](./branch-strategy.md) |
 | AI 角色边界 | [ai-role-boundaries.md](./ai-role-boundaries.md) |
 | 文档回写规则 | [doc-rewriting-rules.md](./doc-rewriting-rules.md) |
+| spec / plan 命名与元信息 | [spec-and-plan-naming.md](./spec-and-plan-naming.md) |
 
 ## 主要代码锚点（按任务方向）
 

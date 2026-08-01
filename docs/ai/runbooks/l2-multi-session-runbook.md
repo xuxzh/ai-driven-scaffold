@@ -44,6 +44,8 @@ L2+ 任务的适用情形详见 [task-levels.md](../task-levels.md) 与 [ADR-000
 
 L3 任务在"实施 session 启动前"增加一道门：必须先收用户"已批准"信号，详见 [ADR-0005](../../adr/0005-l3-approval-gate.md)。
 
+> 路径命名（`<date>-<name>.md`）与文件顶部 `## 元信息` 段规范见 [spec-and-plan-naming.md](../../spec-and-plan-naming.md)；本 runbook 内所有 `docs/specs/...` / `docs/plans/...` 路径占位符均按此命名。
+
 ---
 
 ## 第 1 会话：设计（设计辅助者）

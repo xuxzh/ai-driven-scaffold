@@ -60,6 +60,7 @@ L2+ 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行（详见 [
    - 设计 session 后：`docs/specs/<date>-<name>.md`
    - 计划 session 后：`docs/plans/<date>-<name>.md`
    - 实施 session 后：代码 + spec / plan 末尾的 `## 验证证据` 段
+   - 路径命名与元信息规范：[spec-and-plan-naming.md](./spec-and-plan-naming.md)
 3. **不允许**依赖会话历史推断上一 session 意图；新 session 没有上一 session 的记忆
 4. 评审 session **建议**从新开的 session 开始，避免实施上下文污染
 
