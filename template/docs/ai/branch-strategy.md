@@ -54,7 +54,7 @@
 - 主分支保护进一步收紧：`main` / `master` 不允许任何直接落盘（包括 L0）
 - 接入项目不得通过"未声明"的方式偷渡 L0 例外；一旦启用 Strict Isolation，就不允许降级
 
-启用方式：在项目 `AGENTS.md` 的 Adoption Profile 中加一行 `Isolation: strict`（模板字段见 [template/AGENTS.md](../../template/AGENTS.md)）。未声明则视为默认策略（L0 可选 worktree）。
+启用方式：在项目 `AGENTS.md` 的 Adoption Profile 中加一行 `Isolation: strict`（模板字段见 [template/AGENTS.md](../../AGENTS.md)）。未声明则视为默认策略（L0 可选 worktree）。
 
 撤回方式：仅允许通过 ADR / 仓库级变更走流程撤回；不允许在单次任务中临时关闭。
 
@@ -123,5 +123,5 @@ L0 / L1 任务保持单 session；本节约束不向下传递。
 
 - 任务分级：[task-levels.md](./task-levels.md)
 - 治理基线：[governance-core.md](./governance-core.md)
-- 接入模板：[../../template/AGENTS.md](../../template/AGENTS.md)
+- 接入模板：[../../template/AGENTS.md](../../AGENTS.md)
 - ADR：[../adr/0003-multi-session-l2.md](../adr/0003-multi-session-l2.md)、[../adr/0005-l3-approval-gate.md](../adr/0005-l3-approval-gate.md)

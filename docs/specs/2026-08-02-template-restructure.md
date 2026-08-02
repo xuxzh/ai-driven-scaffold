@@ -1,8 +1,8 @@
 # 把所有下发物物理收拢到 `template/` 下
 
-> L2 设计 spec。L2 任务必须先按本 spec 产出 `docs/specs/<date>-<name>.md`,用户确认后再按 [implementation-plan.md](../ai/templates/implementation-plan.md) 模板产出 `docs/plans/<date>-<name>.md`;spec 与 plan 是两份独立文件(详见 [ADR-0003](../adr/0003-multi-session-l2.md) 与 [ADR-0004](../adr/0004-l2-spec-and-plan.md))。
+> L2 设计 spec。L2 任务必须先按本 spec 产出 `docs/specs/<date>-<name>.md`,用户确认后再按 [implementation-plan.md](../../template/docs/ai/templates/implementation-plan.md) 模板产出 `docs/plans/<date>-<name>.md`;spec 与 plan 是两份独立文件(详见 [ADR-0003](../../template/docs/adr/0003-multi-session-l2.md) 与 [ADR-0004](../../template/docs/adr/0004-l2-spec-and-plan.md))。
 >
-> **本 spec 不写执行切片**——任务切片、步骤、命令、文件清单、回滚路径属于 plan,不在本文件范围(详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md) 的"spec 与 plan 最小接口"段)。
+> **本 spec 不写执行切片**——任务切片、步骤、命令、文件清单、回滚路径属于 plan,不在本文件范围(详见 [ADR-0004](../../template/docs/adr/0004-l2-spec-and-plan.md) 的"spec 与 plan 最小接口"段)。
 
 ## 元信息
 
@@ -78,7 +78,7 @@
 - **不动治理语义**——任务分级、验证基线、提交规范、ADR 内容、Isolation Profile、Strict Isolation 选项全部不变。
 - **不改任何"已下发内容"的文字**——`docs/ai/`、`docs/adr/`、`docs/CONTEXT.md` 内部文字、链接结构保持不变,只做物理平移(其内部相对引用平移后仍然正确,无需修改)。
 - **不引入新特性**——不写 `--adopt` 模式、不加新的 doctor 检查器、不加 bootstrap 脚本、不改 `worktree-add.sh` 的 prefix 强制规则。
-- **不解决 `branch-strategy.md` 与 `worktree-add.sh` 的 prefix 分隔符分歧**(slash vs hyphen,见 [scripts/worktree-add.sh](../../scripts/worktree-add.sh) 顶部注释)。本次迁移按 `worktree-add.sh` 实际接受的 `refactor/template-restructure` 走。
+- **不解决 `branch-strategy.md` 与 `worktree-add.sh` 的 prefix 分隔符分歧**(slash vs hyphen,见 [scripts/worktree-add.sh](../../template/scripts/worktree-add.sh) 顶部注释)。本次迁移按 `worktree-add.sh` 实际接受的 `refactor/template-restructure` 走。
 - **不处理既有项目里 `.github/` 已有 workflows 的自动合并**——README 提示用户手动 `diff` 处理。
 - **不重写 `docs/specs/` `docs/plans/` 的内容**——只更新其中的相对路径引用。
 - **不动 `.gitignore`**——保留在根,后续由 doctor 在 `adopted` 模式下检查/生成(不在本次范围)。
@@ -120,7 +120,7 @@
 - **建议任务级别**：`L2`
 - **为什么适用这个级别**:
   - 跨多个目录结构的物理重排,涉及 8 项文件/目录搬迁、30+ 路径引用改写、doctor 内部硬编码路径常量更新、README 三种接入方式改写。
-  - 影响"数据流"(链接解析)与"入口"(README、doctor、CI),符合 L2 在 [task-levels.md](../ai/task-levels.md) 中的定义。
+  - 影响"数据流"(链接解析)与"入口"(README、doctor、CI),符合 L2 在 [task-levels.md](../../template/docs/ai/task-levels.md) 中的定义。
   - 不触及鉴权、依赖、CI 策略本身,不需要 L3 批准门禁。
 
 ## 受影响边界
@@ -216,7 +216,7 @@
 
 ## Session Handoff
 
-按 [`session-handoff-protocol.md`](../ai/runbooks/session-handoff-protocol.md) 11 字段填。
+按 [`session-handoff-protocol.md`](../../template/docs/ai/runbooks/session-handoff-protocol.md) 11 字段填。
 
 - **Task Level**: L2
 - **Current Phase**: spec 撰写完成,等待用户 review
@@ -263,7 +263,7 @@
 
 ## 批准(L3 任务必填)
 
-- 不适用——本任务为 L2,不需要 Pre-Implementation Approval Gate(详见 [ADR-0005](../adr/0005-l3-approval-gate.md))。
+- 不适用——本任务为 L2,不需要 Pre-Implementation Approval Gate(详见 [ADR-0005](../../template/docs/adr/0005-l3-approval-gate.md))。
 
 ## 验证证据(实施 session 末尾必填)
 

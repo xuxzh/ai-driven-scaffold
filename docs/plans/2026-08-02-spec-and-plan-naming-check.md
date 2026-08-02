@@ -3,7 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `subagent-driven-development`（推荐）或 `executing-plans` 逐任务实施；脚本行为必须使用测试先行。
 
 > **基于 spec**：[docs/specs/2026-08-02-spec-and-plan-naming-check.md](../specs/2026-08-02-spec-and-plan-naming-check.md)
-> （此行**必填**，否则视为与 spec 失联，详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)）
+> （此行**必填**，否则视为与 spec 失联，详见 [ADR-0004](../../template/docs/adr/0004-l2-spec-and-plan.md)）
 
 ## 元信息
 
@@ -11,7 +11,7 @@
 - 状态：draft
 - 关联 ADR：ADR-0004
 
-> 命名规范见 [../ai/spec-and-plan-naming.md](../ai/spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
+> 命名规范见 [../ai/spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
 
 > **面向 Agent 执行者：** 步骤使用复选框 `- [ ]` 语法跟踪；如当前会话支持多 agent 调度，可拆给子 agent；否则按手工清单逐任务执行，并保持同样的逐任务验证纪律。
 
@@ -45,7 +45,7 @@
 
 - [ ] **步骤 1：编写或更新失败检查**
 
-按 [test_check_markdown_links.py](../../scripts/tests/test_check_markdown_links.py) 的 `tempfile.TemporaryDirectory` + `subprocess.run` 风格编写至少 6 个用例，每条独立 `TestCase`：
+按 [test_check_markdown_links.py](../../template/scripts/tests/test_check_markdown_links.py) 的 `tempfile.TemporaryDirectory` + `subprocess.run` 风格编写至少 6 个用例，每条独立 `TestCase`：
 
 ```python
 import subprocess
@@ -387,15 +387,15 @@ git diff --check
 - 报告必须包含：start / finish 时间戳与 epoch、elapsed 秒、5 条 required verify 命令的实际退出码与关键输出、TDD 的 RED / GREEN 关键输出、self-review、unrun 项；**不**由本规划 session 完成。
 - 提交边界（本规划 session 不执行；记录在 `## 回滚 / 不提交`）：
   - 不在本次规划 session commit / stage / push / amend；
-  - 提交动作（若用户后续明确要求）须在实施 session 末尾、由实施者人工触发，按 [docs/ai/commit-convention.md](../ai/commit-convention.md) 选择 type（建议 `feat(scripts): add spec/plan naming checker`），不得 amend 未授权提交。
+  - 提交动作（若用户后续明确要求）须在实施 session 末尾、由实施者人工触发，按 [docs/ai/commit-convention.md](../../template/docs/ai/commit-convention.md) 选择 type（建议 `feat(scripts): add spec/plan naming checker`），不得 amend 未授权提交。
 
 ## 批准（L3 任务必填，其他任务留空）
 
-不适用。本任务是 L2，按 [ADR-0005](../adr/0005-l3-approval-gate.md) 不需要 Pre-Implementation Approval Gate；spec 的"## 批准"段同样留空。
+不适用。本任务是 L2，按 [ADR-0005](../../template/docs/adr/0005-l3-approval-gate.md) 不需要 Pre-Implementation Approval Gate；spec 的"## 批准"段同样留空。
 
 ## 验证证据（实施 session 末尾必填）
 
-> **填表要求**：本表必须由**实施 Session** 在跑完项目根目录 `verify` 入口后填写；规划 Session **不允许**填写本表，仅交付 spec + plan 双份（详见 [ADR-0002](../adr/0002-verify-hard-gate.md) 与 [l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md)）。
+> **填表要求**：本表必须由**实施 Session** 在跑完项目根目录 `verify` 入口后填写；规划 Session **不允许**填写本表，仅交付 spec + plan 双份（详见 [ADR-0002](../../template/docs/adr/0002-verify-hard-gate.md) 与 [l2-multi-session-runbook.md](../../template/docs/ai/runbooks/l2-multi-session-runbook.md)）。
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
@@ -417,7 +417,7 @@ git diff --check
 
 ## Session Handoff
 
-> 按 [`session-handoff-protocol.md`](../ai/runbooks/session-handoff-protocol.md) 的 11 字段 schema 填写。本段是 plan 的最终部分；规划 Session 结束时首次回填；实施 Session 结束时更新同一段并将 verify 结果引用到上方 `## 验证证据`；评审 Session 将结果写入 plan review 段或独立 review report 并回链本文。
+> 按 [`session-handoff-protocol.md`](../../template/docs/ai/runbooks/session-handoff-protocol.md) 的 11 字段 schema 填写。本段是 plan 的最终部分；规划 Session 结束时首次回填；实施 Session 结束时更新同一段并将 verify 结果引用到上方 `## 验证证据`；评审 Session 将结果写入 plan review 段或独立 review report 并回链本文。
 
 - Task Level: L2
 - Current Phase: planning
@@ -434,7 +434,7 @@ git diff --check
   - D4：拒绝 shell / `find` + `date` 实现（闰年 / 月份上限跨平台行为差异显著）。
   - D5：拒绝本任务接入 `scaffold-doctor.sh` / CI（brief 明确"no doctor/CI integration"）。
   - D6：拒绝扩大范围去校验文件内容（属 `check-markdown-links.py` / `check-governance-consistency.py` 各自职责）。
-  - D7：把用户"合并规划 + 批准"的指令作为本次 spec 的明确确认信号记录在 spec Handoff；不修改 [l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md) 等 parent Plan C 范围内文件。
+  - D7：把用户"合并规划 + 批准"的指令作为本次 spec 的明确确认信号记录在 spec Handoff；不修改 [l2-multi-session-runbook.md](../../template/docs/ai/runbooks/l2-multi-session-runbook.md) 等 parent Plan C 范围内文件。
 - Assumptions:
   - A1：用户当前指令视为对 spec `## 行为` / `## 非目标` / `## 验收` 的明确确认；不依赖二次用户信号。
   - A2：父计划 brief 中 "no implementation code/tests" 表示本规划 session 不写实现代码，但允许在 plan 中给出未来实施 session 的最小骨架示例。
@@ -444,11 +444,11 @@ git diff --check
   - OQ1：未来 `docs/specs/README.md` / `docs/plans/README.md` 出现时是否应豁免？当前 spec 选"严格"（如实报告）；如 dogfood 后认定误报率高，再以独立任务加豁免。
   - OQ2：闰年 / 真实日历日校验是否需要"以 4 位年上限"避免 `datetime.MAXYEAR` 之外值？当前 spec 交由 `fromisoformat` 决定，不另设上限；如出现误报由实施 session 决定是否加保护。
   - OQ3：是否在后续 L1 任务中接入 `scaffold-doctor.sh` / CI？属 parent Plan C 范围，本次不答。
-- Verification: 规划 session 不要求 verify（按 [l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md) 第 1 Session 段"必跑 verify"列：规划 = **不要求**）。本 plan 上方 `## 验证证据` 表由实施 session 末尾填写，本规划 session 留空。
+- Verification: 规划 session 不要求 verify（按 [l2-multi-session-runbook.md](../../template/docs/ai/runbooks/l2-multi-session-runbook.md) 第 1 Session 段"必跑 verify"列：规划 = **不要求**）。本 plan 上方 `## 验证证据` 表由实施 session 末尾填写，本规划 session 留空。
 - Next Allowed Actions:
   - 实施 session：阅读 spec + plan 双份（仅从仓库恢复），在 `scripts/tests/test_check_spec_and_plan_naming.py` 落地 6+ 用例，RED 跑通后最小实现 `scripts/check-spec-and-plan-naming.py`，GREEN 后跑完整 verify；将实际命令 / 退出码 / 关键输出写入 spec + plan 双份的 `## 验证证据` 段。
-  - 评审 session（建议新开）：从 `git diff` + spec + plan + 双份 `## 验证证据` 进入，按 [review-checklist.md](../ai/checklists/review-checklist.md) 评审。
-  - 用户后续可要求实施 session 末尾按 [commit-convention.md](../ai/commit-convention.md) 人工 `git add` + `git commit`；**不得**自动 commit。
+  - 评审 session（建议新开）：从 `git diff` + spec + plan + 双份 `## 验证证据` 进入，按 [review-checklist.md](../../template/docs/ai/checklists/review-checklist.md) 评审。
+  - 用户后续可要求实施 session 末尾按 [commit-convention.md](../../template/docs/ai/commit-convention.md) 人工 `git add` + `git commit`；**不得**自动 commit。
 - Prohibited Scope:
   - 实施 session 不得修改：parent Plan C、Plan A、Plan B、Task 1–4、`scripts/scaffold-doctor.sh`、`.github/`、`.gitlab-ci.yml`、`AGENTS.md`、`template/AGENTS.md`、`docs/ai/spec-and-plan-naming.md`、任何 ADR、任何 `docs/specs/` / `docs/plans/` 下既有文件（仅允许新增本任务两份 `<date>-spec-and-plan-naming-check.md`）。
   - 实施 session 不得 commit / stage / push / amend 任何提交；提交动作须由用户在实施 session 末尾以人工方式触发，或由后续 L1 任务执行。

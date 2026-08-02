@@ -72,5 +72,5 @@
 
 - 分支与 worktree：[branch-strategy.md](./branch-strategy.md)
 - 任务分级：[task-levels.md](./task-levels.md)
-- 接入模板：[../../template/AGENTS.md](../../template/AGENTS.md)
+- 接入模板：[../../template/AGENTS.md](../../AGENTS.md)
 - ADR：[../adr/0003-multi-session-l2.md](../adr/0003-multi-session-l2.md) / [../adr/0005-l3-approval-gate.md](../adr/0005-l3-approval-gate.md)
