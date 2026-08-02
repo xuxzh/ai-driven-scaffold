@@ -1,6 +1,6 @@
 # AI 治理 v2 Dogfood 报告（2026-08）
 
-> 本文件按 [`docs/ai/dogfood/README.md`](./README.md) 规范汇总 [`task-c5-report.md`](../../../.superpowers/sdd/task-c5-report.md) 内容，作为 Plan C Task 5 计划要求的最终交付物。
+> 本文件按 [`docs/ai/dogfood/README.md`](./README.md) 规范汇总 Plan C Task 5 实施成果，作为 Plan C Task 5 计划要求的最终交付物。
 
 ## 任务清单
 
