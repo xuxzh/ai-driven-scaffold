@@ -185,51 +185,24 @@ bash template/scripts/tests/worktree-add-test.sh
 
 ```
 .
-├── AGENTS.md                       # 本仓库专用入口（采用者模板在 template/AGENTS.md）
+├── AGENTS.md                       # 本仓库专用入口（已按本仓库事实填好 Adoption Profile）
 ├── README.md                       # 本文件
 ├── CONTRIBUTING.md                 # 模板仓库维护说明
 ├── LICENSE                         # MIT
-├── .gitignore
-├── template/scripts/
-│   └── scaffold-doctor.sh          # 只读接入自检脚本
-├── template/
-│   └── AGENTS.md                   # 采用本脚手架的项目复制源（含 5 个 <...> 占位符）
 ├── docs/
-│   ├── CONTEXT.md                  # 仓库术语表（新增）
-│   ├── ai/                         # AI 治理与工作流
-│   │   ├── context-index.md        # AI 会话入口导航
-│   │   ├── governance-core.md      # 治理基线
-│   │   ├── task-levels.md          # ★ 单点：L0-L3
-│   │   ├── completion-criteria.md  # ★ 单点：完成定义
-│   │   ├── verification-baseline.md# ★ 单点：验证基线
-│   │   ├── branch-strategy.md      # ★ 单点：分支策略
-│   │   ├── ai-role-boundaries.md   # ★ 单点：AI 边界
-│   │   ├── doc-rewriting-rules.md  # ★ 单点：回写规则
-│   │   ├── templates/
-│   │   │   ├── task-packet.md
-│   │   │   ├── feature-spec.md
-│   │   │   ├── implementation-plan.md
-│   │   │   ├── bugfix-brief.md
-│   │   │   └── refactor-brief.md
-│   │   ├── runbooks/
-│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2 三 Session 纪律（规划/实施/评审）；L3 在此基础上叠加设计+计划双 Session（共四 Session）与实施前明确批准
-│   │   │   ├── feature-delivery-runbook.md   # feature-specific
-│   │   │   ├── bugfix-delivery-runbook.md    # bugfix-specific
-│   │   │   ├── refactor-delivery-runbook.md  # refactor-specific
-│   │   │   └── development-runbook.md
-│   │   └── checklists/
-│   │       ├── adoption-checklist.md
-│   │       └── review-checklist.md
-│   ├── adr/                        # 长期决策
-│   │   ├── 0001-task-level-governance.md  # 被 ADR-0004 修订 L2 段
-│   │   ├── 0002-verify-hard-gate.md
-│   │   ├── 0003-multi-session-l2.md
-│   │   ├── 0004-l2-spec-and-plan.md
-│   │   └── 0005-l3-approval-gate.md
-│   ├── specs/                      # 单次任务设计（用户填充）
-│   └── plans/                      # 实施计划（用户填充）
-├── template/.gitlab-ci.yml                  # 占位 GitLab CI
-└── template/.github/workflows/ci.yml        # 占位 GitHub Actions
+│   ├── specs/                      # 脚手架自身 L2 历史(spec/plan,仅本仓库)
+│   └── plans/                      # 脚手架自身 L2 历史
+└── template/                       # 采用者会复制的所有下发物
+    ├── AGENTS.md                   # 采用本脚手架的项目的模板入口(含 <...> 占位符)
+    ├── CLAUDE.md
+    ├── docs/
+    │   ├── ai/                     # AI 治理与工作流
+    │   ├── adr/                    # 长期决策
+    │   └── CONTEXT.md
+    ├── scripts/
+    │   └── scaffold-doctor.sh      # 只读接入自检脚本
+    ├── .github/workflows/ci.yml
+    └── .gitlab-ci.yml
 ```
 
 ## 维护与演进
