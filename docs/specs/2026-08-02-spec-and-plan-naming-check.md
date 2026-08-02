@@ -1,6 +1,6 @@
 # spec / plan 命名检查器
 
-> **本文件仅为 spec，不替代 plan。** L2 任务须先按本文件产 spec，用户确认后再按 [implementation-plan.md](../ai/templates/implementation-plan.md) 模板产 plan；spec 与 plan 始终是两份独立文件（详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)）。
+> **本文件仅为 spec，不替代 plan。** L2 任务须先按本文件产 spec，用户确认后再按 [implementation-plan.md](../../template/docs/ai/templates/implementation-plan.md) 模板产 plan；spec 与 plan 始终是两份独立文件（详见 [ADR-0004](../../template/docs/adr/0004-l2-spec-and-plan.md)）。
 
 ## 元信息
 
@@ -8,11 +8,11 @@
 - 状态：draft
 - 关联 ADR：ADR-0004
 
-> 命名规范见 [spec-and-plan-naming.md](../ai/spec-and-plan-naming.md)；文件名前缀为 `<date>-<name>.md`。
+> 命名规范见 [spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md)；文件名前缀为 `<date>-<name>.md`。
 
 ## 背景
 
-仓库已经在 [spec-and-plan-naming.md](../ai/spec-and-plan-naming.md) 中把 `docs/specs/<date>-<name>.md` 与 `docs/plans/<date>-<name>.md` 的命名约定立为单点定义：
+仓库已经在 [spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md) 中把 `docs/specs/<date>-<name>.md` 与 `docs/plans/<date>-<name>.md` 的命名约定立为单点定义：
 
 - `<date>` 固定为 `YYYY-MM-DD`（日精度）；
 - `<name>` 为小写字母 + 数字 + 短横线（kebab-case）；
@@ -74,10 +74,10 @@
 
 ## 非目标
 
-- 不校验文件**内容**（不查 spec 是否含 `## 元信息` 段、不查 plan 是否含 `## 验证证据`、不查 spec 与 plan 物理分离、不查 plan 是否引用 spec 路径）——这些由 [check-governance-consistency.py](../../scripts/check-governance-consistency.py) 与 [check-markdown-links.py](../../scripts/check-markdown-links.py) 在各自职责内覆盖。
+- 不校验文件**内容**（不查 spec 是否含 `## 元信息` 段、不查 plan 是否含 `## 验证证据`、不查 spec 与 plan 物理分离、不查 plan 是否引用 spec 路径）——这些由 [check-governance-consistency.py](../../template/scripts/check-governance-consistency.py) 与 [check-markdown-links.py](../../template/scripts/check-markdown-links.py) 在各自职责内覆盖。
 - 不递归扫描子目录；只校验 `docs/specs/` 与 `docs/plans/` 的直接 `*.md`。
 - 不修改任何文件；不写入任何 `verify` 报告文件；不输出 JSON / 人类可读表格。
-- 不集成进 [scaffold-doctor.sh](../../scripts/scaffold-doctor.sh) 或任何 CI 配置；不修改 doctor / CI 文件。
+- 不集成进 [scaffold-doctor.sh](../../template/scripts/scaffold-doctor.sh) 或任何 CI 配置；不修改 doctor / CI 文件。
 - 不校验 `docs/specs/.gitkeep` / `docs/plans/.gitkeep`（它们不匹配 `*.md` 模式，被 glob 自然排除）。
 - 不校验 `README.md` / `adr-template.md` / 任何其它被设计为"在 spec/plan 目录但不属于 spec/plan"的特殊文件——本检查器只对 `*.md` 模式生效；任何落在 `docs/specs/` 或 `docs/plans/` 直接子级、未来不匹配 `<date>-<name>.md` 的 `*.md` 文件（如 `README.md`）将被如实标记为非法；这是有意为之的"严格"行为，避免静默放过。
 - 不支持 `--template` 模式（与命名相关的检查不区分 template / adopted 仓库）。
@@ -115,12 +115,12 @@
   - 引入新的可被 `verify` 引用的入口（虽本次不接入 doctor / CI，但接口形状须与既有 `scripts/check-*.py` 一致）；
   - 用户已在本任务 brief 中显式指定 L2。
 - 不应降级为 L1：L1 只覆盖"单目标、既有 checker 增量改进"（如 GOV005 是 L1），本任务是**新增独立 checker**，与既有 GOV001–GOV005 无共享函数、无共享 fixture。
-- 不可升为 L3：不触及 CI、依赖、鉴权、仓库级约定；命名规则本身已在 [spec-and-plan-naming.md](../ai/spec-and-plan-naming.md) 中明文规定，本检查器只是把规则做成可执行事实，不需要 Pre-Implementation Approval Gate。
+- 不可升为 L3：不触及 CI、依赖、鉴权、仓库级约定；命名规则本身已在 [spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md) 中明文规定，本检查器只是把规则做成可执行事实，不需要 Pre-Implementation Approval Gate。
 
 ## 受影响边界
 
 - 路由
-  - `scripts/check-spec-and-plan-naming.py` 作为新的检查器入口，与 [check-markdown-links.py](../../scripts/check-markdown-links.py) / [check-governance-consistency.py](../../scripts/check-governance-consistency.py) 并列；调用方为人工 / 后续 L2 实施 session 末尾 verify。
+  - `scripts/check-spec-and-plan-naming.py` 作为新的检查器入口，与 [check-markdown-links.py](../../template/scripts/check-markdown-links.py) / [check-governance-consistency.py](../../template/scripts/check-governance-consistency.py) 并列；调用方为人工 / 后续 L2 实施 session 末尾 verify。
 - 数据流
   - 输入：文件系统只读扫描 `docs/specs/` 与 `docs/plans/` 的直接 `*.md`；
   - 输出：stdout 每行一个非法路径；stderr 仅在 `--root` 非法时输出。
@@ -145,7 +145,7 @@
    - `iter_target_files(root)` 用 `Path(root).glob("<dir>/*.md")` 取两个目录的**直接** `*.md`（`Path.glob` 模式 `*.md` 只匹配直接子级，不递归），缺失目录 `try/except` 或预先 `is_dir()` 判空跳过；
    - 校验函数 `validate_filename(stem: str) -> bool`，按"剥离 .md → 切首段为日期 → `datetime.date.fromisoformat()` 解析 → 校验 `<name>` 正则"四步走；
    - 主循环：收集非法文件相对路径，`sorted()` 后逐行 `print`；按是否有非法决定 `return 0 / 1`；`--root` 非目录时 `print(..., file=sys.stderr)` 后 `return 2`。
-2. 在 `scripts/tests/test_check_spec_and_plan_naming.py` 中按 [test_check_markdown_links.py](../../scripts/tests/test_check_markdown_links.py) 的 tempfile + subprocess 风格编写：
+2. 在 `scripts/tests/test_check_spec_and_plan_naming.py` 中按 [test_check_markdown_links.py](../../template/scripts/tests/test_check_markdown_links.py) 的 tempfile + subprocess 风格编写：
    - `setUp` / `tearDown` 用 `tempfile.TemporaryDirectory()`；
    - `run_checker(root)` helper 调 `subprocess.run([sys.executable, SCRIPT, "--root", str(root)])`；
    - 用例覆盖验收段全部判据（含合法 / 非法 / 缺目录 / 非法根 / 真实仓库端到端）。
@@ -154,19 +154,19 @@
 
 - 现有 `check-markdown-links.py` / `check-governance-consistency.py` 已确立"Python 3 标准库 + argparse + `--root` 默认 `.` + 子进程化调用 + 退出码 0/1/2 + 单行输出"的检查器事实标准；本检查器严格复用同一接口形状，让未来 doctor 接入零成本。
 - 现有测试使用 `tempfile.TemporaryDirectory()` + `subprocess.run` 是仓库内已落地的稳定 fixture 风格；不复用会增加维护面。
-- 命名约定本身已经在 [spec-and-plan-naming.md](../ai/spec-and-plan-naming.md) 中作为权威定义存在；本检查器只把"已存在的人工规则"翻译为代码，不引入新规则，避免规范漂移。
+- 命名约定本身已经在 [spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md) 中作为权威定义存在；本检查器只把"已存在的人工规则"翻译为代码，不引入新规则，避免规范漂移。
 
 ## 备选方案
 
-- 方案 A：在 [check-governance-consistency.py](../../scripts/check-governance-consistency.py) 内新增 GOV006 规则。
-  - 拒绝理由：GOV001–GOV005 是"治理文档内文矛盾"的检查，扫描文件集是固定的 AGENTS / template / docs/ai / docs/adr 等"治理元数据"；spec/plan 命名是"业务文件名"维度，混入会破坏"固定核心扫描文件集"的边界（[check-governance-consistency.py](../../scripts/check-governance-consistency.py) 顶部 docstring 已显式声明此约束）。新增独立脚本是更小的爆炸半径。
+- 方案 A：在 [check-governance-consistency.py](../../template/scripts/check-governance-consistency.py) 内新增 GOV006 规则。
+  - 拒绝理由：GOV001–GOV005 是"治理文档内文矛盾"的检查，扫描文件集是固定的 AGENTS / template / docs/ai / docs/adr 等"治理元数据"；spec/plan 命名是"业务文件名"维度，混入会破坏"固定核心扫描文件集"的边界（[check-governance-consistency.py](../../template/scripts/check-governance-consistency.py) 顶部 docstring 已显式声明此约束）。新增独立脚本是更小的爆炸半径。
 - 方案 B：用 shell + `find` / `grep` 实现，零 Python 依赖。
   - 拒绝理由：`datetime.date.fromisoformat()` 的真实日历日校验（含闰年 / 月份上限）在 shell 中需要 `date -d` 之类的非可移植调用，跨 macOS / Linux 行为差异显著；且与既有 Python 检查器族分裂。Python 3 标准库是更稳的同构路径。
-- 方案 C：把规则直接写进 [check-markdown-links.py](../../scripts/check-markdown-links.py) 的"特殊链接目标"豁免表。
+- 方案 C：把规则直接写进 [check-markdown-links.py](../../template/scripts/check-markdown-links.py) 的"特殊链接目标"豁免表。
   - 拒绝理由：链接检查器只关心 `*.md` 内的内联链接是否断裂；文件名合法性是另一维度，混入会污染职责，让后续 GOV006 之类的扩展更难定位。
 - 方案 D：把规范落地为 ADR，让 GOV006 规则与 ADR 自动同步。
-  - 拒绝理由：当前 spec-and-plan-naming.md 已经是单点定义且 [ADR-0004](../adr/0004-l2-spec-and-plan.md) 已把"spec/plan 物理分离"立为硬约束，但"文件名格式"是命名细节而非架构决策（命名规范文件已经定）。新增 ADR 价值低；当前单点 + 检查器的双层结构与现有 GOV001–GOV005 保持一致。
-- 方案 E：接入 [scaffold-doctor.sh](../../scripts/scaffold-doctor.sh) 与 CI 同步启用。
+  - 拒绝理由：当前 spec-and-plan-naming.md 已经是单点定义且 [ADR-0004](../../template/docs/adr/0004-l2-spec-and-plan.md) 已把"spec/plan 物理分离"立为硬约束，但"文件名格式"是命名细节而非架构决策（命名规范文件已经定）。新增 ADR 价值低；当前单点 + 检查器的双层结构与现有 GOV001–GOV005 保持一致。
+- 方案 E：接入 [scaffold-doctor.sh](../../template/scripts/scaffold-doctor.sh) 与 CI 同步启用。
   - 拒绝理由：本次任务 brief 明确"no doctor/CI integration"；接入属于独立后续工作，应在 dogfood 报告与单独 L1 任务中评估。
 
 ## 验证计划（仅策略层）
@@ -203,19 +203,19 @@
 
 - 不更新 [AGENTS.md](../../AGENTS.md)：本检查器本次不接入 doctor / CI；不写"统一命令映射"到 Adoption Profile。
 - 不更新 [template/AGENTS.md](../../template/AGENTS.md)：同上。
-- 不更新 [docs/ai/spec-and-plan-naming.md](../ai/spec-and-plan-naming.md)：规则单点已经定义完整；本检查器只是事实化。
-- 不更新 [docs/ai/verification-baseline.md](../ai/verification-baseline.md)：本检查器本次不接入 `verify` 入口。
-- 不更新 [docs/ai/governance-core.md](../ai/governance-core.md) 与 [docs/adr/0004-l2-spec-and-plan.md](../adr/0004-l2-spec-and-plan.md)：新检查器是 L2 实施结果，不影响治理基线。
-- 不更新 [scripts/scaffold-doctor.sh](../../scripts/scaffold-doctor.sh) / CI：本次 brief 明确不接入。
+- 不更新 [docs/ai/spec-and-plan-naming.md](../../template/docs/ai/spec-and-plan-naming.md)：规则单点已经定义完整；本检查器只是事实化。
+- 不更新 [docs/ai/verification-baseline.md](../../template/docs/ai/verification-baseline.md)：本检查器本次不接入 `verify` 入口。
+- 不更新 [docs/ai/governance-core.md](../../template/docs/ai/governance-core.md) 与 [docs/adr/0004-l2-spec-and-plan.md](../../template/docs/adr/0004-l2-spec-and-plan.md)：新检查器是 L2 实施结果，不影响治理基线。
+- 不更新 [scripts/scaffold-doctor.sh](../../template/scripts/scaffold-doctor.sh) / CI：本次 brief 明确不接入。
 
 ## Session Handoff
 
-> L2 设计 Session 使用；L2 规划 session 同步在 plan 末尾的 `## Session Handoff` 落 11 字段，本段仅作为状态入口，按 [`session-handoff-protocol.md`](../ai/runbooks/session-handoff-protocol.md) 字段名留行。
+> L2 设计 Session 使用；L2 规划 session 同步在 plan 末尾的 `## Session Handoff` 落 11 字段，本段仅作为状态入口，按 [`session-handoff-protocol.md`](../../template/docs/ai/runbooks/session-handoff-protocol.md) 字段名留行。
 
 - Task Level: L2
 - Current Phase: planning
 - Status: ready
-- Completed: spec 撰写完成，覆盖元信息 / 背景 / 目标 / 行为 / 非目标 / 验收 / 范围级别 / 受影响边界 / 建议方案 / 备选方案 / 验证计划 / 风险 / 需要更新的文档 / Session Handoff 占位；与 [feature-spec.md](../ai/templates/feature-spec.md) 模板字段对齐。
+- Completed: spec 撰写完成，覆盖元信息 / 背景 / 目标 / 行为 / 非目标 / 验收 / 范围级别 / 受影响边界 / 建议方案 / 备选方案 / 验证计划 / 风险 / 需要更新的文档 / Session Handoff 占位；与 [feature-spec.md](../../template/docs/ai/templates/feature-spec.md) 模板字段对齐。
 - Artifacts: `docs/specs/2026-08-02-spec-and-plan-naming-check.md`（本文件）
 - Decisions: 拒绝把规则合并到 GOV001–GOV005、拒绝 shell 实现、拒绝 doctor/CI 接入；具体理由见 `## 备选方案`。
 - Assumptions: 父计划 brief 中给出的用户当前指令视为对 spec 的明确确认（"Treat that as confirmation of the spec described here"）；详见下方"附：规划 / 批准时序说明"。
@@ -226,13 +226,13 @@
 
 ### 附：规划 / 批准时序说明（不扩大范围）
 
-按 [ADR-0003](../adr/0003-multi-session-l2.md) 的 L2 三 Session 通用纪律，理想流程是"规划 session 出 spec → 用户明确确认 → 同 session 继续出 plan → 实施 session 启动"。本次任务 brief 显式指出"approval and planning are in one delegated task"——本任务的**规划与批准信号被合并在同一次用户指令中**：用户已在 brief 内文与 artifact 路径列表中明确给出 spec 的行为与命名（`scripts/check-spec-and-plan-naming.py`），并把 spec + plan 双份同时作为"必须产出"列出。
+按 [ADR-0003](../../template/docs/adr/0003-multi-session-l2.md) 的 L2 三 Session 通用纪律，理想流程是"规划 session 出 spec → 用户明确确认 → 同 session 继续出 plan → 实施 session 启动"。本次任务 brief 显式指出"approval and planning are in one delegated task"——本任务的**规划与批准信号被合并在同一次用户指令中**：用户已在 brief 内文与 artifact 路径列表中明确给出 spec 的行为与命名（`scripts/check-spec-and-plan-naming.py`），并把 spec + plan 双份同时作为"必须产出"列出。
 
 处理方式（**不扩大范围**）：
 
 - 视为用户已对 spec 内容（"## 行为" / "## 非目标" / "## 验收"）给出确认信号；记录在本节"Assumptions"。
 - 不为本次任务新增独立的"spec 确认 → 写 plan"两阶段 session；按 brief 的"一个委托任务同时落地 spec + plan"执行。
-- 记录可能的规则歧义：若 L2 runbook 在 dogfood 报告与后续 L1 / L2 任务中需把"用户已合并规划与批准"作为合规信号来源，应在 [l2-multi-session-runbook.md](../ai/runbooks/l2-multi-session-runbook.md) 增加显式段；本次不修该 runbook（属 parent Plan C 范围），仅在本段登记。
+- 记录可能的规则歧义：若 L2 runbook 在 dogfood 报告与后续 L1 / L2 任务中需把"用户已合并规划与批准"作为合规信号来源，应在 [l2-multi-session-runbook.md](../../template/docs/ai/runbooks/l2-multi-session-runbook.md) 增加显式段；本次不修该 runbook（属 parent Plan C 范围），仅在本段登记。
 - 视为只对本次任务有效；任何后续 L2 任务如未带同样的合并信号，仍应走"先 spec 后 plan"的两阶段。
 
 ## 验证证据（实施 session 末尾必填）
@@ -255,4 +255,4 @@
 未跑项：
 - `bash -n scripts/check-spec-and-plan-naming.py`：plan 步骤 5 列出此命令，但本任务是 Python 脚本非 Bash 脚本；`bash -n` 仅做语法检查，对此文件无意义且会报"is not a bash script"；本任务以 RED → GREEN 单元测试隐含字节码可加载替代。未跑原因：命令对当前工件类型不适用。
 
-> **填表顺序**：实施 session 跑完 `verify` 入口后，把每条命令的实际退出码与关键输出摘要填入本表；未跑项与原因独立列出；缺任一项均视为 verify 报告未就位（详见 [ADR-0002](../adr/0002-verify-hard-gate.md)）。本段必须由**实施 session**填写；规划 Session 不允许填写。
+> **填表顺序**：实施 session 跑完 `verify` 入口后，把每条命令的实际退出码与关键输出摘要填入本表；未跑项与原因独立列出；缺任一项均视为 verify 报告未就位（详见 [ADR-0002](../../template/docs/adr/0002-verify-hard-gate.md)）。本段必须由**实施 session**填写；规划 Session 不允许填写。

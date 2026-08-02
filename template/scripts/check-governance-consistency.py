@@ -147,6 +147,18 @@ def read_file_or_empty(root: Path, rel: str) -> str:
         return ""
 
 
+def doc_path(rel: str, template_mode: bool) -> str:
+    """``docs/...`` 路径在 ``--template`` 模式下位于 ``template/`` 子树下。
+
+    scaffold self 检查时所有下发物都在 ``template/`` 下；采用者检查时
+    复制到根,直接以 ``docs/`` 开头。该 helper 把硬编码的 ``docs/...`` 路径
+    在 template 模式下加 ``template/`` 前缀。
+    """
+    if template_mode and rel.startswith("docs/"):
+        return f"template/{rel}"
+    return rel
+
+
 # ---------------------------------------------------------------------------
 # 规则实现
 # ---------------------------------------------------------------------------
@@ -156,7 +168,7 @@ def check_gov001(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     且后者未在豁免块内 → 报告 FAIL。
     """
     findings: List[Tuple[str, str, str]] = []
-    rel = "docs/ai/task-levels.md"
+    rel = doc_path("docs/ai/task-levels.md", template_mode)
     raw = read_file_or_empty(root, rel)
     if not raw:
         return findings
@@ -196,7 +208,7 @@ def check_gov002(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     targets = (
         "AGENTS.md",
         "template/AGENTS.md",
-        "docs/adr/0003-multi-session-l2.md",
+        doc_path("docs/adr/0003-multi-session-l2.md", template_mode),
     )
     old_patterns = ["4 个 session", "4 session 串行"]
     new_patterns = ["3 个 session", "3 session"]
@@ -252,7 +264,7 @@ def check_gov003(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     且不在 ``> **已取代**`` 块内 → FAIL。
     """
     findings: List[Tuple[str, str, str]] = []
-    rel = "docs/ai/runbooks/l2-multi-session-runbook.md"
+    rel = doc_path("docs/ai/runbooks/l2-multi-session-runbook.md", template_mode)
     raw = read_file_or_empty(root, rel)
     if not raw:
         return findings
@@ -276,7 +288,7 @@ def check_gov004(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     ``docs/adr/0005-l3-approval-gate.md`` 不存在 → FAIL。
     """
     findings: List[Tuple[str, str, str]] = []
-    rel = "docs/adr/0005-l3-approval-gate.md"
+    rel = doc_path("docs/adr/0005-l3-approval-gate.md", template_mode)
     p = root / rel
     if not p.is_file():
         findings.append(
@@ -293,8 +305,7 @@ def check_gov005(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
     """GOV005 adr-index-mismatch:
     ``docs/adr/README.md`` 索引的同目录 ADR 文件名集合必须与实际文件集合相等。
     """
-    del template_mode  # GOV005 没有模板豁免语义
-    rel = "docs/adr/README.md"
+    rel = doc_path("docs/adr/README.md", template_mode)
     readme = root / rel
     if not readme.is_file():
         return [("GOV005", f"{rel}:0", "ADR 索引文件缺失")]
@@ -314,7 +325,7 @@ def check_gov005(root: Path, template_mode: bool) -> List[Tuple[str, str, str]]:
 
     findings: List[Tuple[str, str, str]] = []
     for name in sorted(actual - indexed.keys()):
-        findings.append(("GOV005", f"docs/adr/{name}:0", f"ADR 未在 {rel} 中索引: {name}"))
+        findings.append(("GOV005", f"{doc_path('docs/adr/', template_mode)}{name}:0", f"ADR 未在 {rel} 中索引: {name}"))
     for name in sorted(indexed.keys() - actual):
         findings.append(("GOV005", f"{rel}:{indexed[name]}", f"索引目标不存在: {name}"))
     return findings

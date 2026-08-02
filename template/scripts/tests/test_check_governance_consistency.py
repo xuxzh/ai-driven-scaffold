@@ -26,8 +26,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-SCRIPT = REPO_ROOT / "scripts" / "check-governance-consistency.py"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+SCRIPT = REPO_ROOT / "template" / "scripts" / "check-governance-consistency.py"
 
 
 def run_checker(root: Path, template: bool = False) -> subprocess.CompletedProcess:
@@ -48,14 +48,30 @@ class _FixtureBase(unittest.TestCase):
         self._tmp.cleanup()
 
     def write(self, rel: str, content: str) -> Path:
+        """写入文件;若 rel 是 template mode 关心的下发物路径,同时镜像到 template/ 下。
+
+        checker 在 --template 模式下会用 doc_path() 把 docs/... 加 template/ 前缀;
+        在 --adopted 模式下直接读 docs/...。两个 fixture 镜像让同一 test 可同时
+        验证两种 mode 的预期。
+        """
         path = self.tmpdir / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
+
+        if rel.startswith(("docs/", "scripts/", ".github", ".gitlab")):
+            tpl_path = self.tmpdir / "template" / rel
+            tpl_path.parent.mkdir(parents=True, exist_ok=True)
+            tpl_path.write_text(content, encoding="utf-8")
+            mirror_dirs = [path.parent, tpl_path.parent]
+        else:
+            mirror_dirs = [path.parent]
+
         if rel.startswith("docs/adr/") and re.fullmatch(r"[0-9]{4}-[^/]+\.md", path.name):
-            readme = self.tmpdir / "docs/adr/README.md"
-            if readme.is_file():
-                names = sorted(p.name for p in readme.parent.glob("[0-9][0-9][0-9][0-9]-*.md"))
-                readme.write_text("".join(f"[{name}]({name})\n" for name in names), encoding="utf-8")
+            for d in mirror_dirs:
+                readme = d / "README.md"
+                if readme.is_file():
+                    names = sorted(p.name for p in d.glob("[0-9][0-9][0-9][0-9]-*.md"))
+                    readme.write_text("".join(f"[{name}]({name})\n" for name in names), encoding="utf-8")
         return path
 
 
@@ -313,11 +329,15 @@ class TestGOV005AdrIndexMismatch(_FixtureBase):
     """README 索引必须与 docs/adr/ 下实际 ADR 文件名集合完全一致。"""
 
     def test_missing_readme_fails(self):
+        # Template 模式下 checker 看 template/docs/adr/README.md；mirror 写入
+        # _FixtureBase.setUp 会同时建 docs/adr/README.md 和 template/docs/adr/README.md
+        # 两份,这里都要删才能触发 GOV005。
         (self.tmpdir / "docs/adr/README.md").unlink()
+        (self.tmpdir / "template" / "docs" / "adr" / "README.md").unlink()
         self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
         result = run_checker(self.tmpdir, template=True)
         self.assertEqual(result.returncode, 1, msg=result.stdout + result.stderr)
-        self.assertIn("GOV005  docs/adr/README.md:0", result.stdout)
+        self.assertIn("GOV005  template/docs/adr/README.md:0", result.stdout)
 
     def test_actual_adr_absent_from_index_fails(self):
         self.write("docs/adr/0005-l3-approval-gate.md", "# ADR-0005 stub\n")
