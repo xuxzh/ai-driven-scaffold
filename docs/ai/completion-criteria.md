@@ -12,8 +12,9 @@
 2. **改动与任务级别匹配**
    - `L0`/`L1` 没有被不当扩大为 `L2`/`L3`
    - `L2`/`L3` 走完了 spec/plan 准入流程
-   - `L2+` 任务按"设计 / 计划 / 实施 / 评审" 4 个 session 串行完成（详见 [ADR-0003](./../adr/0003-multi-session-l2.md)）
-   - `L3` 任务在实施 session 启动前收过用户明确批准（详见 [ADR-0005](./../adr/0005-l3-approval-gate.md)）
+   - `L2` 任务按"规划 / 实施 / 评审" 3 个 session 串行完成（详见 [ADR-0003](./../adr/0003-multi-session-l2.md)）
+   - `L3` 任务在 L2 之上叠加"设计 + 计划"双 Session（共四 Session），并在实施 session 启动前收用户明确批准信号（详见 [ADR-0005](./../adr/0005-l3-approval-gate.md)）
+   - **接力完整性**：L2/L3 的 Session Handoff 11 个必填字段全部填写，且 `Artifacts` 中列出的路径均存在（详见 [Session Handoff Protocol](./runbooks/session-handoff-protocol.md)）
 3. **必要验证已经执行**
    - L1+ 任务在汇报"完成"之前**必须**运行项目根目录的 `verify` 入口（详见 [ADR-0002](./../adr/0002-verify-hard-gate.md)）
    - L0 任务至少跑过与改动直接相关的最小验证
@@ -25,6 +26,21 @@
 5. **触及长期约定时，文档已经同步更新**
    - 边界、默认做法、验证路径变化时回写 AGENTS.md / specs / plans / adr / runbook
    - 详见 [doc-rewriting-rules.md](./doc-rewriting-rules.md)
+
+## 批量集成条件（L2+ 批量多 agent 协作时适用）
+
+L2+ 任务在走完"五项条件"之上，若实施阶段由多个 worker agent 按 [batch-ai-execution-runbook.md](./runbooks/batch-ai-execution-runbook.md) 并行落地，整批**只有同时**满足以下条件才视为完成：
+
+1. **可并行 4 条件已落字**：所有子任务的 [task-packet.md](./templates/task-packet.md) 8 字段（`Owner` / `Owned Paths` / `Shared Paths` / `Prohibited Paths` / `Depends On` / `Local Verify` / `Integration Owner` / `Integration Verify`）全部填写；可并行判定（无顺序依赖 / Owned Paths 不重叠 / 无同时修改共享配置 / 可独立验证）已在 task packet 中显式标注
+2. **每个子任务跑过 `Local Verify`** 且退出 0，结果在子任务自己的 `## 验证证据` 段落字；未跑项与原因独立列出
+3. **Shared Paths 由 Integration Owner 独占修改**：子 agent 未直接落盘 Shared Path；Shared Path 的修改必须由 Integration Owner 在集成阶段串行完成，并在 plan 末尾 `## Session Handoff` 中登记
+4. **Integration Verify 退出 0**：Integration Owner 在合并所有 Owned 产物并修改 Shared Paths 后跑 `Integration Verify`（通常等于 `AGENTS.md` 顶部"用户项目元信息"段登记的 `full` 验证入口），且退出 0
+5. **无未解决的 blocked 子任务**：任何 `Status: blocked` 的子任务必须在 `## Session Handoff.Open Questions` 中说明阻塞点，整批**不得**在仍有 blocked 子任务时声明完成
+6. **失败隔离生效**：失败子任务不影响无依赖子任务继续推进；依赖任务转 `Status: blocked` 并落字；不得静默重试失败子任务
+
+> 任何一条不满足 → 整批**不得**声明完成；Integration Owner 必须先把缺口补齐（修复失败子任务 / 重跑 `Integration Verify` / 修正 Shared Path 落盘责任）再统一收口。
+>
+> 详细纪律与纸面演练见 [batch-ai-execution-runbook.md](./runbooks/batch-ai-execution-runbook.md)；本段是完成门禁的唯一权威措辞，runbook 不重写。
 
 ## 验证证据要求
 

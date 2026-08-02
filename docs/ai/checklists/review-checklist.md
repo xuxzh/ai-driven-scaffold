@@ -9,7 +9,7 @@ L2+ 任务的评审 session **默认新开**，且**不**预读实施 session �
 - 实施 session 产出的代码（`git diff <base>..HEAD`）
 - `docs/specs/<date>-<name>.md`
 - `docs/plans/<date>-<name>.md`
-- 实施 session 末尾的 `## 验证证据` 段
+- 实施 session 末尾的 `## 验证证据` 段（spec 与 plan **双份**均必读；不接受"只填一份"）
 - L3 任务的 `## 批准` 段（如有）
 
 **不允许**预读：
@@ -19,6 +19,43 @@ L2+ 任务的评审 session **默认新开**，且**不**预读实施 session �
 - 实施 session 的草稿 TODO
 
 这样做的目的：避免评审者被实施者的"我已考虑过"覆盖掉实际的回归、边界破坏、测试缺口。
+
+## L2+ 必查项
+
+以下检查项必须**逐条**对照并写入 review report（"有 / 无 + 位置"）：
+
+### spec / plan 双文件检查（[ADR-0004](../../adr/0004-l2-spec-and-plan.md)）
+
+- [ ] **spec 与 plan 物理分离**：两份独立文件，**不**允许合并为一份
+- [ ] **spec 必含字段齐全**：背景 / 目标 / 行为 / 非目标 / 验收 / 受影响边界 / 备选方案 / 风险
+- [ ] **plan 必含字段齐全**：文件清单 / 任务切片 / 步骤 / 命令 / 验证 / 回滚 / 顶部 `> 基于 spec：` 行
+- [ ] **plan 顶部 `> 基于 spec：` 行存在**：引用 `[docs/specs/<date>-<name>.md](...)`
+- [ ] **spec 不得包含 plan 必含字段**（任务切片 / 步骤 / 文件清单）——重复出现视为未分离
+- [ ] **plan 不得包含 spec 必含字段**（备选方案 / 非目标）——重复出现视为未分离
+
+### verify 落点检查（[ADR-0002](../../adr/0002-verify-hard-gate.md)、[l2-multi-session-runbook.md](../runbooks/l2-multi-session-runbook.md)）
+
+- [ ] **verify 落点正确**：`## 验证证据` 段**同时**出现在 spec 与 plan 双份末尾；**不**接受"只填一份"
+- [ ] **实施 session 跑过 `verify`**：命令清单、退出码、关键输出已落字；未跑项已说明
+- [ ] **规划 session 未填 `## 验证证据`**：仅接力交付物；如出现规划 session 写 `## 验证证据`，视为跨 session 责任错位
+
+### L3 批准范围检查（[ADR-0005](../../adr/0005-l3-approval-gate.md)）
+
+- [ ] **`## 批准` 段在 `## 验证证据` 段之前**：模板顺序正确
+- [ ] **`## 批准` 段位置**：spec 与 plan 双份均含 `## 批准` 段；不接受"只填一份"
+- [ ] **批准记录最小必含齐全**：批准信号（关键字眼）/ spec 路径 / plan 路径 / 允许修改范围 / 禁止范围 / 批准时间——任一项缺失视为未批准
+- [ ] **批准范围未扩张**：实施变更严格落在 spec `## 目标` / `## 行为` / `## 非目标` 范围内；任何"超出范围"的改动记为"批准范围扩张，需重新批准"
+- [ ] **批准未跨任务复用**：本次批准仅约束当次任务；历史批准不能覆盖本次变更
+
+### 提交边界与 verify 证据（[commit-convention.md](../commit-convention.md)、[ADR-0002](../../adr/0002-verify-hard-gate.md)）
+
+- [ ] **提交边界清晰**：一次提交对应一个可独立验证的切片；spec / plan / implementation / review follow-up 不混合；不得为"提交整齐"塞入无关修改（如 typo 修复、调试代码、未通过 verify 的实验性代码）
+- [ ] **Conventional Commit type 合规**：使用 11 类白名单（`feat` / `fix` / `docs` / `style` / `refactor` / `perf` / `test` / `build` / `ci` / `chore` / `revert`）之一；自定义 type（如 `feat!` 单独写、`bug` / `wip` / `misc`）视为不合规
+- [ ] **subject 合规**：≤ 72 字符；祈使语气；不写句号；不堆 emoji / 装饰字符
+- [ ] **breaking change 标记一致**：感叹号与 `BREAKING CHANGE:` footer 至少出现一处；若两处皆有，须一致
+- [ ] **AI 行为硬约束守住**：未发现 AI 自动 commit（用户未明确要求）、`--no-verify` 跳过 hooks、未授权 `git commit --amend`、`git push --force`、擅自改 `user.name` / `user.email`
+- [ ] **PR / MR 描述最小字段齐全**：目标 / 范围 / 非目标 / 验证证据 / 风险·回滚；L2+ 含 `Refs:` 到 spec + plan；引用 issue 时使用 `Closes:` / `Refs:`
+- [ ] **verify 证据回链一致**：PR 描述的"验证证据"段与 spec / plan 双份末尾的 `## 验证证据` 段互相引用；评审者按 [commit-convention.md](../commit-convention.md) 的"PR/MR 描述最小字段"段核对
 
 ## 审查顺序
 

@@ -87,7 +87,9 @@ rm -rf docs/specs docs/plans
 2. **必须定义 `verify` 命令**——在你项目的 manifest 中定义一个 `verify` 入口，串联 lint → typecheck → test → build；L1+ 任务完成前 AI 必跑（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）
 3. **运行接入自检**——执行 `bash scripts/scaffold-doctor.sh`（等价于 `--adopted`），并按 [adoption-checklist.md](docs/ai/checklists/adoption-checklist.md) 处理 `FAIL` / `WARN`；doctor 只检查脚手架接入状态，不替代项目 `verify`
 4. **跑一次 L0 任务试水**——用本文档试一次小改动，跑一次最小验证
-5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（4 session 串行：设计 → 计划 → 实施 → 评审）
+5. **跑一次 L2 任务验证流程**——按 [l2-multi-session-runbook.md](docs/ai/runbooks/l2-multi-session-runbook.md) + [feature-delivery-runbook.md](docs/ai/runbooks/feature-delivery-runbook.md) 跑通一次新功能（3 session 串行：规划 → 实施 → 评审；spec + plan 物理分离，验证证据统一落点到两份文件）
+
+> **已取代**：本节原表述为"4 session 串行：设计 → 计划 → 实施 → 评审"——该 4 Session 措辞将 L2 与 L3 合并为同一模型，与 [ADR-0003](docs/adr/0003-multi-session-l2.md) 2026-08-01 修订（**L2 = 三 Session；L3 = 四 Session**）不相容。现行 L2 流程以本节首段为准。
 
 ## 核心治理机制
 
@@ -104,7 +106,7 @@ rm -rf docs/specs docs/plans
 - **仓库术语表**：[docs/CONTEXT.md](docs/CONTEXT.md)
 - **硬约束 ADR**：
   - [ADR-0002 verify 硬门禁](docs/adr/0002-verify-hard-gate.md)
-  - [ADR-0003 L2+ 多 session](docs/adr/0003-multi-session-l2.md)
+  - [ADR-0003 L2 三 Session / L3 四 Session](docs/adr/0003-multi-session-l2.md)
   - [ADR-0004 L2 spec + plan](docs/adr/0004-l2-spec-and-plan.md)
   - [ADR-0005 L3 审批门禁](docs/adr/0005-l3-approval-gate.md)
 
@@ -133,14 +135,41 @@ rm -rf docs/specs docs/plans
 
 本脚手架不提供任何 AI 工具专属配置。L3 审批、verify 必跑和多 session 串行等约束都通过 `AGENTS.md`、`docs/ai/` 与 `docs/adr/` 表达；具体工具的 hook、rule 或插件只能作为项目自行添加的可选加固层。
 
-## CI 占位（验证层，非准入层）
+## CI（验证层，非准入层）
 
 - GitLab CI：[.gitlab-ci.yml](.gitlab-ci.yml)
 - GitHub Actions：[.github/workflows/ci.yml](.github/workflows/ci.yml)
 
-两个 CI 模板都使用 `<pm>` / `<runtime-image>` 占位符，请按项目实际包管理器和运行时替换。
+CI 跑 5 个 job：`lint-shell` / `lint-python` / `check-links` / `check-governance` / `check-doctor`。零第三方依赖，Python 3 标准库 + POSIX bash 即可执行。
 
-**CI 是验证层，不是准入层**——CI 模板可在阶段 0 接入用于加固 verify 必跑纪律（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）。CI 跑出的结果可作为 verify 报告的事实证据；CI **不**替代 L3 Pre-Implementation Approval Gate（详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md)，这是准入层）。
+**CI 是验证层，不是准入层**——CI 跑通只证明脚手架自身检查器与脚本在干净环境下能跑通，**不**等价于 L3 Pre-Implementation Approval Gate（详见 [ADR-0005](docs/adr/0005-l3-approval-gate.md)，那是准入层）。CI 结果可作为 L1+ 任务 verify 报告的事实证据（详见 [ADR-0002](docs/adr/0002-verify-hard-gate.md)）。
+
+### 维护者跑哪些本地命令等价于 CI 行为
+
+维护本脚手架仓库的开发者，本地跑通下面这一组命令即等价于 CI 5 个 job 全部通过：
+
+```bash
+# lint-shell —— bash 语法校验（不执行）
+bash -n scripts/scaffold-doctor.sh
+bash -n scripts/worktree-add.sh
+bash -n scripts/hooks/rewrite-worktree-add.sh
+
+# lint-python —— Python 检查器与单测
+python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+
+# check-links —— Markdown 相对链接检查（template 模式）
+python3 scripts/check-markdown-links.py --root . --template
+
+# check-governance —— 治理规则一致性（GOV001-GOV004）
+python3 scripts/check-governance-consistency.py --root . --template
+
+# check-doctor —— 聚合自检 + 集成测试
+bash scripts/scaffold-doctor.sh --template
+bash scripts/tests/scaffold-doctor-test.sh
+bash scripts/tests/worktree-add-test.sh
+```
+
+`--template` 模式适用于**本脚手架仓库自身**（仓库根 `AGENTS.md` 的 Adoption Profile 已按本仓库事实填好）。接入本脚手架的**目标项目**跑默认模式即可（`bash scripts/scaffold-doctor.sh`，等价于 `--adopted`，会额外检查 4 档验证入口是否映射到 manifest）。两种模式的差异见 [CONTRIBUTING.md](CONTRIBUTING.md) 与 doctor 顶部的 `--adopted|--template` 说明。
 
 ## 目录结构
 
@@ -173,7 +202,7 @@ rm -rf docs/specs docs/plans
 │   │   │   ├── bugfix-brief.md
 │   │   │   └── refactor-brief.md
 │   │   ├── runbooks/
-│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2+ 4 session 纪律
+│   │   │   ├── l2-multi-session-runbook.md   # 通用 L2 三 Session 纪律（规划/实施/评审）；L3 在此基础上叠加设计+计划双 Session（共四 Session）与实施前明确批准
 │   │   │   ├── feature-delivery-runbook.md   # feature-specific
 │   │   │   ├── bugfix-delivery-runbook.md    # bugfix-specific
 │   │   │   ├── refactor-delivery-runbook.md  # refactor-specific

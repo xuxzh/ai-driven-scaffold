@@ -1,95 +1,88 @@
 # =============================================================
-# 占位 GitLab CI 模板
+# GitLab CI
 # -------------------------------------------------------------
-# 用户需根据实际包管理器和运行时替换以下占位符：
-#   <runtime-image>  : 例如 node:20-slim, python:3.12-slim, golang:1.22, rust:1.75
-#   <pm>             : 例如 pnpm, npm, yarn, uv, cargo, go, mix
-#   <pm-install-cmd> : 例如 "npm ci", "pnpm install --frozen-lockfile",
-#                       "uv sync", "go mod download", "cargo fetch"
-#   <pm-cache-dir>   : 缓存路径，例如 node_modules/, .venv/, ~/go/pkg/mod/
-#   <e2e-runtime-image> : 如有 E2E 测试，使用含浏览器/Docker 的镜像
+# 作用: 验证层（不是准入层）
+#   - 加固 verify 必跑纪律（详见 docs/adr/0002-verify-hard-gate.md）
+#   - CI 跑出的结果可作为 verify 报告的事实证据
+#   - 不替代 L3 Pre-Implementation Approval Gate
+#     （详见 docs/adr/0005-l3-approval-gate.md；那是准入层）
 #
-# 建议：把 verify 命令定义在项目根的 manifest 中，CI 中只调用
-#       <pm> run verify
+# 镜像: 官方 alpine（自带 bash + python3 + git；apk add 仅作为
+#       防御性兜底，便于镜像升级时仍能跑测试）。
+# 5 个 job 与本地 `bash scripts/scaffold-doctor.sh --template`
+# + 单测 + 集成测试 等价；与 .github/workflows/ci.yml 同口径。
+#
+# 零第三方依赖：所有检查器都在仓库内（scripts/*.py / *.sh）；
+# Python 3 标准库 + POSIX bash 即可执行。
 # =============================================================
 
 stages:
-  - validate
+  - lint
+  - check
 
 variables:
   GIT_DEPTH: "10"
 
-default:
-  image: <runtime-image>
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - <pm-cache-dir>
+# ---------- 共享脚本：基础镜像 + 工具链 + checkout ----------
+.base_template: &base_template
+  image: alpine:3
+  before_script:
+    - apk add --no-cache bash python3 git
+    - git --version
+    - python3 --version
+    - bash --version
 
-# ---------- 静态检查 ----------
-lint:
-  stage: validate
+# -----------------------------------------------------------------
+# lint 阶段：语法校验 + Python 单测
+# -----------------------------------------------------------------
+lint-shell:
+  stage: lint
+  <<: *base_template
   script:
-    - <pm-install-cmd>
-    - <pm> lint
+    - bash -n scripts/scaffold-doctor.sh
+    - bash -n scripts/worktree-add.sh
+    - bash -n scripts/hooks/rewrite-worktree-add.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-# ---------- 类型检查 ----------
-typecheck:
-  stage: validate
+lint-python:
+  stage: lint
+  <<: *base_template
   script:
-    - <pm-install-cmd>
-    - <pm> typecheck
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  allow_failure: true  # 如项目无 typecheck，删除此 job
-
-# ---------- 单元测试 ----------
-test:
-  stage: validate
-  script:
-    - <pm-install-cmd>
-    - <pm> test
-  artifacts:
-    when: on_failure
-    paths:
-      - test-results/
-    expire_in: 7 days
+    - python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-# ---------- 端到端测试 ----------
-e2e:
-  stage: validate
-  image: <e2e-runtime-image>
+# -----------------------------------------------------------------
+# check 阶段：链接 / 一致性 / 聚合 doctor + 集成测试
+# -----------------------------------------------------------------
+check-links:
+  stage: check
+  <<: *base_template
   script:
-    - <pm-install-cmd>
-    - <pm> test:e2e
-  artifacts:
-    when: always
-    paths:
-      - test-results/
-      - playwright-report/
-    expire_in: 7 days
+    - python3 scripts/check-markdown-links.py --root . --template
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  allow_failure: true  # 如项目无 E2E，删除此 job
 
-# ---------- 构建 ----------
-build:
-  stage: validate
+check-governance:
+  stage: check
+  <<: *base_template
   script:
-    - <pm-install-cmd>
-    - <pm> build
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 7 days
+    - python3 scripts/check-governance-consistency.py --root . --template
+  rules:
+    - if: $CI_PELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+check-doctor:
+  stage: check
+  <<: *base_template
+  script:
+    - bash scripts/scaffold-doctor.sh --template
+    - bash scripts/tests/scaffold-doctor-test.sh
+    - bash scripts/tests/worktree-add-test.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

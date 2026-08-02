@@ -65,8 +65,12 @@ L1+ 任务完成前**必须**运行项目根目录的 `verify` 入口并把结�
 ### 报告位置
 
 - **会话汇报**：每次 L1+ 任务汇报中嵌入
-- **L2+ 任务**：在 `docs/specs/<date>-<name>.md` 或 `docs/plans/<date>-<name>.md` 末尾的 `## 验证证据` 段落持久化
-- **L3 任务**：在 `## 验证证据` 之前增加 `## 批准` 段（详见 [ADR-0005](../../adr/0005-l3-approval-gate.md)）
+- **L2 任务**：在 `docs/specs/<date>-<name>.md` **与** `docs/plans/<date>-<name>.md` 双份末尾的 `## 验证证据` 段落持久化；spec 与 plan 始终是两份独立文件、双份均必填；**不**接受"只填 spec 或只填 plan"；由实施 session 写，规划 session **不**写（详见 [ADR-0002](../../adr/0002-verify-hard-gate.md)、[ADR-0003](../../adr/0003-multi-session-l2.md)、[ADR-0004](../../adr/0004-l2-spec-and-plan.md) 与 [l2-multi-session-runbook.md](./l2-multi-session-runbook.md) 的"verify 落点细则"段）
+- **L3 任务**：在 spec 与 plan 双份的 `## 验证证据` **之前**增加 `## 批准` 段（含 [ADR-0005](../../adr/0005-l3-approval-gate.md) 第 8 项最小必含，且**不得跨任务复用**）
+
+> Session 数与编排以 [l2-multi-session-runbook.md](./l2-multi-session-runbook.md) 与 [ADR-0003](../../adr/0003-multi-session-l2.md) 为权威。**L2 走"规划 / 实施 / 评审"三 Session；L3 在 L2 之上叠加"设计 + 计划"双 Session（共四 Session）并加实施前明确批准。**
+
+> **已取代**：本 runbook 早前版本的"报告位置"段曾写"L2 任务在 `docs/specs/...` 或 `docs/plans/...` 末尾的 `## 验证证据` 段落持久化"——其中的"或"措辞与 [l2-multi-session-runbook.md](./l2-multi-session-runbook.md) 的"verify 落点细则"（双份均必填）不一致；该措辞自 2026-08-01 起被本段取代。**L2 verify 落点统一为 spec 与 plan 双份均必填；不接受"只填一份"。**
 
 ### 必含字段
 

@@ -1,5 +1,11 @@
 # 功能设计模板
 
+> **本模板仅生成 spec，不替代 plan。** L2 任务必须先按本模板产出 `docs/specs/<date>-<name>.md`，经用户确认后再按 [implementation-plan.md](./implementation-plan.md) 模板产出 `docs/plans/<date>-<name>.md`；spec 与 plan 始终是两份独立文件（详见 [ADR-0003](../../adr/0003-multi-session-l2.md) 与 [ADR-0004](../../adr/0004-l2-spec-and-plan.md)）。
+>
+> **模板边界**：本模板**不允许**包含实现清单——任务切片、步骤、命令、文件清单、回滚路径等执行切片字段均属于 plan，不在本模板范围内（详见 [ADR-0004](../../adr/0004-l2-spec-and-plan.md) 的"spec 与 plan 最小接口"段）。
+
+> **已取代**：本模板早前版本包含 `## 快速通道（小 L2 可选）` 段，允许 L2 任务规模较小时合并 spec/plan 物理分离。该例外已被 [ADR-0003](../../adr/0003-multi-session-l2.md) 2026-08-01 修订显式废止——**spec 与 plan 物理分离是 L2 的硬门禁，不存在规模豁免**。当前模板不再保留该段。
+
 ## 元信息
 
 - 主题：(逗号分隔,2–5 个小写关键词,例:`auth, jwt, middleware`)
@@ -7,10 +13,6 @@
 - 关联 ADR：(可省略,例:`ADR-0004`)
 
 > 命名规范见 [spec-and-plan-naming.md](../spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
-
-## 快速通道（小 L2 可选）
-
-> 仅当 L2 任务规模 < 半天时填写。说明为什么可合并 spec + plan 为单 session。
 
 ## 背景
 
@@ -22,9 +24,23 @@
 
 - 用一句话描述期望结果
 
+## 行为
+
+- 哪些行为会发生
+- 哪些行为不会发生（与 `## 非目标` 对齐；本段为正向描述）
+
 ## 非目标
 
 - 明确列出这次变更不做什么
+- 任何在 `## 目标` / `## 行为` 中描述、但未在此处出现的反向条目都必须在此处显式列出
+
+## 验收（外部可判据）
+
+- 验收标准：可被外部独立判断的判定条件，每条都形如"满足 X 即验收"
+- 主用户流程验收：主链路是否端到端走通
+- 边界 / 异常验收：哪些边界情况需要被显式验收
+
+> **与 plan 的 `## 验证证据` 段的关系**：本段写"什么算合格"（外部可判据）；plan 的 `## 验证证据` 段写"如何跑出合格"（具体命令 + 退出码 + 关键输出）。两段**不**互相替代——本段不得包含命令细节，plan 的验证段不得省略验收标准。
 
 ## 范围级别
 
@@ -50,11 +66,11 @@
 - 方案 B
 - 为什么没有采用它们
 
-## 验证计划
+## 验证计划（仅策略层）
 
-- 最小但有效的检查
+- 最小但有效的检查（策略层面——具体命令属于 plan）
 - 如果主用户流程变化，需要补哪些更宽的检查
-- 记录需要执行哪些命令，以及完成时将展示哪些验证证据
+- 哪些验证需要 e2e / 端到端覆盖
 
 ## 风险
 
@@ -69,11 +85,31 @@
 - `docs/plans/...`
 - 如有需要，补充 `docs/ai/runbooks/...` 或 `docs/ai/checklists/...`
 
-## 批准（L3 任务必填，其他任务留空）
+## Session Handoff
+
+> L2 与 L3 设计 Session 使用；L2 规划结束后流转到 plan 末尾，L3 设计 Session 仅有 spec 时在本段保留。L3 计划 Session 开始后，由 plan 末尾的 `## Session Handoff` 承接，本段可删除。按 [`session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 填写 11 个必填字段；本 spec 仅作为状态入口。
+
+- Task Level:
+- Current Phase:
+- Status:
+- Completed:
+- Artifacts:
+- Decisions:
+- Assumptions:
+- Open Questions:
+- Verification:
+- Next Allowed Actions:
+- Prohibited Scope:
+
+## 批准（L3 任务必填）
+
+批准记录的最小必含项详见 [ADR-0005](../../adr/0005-l3-approval-gate.md)；任何字段缺失视为未批准。
 
 - 批准时间：YYYY-MM-DD
+- 批准信号：必须包含"已批准" / "approved" / "proceed" / "go-ahead" / "确认执行"任一字眼
 - 批准来源：<issue-link> / <PR-link> / 会话消息引用
-- 批准范围：与本文档显式声明的范围一致
+- 允许修改范围：与本文档"## 目标" / "## 行为" / "## 非目标" 段一致
+- 禁止范围：明确列出本次不批准的事项（如新依赖、新文件、新接口扩展等）
 - 预批准（如有）：`> 预批准来源：<issue-link>`
 
 ## 验证证据（实施 session 末尾必填）
@@ -83,3 +119,5 @@
 | | | | |
 
 未跑项：
+
+> **填表顺序**：实施 session 跑完 `verify` 入口后，把每条命令的实际退出码与关键输出摘要填入本表；未跑项与原因独立列出；缺任一项均视为 verify 报告未就位（详见 [ADR-0002](../../adr/0002-verify-hard-gate.md)）。本段必须由**实施 session**填写；规划 Session 不允许填写。

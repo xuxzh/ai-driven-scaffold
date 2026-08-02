@@ -10,9 +10,29 @@
 
 主分支保护是进入实现前的通用准入条件。`main` / `master` 只作为稳定集成分支，不直接承载开发提交；实质性编辑前必须先进入任务分支或隔离 worktree。具体工作方式见 [branch-strategy.md](./branch-strategy.md)。
 
-## L0：局部低风险改动
+## 等级矩阵（统一语义，权威定义）
 
-`L0` 允许直接执行。**L0 的核心约束是"单文件 + 不跨模块 + 对外无行为变化"**——任一文件数 > 1、或触及共享边界、或修改默认行为的，都不是 L0。
+> 下表为本仓库任务分级的**唯一权威定义**。AGENTS.md / template/AGENTS.md / runbook / checklist 只允许摘要与链接，不允许重新发明条件。
+
+| 级别 | 范围与条件 | 文档准入 | 分支与 worktree |
+|---|---|---|---|
+| `L0` | 单文件、不跨模块、不改变默认行为 | 无需 packet / spec / plan；至少运行最小验证 | 任务分支（worktree 可选，详见 [branch-strategy.md](./branch-strategy.md)） |
+| `L1` | 单目标常规改动 | task packet 先行（[task-packet.md](./templates/task-packet.md)） | 任务分支 **+** 独立 worktree |
+| `L2` | 跨文件行为、数据流或入口变化 | spec **+** plan 双文件（[feature-spec.md](./templates/feature-spec.md) / [implementation-plan.md](./templates/implementation-plan.md)；详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)） | 任务分支 **+** 独立 worktree |
+| `L3` | CI、依赖、安全、鉴权、仓库级约定；人工主导 | `L2` 条件 **+** 实施前明确批准（Pre-Implementation Approval Gate，详见 [ADR-0005](../adr/0005-l3-approval-gate.md)） | 任务分支 **+** 独立 worktree |
+
+> 关于 session 数与多 session 串行的细节，由 [ADR-0003](../adr/0003-multi-session-l2.md) 与对应 runbook 权威定义；本文档不再保留过时的"L2+ 4 个 session"等表述。
+>
+> 关于工作区落盘、分支、提交、worktree 四个概念的区分，以及"Strict Isolation Profile"接入选项，详见 [branch-strategy.md](./branch-strategy.md)。
+
+## L0：单文件、不跨模块、不改变默认行为
+
+`L0` 允许直接执行，但**核心约束**如下（任一不满足即升级到更高等级）：
+
+- 改动只在 1 个文件内
+- 不触及共享边界（应用壳层、入口装配、根脚本、仓库级规则文件、shared utility）
+- 不修改默认行为 / 公共类型签名 / props / 任何调用方的预期
+- 不需要跨文件测试同步
 
 典型 L0 场景：
 
@@ -30,20 +50,9 @@ L0 红线（**不是** L0 的反例）：
 - 共享 utility 的 JSDoc / 注释修改（属于共享边界）
 - 任何影响其他模块/进程/调用方的逻辑变化（即使是单文件）
 
-L0 决策清单（满足全部才算 L0）：
+L0 任务不需要 packet / spec / plan，但**仍**要求附带最小验证（与改动直接相关的检查）。L0 默认走任务分支，worktree 可选；不得在 `main` / `master` 直接落盘——关于"工作区落盘 / 分支 / 提交 / worktree"的区分详见 [branch-strategy.md](./branch-strategy.md)。
 
-1. 改动是否只在 1 个文件内？
-2. 该文件是否不在共享边界清单内？
-3. 改动是否不修改默认行为 / 公共类型 / props / 任何调用方的预期？
-4. 改动是否不需要跨文件测试同步？
-
-任一项不满足，升级到 `L1` 或更高。
-
-`L0` 可在 `main` 分支上直接修改，无需创建任务分支或 worktree，但需同步验证改动无破坏。
-
-`L0` 任务仍要求附带最小验证（与改动直接相关的检查）。
-
-## L1：单一目标的常规改动
+## L1：单目标常规改动
 
 `L1` 允许在轻计划后执行。此类任务通常涉及 2 到 4 个文件，但不改变核心架构边界。典型场景：
 
@@ -51,7 +60,7 @@ L0 决策清单（满足全部才算 L0）：
 - 为已有入口补测试
 - 在现有数据访问层中增加一个新的 service 方法
 
-这类工作不强制完整 spec，但至少要先写出：
+`L1` 必须先有 task packet，至少包含：
 
 - 目标
 - 锚点文件或符号
@@ -59,9 +68,9 @@ L0 决策清单（满足全部才算 L0）：
 - 最小验证命令
 - 非目标
 
-`L1` 模板见 [task-packet.md](./templates/task-packet.md)。具体执行方式见 [branch-strategy.md](./branch-strategy.md)。
+`L1` 模板见 [task-packet.md](./templates/task-packet.md)。`L1` 必须使用任务分支 **+** 独立 worktree，详见 [branch-strategy.md](./branch-strategy.md)。
 
-## L2：中等风险改动
+## L2：跨文件行为、数据流或入口变化
 
 `L2` **默认必须先有正式 spec 和 plan 双份都就位**后，再执行（详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)，本节按 ADR-0004 修订 ADR-0001 的"或"为"和"）。判断标准：
 
@@ -84,16 +93,16 @@ plan 抬头必须 `> 基于 spec：[docs/specs/<date>-<name>.md](...)` 一行，
 
 聊天计划、临时 TODO、`update_plan` 输出不算正式 spec，也不算正式 plan。
 
-L2+ 任务**强制按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**（详见 [ADR-0003](../adr/0003-multi-session-l2.md)）。每个 session 必须从仓库读上一 session 的交付物，不允许依赖会话历史。
+`L2` 必须使用任务分支 **+** 独立 worktree；多 session 串行的具体编排以 [ADR-0003](../adr/0003-multi-session-l2.md) 与对应 runbook 为准（本文件不再保留旧版 session 数描述）。
 
 `L2` 模板见 [feature-spec.md](./templates/feature-spec.md) 和 [implementation-plan.md](./templates/implementation-plan.md)。具体执行方式见 [branch-strategy.md](./branch-strategy.md)。
 
-## L3：高风险改动
+## L3：CI、依赖、安全、鉴权、仓库级约定
 
 `L3` 必须人工主导，AI 只作为分析和辅助工具。典型场景：
 
-- 依赖升级
 - CI 变更
+- 依赖升级
 - 部署策略调整
 - 跨 workspace 重构
 - 全局脚手架约定修改
@@ -101,7 +110,7 @@ L2+ 任务**强制按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**�
 - 鉴权与环境配置改动
 - 仓库级规范文件的大幅改动
 
-`L3` 除满足 `L2` 及以上的正式文档准入外，还**必须**满足 **Pre-Implementation Approval Gate**（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）：
+`L3` 在满足 `L2` 及以上的正式文档准入外，还**必须**满足 **Pre-Implementation Approval Gate**（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）：
 
 - L3 实施 session 启动前必须收用户**明确批准**信号（"已批准" / "approved" / "proceed" / "go-ahead" / "确认执行" 任一字眼）
 - 批准信号必须引用具体的 spec / plan 路径
@@ -110,7 +119,7 @@ L2+ 任务**强制按"设计 / 计划 / 实施 / 评审" 4 个 session 串行**�
 
 AI 可以参与生成方案、列出风险、起草 patch 或辅助 review，也可以在明确批准范围内提交受控 patch，但不能在未明确批准的情况下自行推进实现。
 
-`L3` 不从主分支直接推进；具体执行方式见 [branch-strategy.md](./branch-strategy.md)。
+`L3` 必须使用任务分支 **+** 独立 worktree；多 session 串行的具体编排以 [ADR-0003](../adr/0003-multi-session-l2.md) 与对应 runbook 为准。具体执行方式见 [branch-strategy.md](./branch-strategy.md)。
 
 ## 分级判断顺序
 
@@ -126,4 +135,4 @@ AI 可以参与生成方案、列出风险、起草 patch 或辅助 review，也
 
 - 治理基线：[governance-core.md](./governance-core.md)
 - 分支与 worktree：[branch-strategy.md](./branch-strategy.md)
-- ADR：[../adr/0001-task-level-governance.md](../adr/0001-task-level-governance.md)
+- ADR：[../adr/0001-task-level-governance.md](../adr/0001-task-level-governance.md)、[../adr/0003-multi-session-l2.md](../adr/0003-multi-session-l2.md)、[../adr/0004-l2-spec-and-plan.md](../adr/0004-l2-spec-and-plan.md)、[../adr/0005-l3-approval-gate.md](../adr/0005-l3-approval-gate.md)

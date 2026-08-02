@@ -14,6 +14,9 @@
 - [ ] `AGENTS.md` 不再保留必填占位符：`<pm>`、`<app-dir>`、`<entry-file>`、`<shared-dir>`、`<test-dir>`。
 - [ ] 项目 manifest 中存在 `verify` 入口，且该入口能覆盖当前项目的 lint、typecheck、test、build 需求。
 - [ ] `docs/specs/` 和 `docs/plans/` 存在，用于承接 L2+ 任务交付物。
+- [ ] L2 任务**默认双文件交付**：spec（[feature-spec.md](../templates/feature-spec.md) 模板，含"非目标"与"验收"段）与 plan（[implementation-plan.md](../templates/implementation-plan.md) 模板，顶部必含精确 spec 路径引用）必须物理分离为两份独立文件。详见 [ADR-0004](../../adr/0004-l2-spec-and-plan.md) 与 [l2-multi-session-runbook.md](../runbooks/l2-multi-session-runbook.md)。
+- [ ] L3 任务的 [ADR-0005](../../adr/0005-l3-approval-gate.md) Pre-Implementation Approval Gate 已生效：实施 session 启动前必须收用户"已批准"信号（spec / plan 双份路径 + 允许修改范围 + 禁止范围），且 `## 批准` 段顺序在 `## 验证证据` 段之前、批准不得跨任务复用。
+- [ ] verify 落点统一：实施 session 必须跑项目根目录 `verify`，结果**同时**写入 spec 与 plan 双份末尾的 `## 验证证据` 段；规划 session 不跑 verify、仅接力交付物。
 - [ ] 如启用 `.github/workflows/ci.yml` 或 `.gitlab-ci.yml`，其中的 `<...>` 占位符已经替换或删除。
 - [ ] ADR-0002 / 0003 / 0004 / 0005 的状态与 `AGENTS.md` 中"硬约束依据"的表述一致。
 
