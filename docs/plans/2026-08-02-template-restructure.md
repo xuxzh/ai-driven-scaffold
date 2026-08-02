@@ -1,7 +1,7 @@
 # template-restructure 实施计划
 
 > 基于 spec：[docs/specs/2026-08-02-template-restructure.md](../specs/2026-08-02-template-restructure.md)
-> （此行**必填**，否则视为与 spec 失联，详见 [ADR-0004](../../adr/0004-l2-spec-and-plan.md)）
+> （此行**必填**，否则视为与 spec 失联，详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)）
 
 ## 元信息
 
@@ -9,7 +9,7 @@
 - 状态：draft
 - 关联 ADR：(无直接引用;沿用 ADR-0002 / 0003 / 0004 既有硬门禁)
 
-> 命名规范见 [../spec-and-plan-naming.md](../spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
+> 命名规范见 [../spec-and-plan-naming.md](../ai/spec-and-plan-naming.md);文件名前缀为 `<date>-<name>.md`。
 
 > **面向 Agent 执行者**：步骤使用复选框 `- [ ]` 语法跟踪；本 plan 在 worktree `refactor/template-restructure` 上执行。
 >
@@ -206,7 +206,7 @@ rm -f template/AGENTS.md.bak template/CLAUDE.md.bak
 grep -c '\.\./docs/' template/AGENTS.md template/CLAUDE.md
 ```
 
-预期：两个文件的 `../docs/` 计数为 0;`template/AGENTS.md` 内的 `[docs/ai/task-levels.md](docs/ai/task-levels.md)` 等链接保持 `docs/ai/...` 形式(平移后正确)。
+预期：两个文件的 `../docs/` 计数为 0;`template/AGENTS.md` 内的 `[docs/ai/task-levels.md](../ai/task-levels.md)` 等链接保持 `docs/ai/...` 形式(平移后正确)。
 
 - [ ] **步骤 6:再次运行验证**
 
@@ -912,7 +912,7 @@ EOF
 
 - [ ] **步骤 8:把 worktree 状态汇报给评审 session**
 
-按 [branch-strategy.md](../../ai/branch-strategy.md) 汇报要求,记录:
+按 [branch-strategy.md](../ai/branch-strategy.md) 汇报要求,记录:
 - 实际使用的是 worktree `.worktrees/refactor-template-restructure/` + branch `refactor/template-restructure`
 - 没声明 Strict Isolation Profile(本仓库走默认策略)
 - 当前 session:实施 session
@@ -924,7 +924,7 @@ EOF
 
 ## 批准(L3 任务必填,其他任务留空)
 
-- 不适用——本任务为 L2,不需要 Pre-Implementation Approval Gate(详见 [ADR-0005](../../adr/0005-l3-approval-gate.md))。
+- 不适用——本任务为 L2,不需要 Pre-Implementation Approval Gate(详见 [ADR-0005](../adr/0005-l3-approval-gate.md))。
 
 ## 验证证据(实施 session 末尾必填)
 
@@ -951,7 +951,7 @@ EOF
 
 ## Session Handoff
 
-> 按 [`session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 的 11 字段 schema 填写。
+> 按 [`session-handoff-protocol.md`](../ai/runbooks/session-handoff-protocol.md) 的 11 字段 schema 填写。
 
 - **Task Level**: L2
 - **Current Phase**: plan 撰写完成,等待用户 review 后可进入实施 session
@@ -987,7 +987,7 @@ EOF
   - 用户 review 本 plan,确认或提出修改
   - 用户确认后,实施 session 在 worktree `refactor/template-restructure` 上按 task 0 → 1 → 2 → 3 → 4 → 5 → 6 顺序执行
   - 实施 session 末尾填 `## 验证证据` 表 + 改 Session Handoff Status 为 `accepted`
-  - 评审 session 按 [review-checklist.md](../checklists/review-checklist.md) 走
+  - 评审 session 按 [review-checklist.md](../ai/checklists/review-checklist.md) 走
 - **Prohibited Scope**:
   - 不得修改 `docs/adr/*` 内容
   - 不得修改 `template/AGENTS.md` 5 个 `<...>` 占位符
