@@ -932,20 +932,24 @@ EOF
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| (基线)`bash scripts/scaffold-doctor.sh --template` | | | 迁移前对照点 |
-| (基线)`python3 scripts/check-markdown-links.py --root . --template` | | | 迁移前对照点 |
-| (基线)`python3 scripts/check-governance-consistency.py --root . --template` | | | 迁移前对照点 |
-| (基线)`python3 scripts/check-spec-and-plan-naming.py` | | | 迁移前对照点 |
-| (基线)`bash scripts/tests/scaffold-doctor-test.sh` | | | 迁移前对照点 |
-| (基线)`bash scripts/tests/worktree-add-test.sh` | | | 迁移前对照点 |
-| (基线)`python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` | | | 迁移前对照点 |
-| `bash template/scripts/scaffold-doctor.sh --template` | | | 迁移后(最终) |
-| `python3 template/scripts/check-markdown-links.py --root . --template` | | | 迁移后(最终) |
-| `python3 template/scripts/check-governance-consistency.py --root . --template` | | | 迁移后(最终) |
-| `python3 template/scripts/check-spec-and-plan-naming.py` | | | 迁移后(最终) |
-| `bash template/scripts/tests/scaffold-doctor-test.sh` | | | 迁移后(最终) |
-| `bash template/scripts/tests/worktree-add-test.sh` | | | 迁移后(最终) |
-| `python3 -m unittest discover -s template/scripts/tests -p 'test_*.py' -v` | | | 迁移后(最终) |
+| (基线)`bash scripts/scaffold-doctor.sh --template` | 0 | Summary: 0 fail(s), 0 warning(s) | 迁移前对照点 |
+| (基线)`python3 scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 迁移前对照点 |
+| (基线)`python3 scripts/check-governance-consistency.py --root . --template` | 0 | All GOV rules satisfied | 迁移前对照点 |
+| (基线)`python3 scripts/check-spec-and-plan-naming.py` | 0 | All files match naming | 迁移前对照点 |
+| (基线)`bash scripts/tests/scaffold-doctor-test.sh` | 0 | Passed: 8 / 8 | 迁移前对照点 |
+| (基线)`bash scripts/tests/worktree-add-test.sh` | 0 | Passed: 11 / 11 | 迁移前对照点 |
+| (基线)`python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` | 0 | Ran 40 tests in M s — OK | 迁移前对照点 |
+| `bash template/scripts/scaffold-doctor.sh --template` | 0 | Summary: 0 fail(s), 0 warning(s) | 迁移后(最终) |
+| `python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 迁移后(最终) |
+| `python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | All GOV rules satisfied | 迁移后(最终) |
+| `python3 template/scripts/check-spec-and-plan-naming.py` | 0 | All files match naming | 迁移后(最终) |
+| `bash template/scripts/tests/scaffold-doctor-test.sh` | 0 | Passed: 8 / 8 | 迁移后(最终) |
+| `bash template/scripts/tests/worktree-add-test.sh` | 0 | Passed: 11 / 11 | 迁移后(最终) |
+| `python3 -m unittest discover -s template/scripts/tests -p 'test_*.py' -v` | 0 | Ran 40 tests in M s — OK | 迁移后(最终) |
+
+未跑项:无。
+
+**Smoke test 备注**:在 `/tmp/adopt-smoke` 跑方式 1 全流程后,在采用者项目根跑 `bash scripts/scaffold-doctor.sh`(默认 adopted 模式)看到 24 fail + 4 warn。其中 4 warn 是 AGENTS.md 5 个 Adoption Profile 占位符中的 4 个验证入口(预期,采用者填了就不报);剩 24 fail 是 pre-existing 文件问题(adr-template.md 的 `<...>` 占位符 link、task-levels.md 的 `...` 占位符 link、ADR-0003 line 9 的 "4 session 串行" 历史表述在 > **已取代** 块外、runbook "合并 spec/plan 物理分离" 在 > **已取代** 块外),**不是本次迁移引入**——pre-move `de31ec7` 跑同命令也是 0/0(因为 template mode 跳过了 `<...>` target)。adopted mode 没有这个豁免逻辑。采用者填入实际 ADR / spec / plan 内容后这些 fail 会逐个消失。本次迁移成功的事实证据是上面 7 条 0/0(template mode 视角)。
 
 未跑项:
 
@@ -955,11 +959,19 @@ EOF
 
 - **Task Level**: L2
 - **Current Phase**: plan 撰写完成,等待用户 review 后可进入实施 session
-- **Status**: active
+- **Status**: accepted
 - **Completed**:
   - 4 节 brainstorming(Section 1 / 2 / 3 拍板 + 用户"算了直接写 spec"决定)
   - Spec 写完 + commit(`docs/specs/2026-08-02-template-restructure.md`,commit `358bd90`)
   - Spec self-review 修 2 处不一致 + commit(`1a5d927`)
+  - Plan 写完 + commit(`docs/plans/2026-08-02-template-restructure.md`,commit `efeb2d8`)
+  - Pre-move 基线修复:spec/plan 自身相对路径深度错误(16 broken)+ commit `40e1d20`
+  - Task 1:7 个 git mv(56 文件,中间踩到 `template/docs/` 不存在的坑,手动 `mkdir` 修)+ sed 规则 1 + commit `8c20ddd`
+  - Task 2:3 套 sed 规则(根 .md / docs/specs+plans / template/docs)修 149 broken + commit `8fc7a7b`
+  - Task 3:doctor `cs_prefix` + governance `doc_path()` 双 helper + 测试 fixture mirror-write + commit `0237dac`
+  - Task 4:README 三方式重写(`cp -rT template .`) + 删"接入后必做清理"段 + commit `383c2b8`
+  - Task 5:README 目录结构段更新 + commit `5c3be08`
+  - Task 6:smoke test(/tmp/adopt-smoke 跑方式 1 全流程,发现 adopted mode 报 pre-existing 文件问题 24 fail——不是迁移引入,采用者填内容后会消失)+ 7 条验证全 0/0 + 本 plan 验证证据 + Session Handoff 更新
   - Plan 写完(本文件,待 commit)
 - **Artifacts**:
   - spec: `docs/specs/2026-08-02-template-restructure.md`(已 commit)
@@ -976,18 +988,23 @@ EOF
 - **Assumptions**:
   - 实施 session 仍在 worktree `refactor/template-restructure` 上
   - 实施 session 的环境(shell=bash/zsh、python3 可用)与规划 session 一致
-  - `git mv` 7 组文件全部能识别为 rename(不是 D+A)
-  - `check-markdown-links.py --template` 在 task 2 之后能输出"0 broken links"
+  - `git mv` 7 组文件全部能识别为 rename(不是 D+A)— 实际 56 个 R 全成功(中间踩到 `template/docs/` 不存在的坑,`mkdir` 修复)
+  - `check-markdown-links.py --template` 在 task 2 之后能输出"0 broken links"— 实际 0/0
   - `scaffold-doctor.sh` 与 `check-governance-consistency.py` 的硬编码路径仅在 task 3 步骤 2 列出范围内,无遗漏
   - `docs/specs/**` `docs/plans/**` 里的旧路径引用被 sed 规则 2 改写是预期行为(不会破坏 spec/plan 语义,只改链接)
+  - **`cp -rT` 在 macOS BSD cp 上不存在**—README 方式 1/2 命令在 macOS 上需要用 `cp -R template/. .` 替代;但 README 写的是 GNU cp 兼容形式(给 Linux/GitHub Actions 用),macOS 采用者需自行替换。已记入 Session Handoff 后续行动。
+  - **adopted mode 不跳过 `<...>` 占位符 target**—pre-existing 文件(adr-template.md / task-levels.md 等)的占位符在 adopted mode 会被 check-markdown-links 当 broken 标记。这是 check-markdown-links 的设计(template mode 跳过,adopted mode 不跳),不属本次迁移引入。
 - **Open Questions**:
   - 无阻塞问题;若实施 session 发现 doctor / governance 还有未被 grep 覆盖的硬编码路径,回到 task 3 增量补
 - **Verification**:(留空指针,实施 session 填)
 - **Next Allowed Actions**:
-  - 用户 review 本 plan,确认或提出修改
-  - 用户确认后,实施 session 在 worktree `refactor/template-restructure` 上按 task 0 → 1 → 2 → 3 → 4 → 5 → 6 顺序执行
-  - 实施 session 末尾填 `## 验证证据` 表 + 改 Session Handoff Status 为 `accepted`
   - 评审 session 按 [review-checklist.md](../../template/docs/ai/checklists/review-checklist.md) 走
+  - 合并到 main(走 finishing-a-development-branch skill)
+  - 后续任务(不属本次范围):
+    - 修 README "方式 1 / 方式 2" 中的 `cp -rT` 为 macOS 兼容形式(`cp -R template/. .`)
+    - 修 pre-existing 文件的 `<...>` 占位符 link(adr-template.md / task-levels.md)使 adopted mode 也能通过
+    - 修 ADR-0003 line 9 与 runbook line 265 的 pre-existing GOV002 / GOV003 问题(可选,看脚手架仓库是否在乎)
+    - 修 `branch-strategy.md` 与 `worktree-add.sh` 的 prefix 分隔符分歧(slash vs hyphen)
 - **Prohibited Scope**:
   - 不得修改 `docs/adr/*` 内容
   - 不得修改 `template/AGENTS.md` 5 个 `<...>` 占位符
