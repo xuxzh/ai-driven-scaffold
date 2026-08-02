@@ -136,7 +136,7 @@
 
 详细设计已在与用户的三轮 brainstorming 中逐节确认;本段是浓缩索引,具体实施切片属于 plan。
 
-### 文件搬迁 8 项(来自 Section 1)
+### 文件清单 8 项(7 搬迁 + 1 不动,来自 Section 1)
 
 | 路径 | 目标路径 | 类别 |
 |---|---|---|
@@ -232,7 +232,7 @@
   - worktree: `.worktrees/refactor-template-restructure/`,branch: `refactor/template-restructure`
 - **Decisions**:
   - 走方案 B(把所有下发物物理收拢到 `template/`),不方案 A/C
-  - `docs/CONTEXT.md` 算下发物(Q1 推断 + 目录结构有列)
+  - `docs/CONTEXT.md` 算下发物(Q1–Q4 未单独讨论,根据 README 目录结构段 + 术语表性质推断)
   - `.gitignore` 留在根,后续由 doctor 在 `adopted` 模式处理(Q2 b)
   - `scripts/` 全部进 `template/scripts/`,不拆(Q3 a)
   - 所有相对路径引用都改写,不留旧路径(Q4)
