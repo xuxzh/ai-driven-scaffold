@@ -51,13 +51,17 @@ count_pwf() {
 # GOV005 要求 docs/adr/README.md 存在并与同目录 ADR 文件名集合一致；
 # 各 scenario 默认走此结构，单文件缺失型 scenario 会复用此 fixture
 # 并在 run_scenario 之前删除对应文件。
+# $2 是可选 prefix；template mode 下用 "template/" 把下发物放到
+# template/ 子树下，以匹配 doctor 的 mode-conditional 路径。
+# docs/specs 与 docs/plans 是脚手架自身 L2 目录，两种 mode 都在根，不加 prefix。
 make_structured_root() {
   local root="$1"
-  mkdir -p "$root/docs/specs" "$root/docs/plans" "$root/docs/adr"
+  local prefix="${2:-}"
+  mkdir -p "$root/docs/specs" "$root/docs/plans" "$root/${prefix}docs/adr"
   printf '# Stub\n' > "$root/AGENTS.md"
   for adr in 0002-verify-hard-gate.md 0003-multi-session-l2.md \
              0004-l2-spec-and-plan.md 0005-l3-approval-gate.md; do
-    cat > "$root/docs/adr/$adr" <<'EOF'
+    cat > "$root/${prefix}docs/adr/$adr" <<'EOF'
 # Stub ADR
 
 ## 状态
@@ -65,7 +69,7 @@ make_structured_root() {
 Accepted
 EOF
   done
-  cat > "$root/docs/adr/README.md" <<'EOF'
+  cat > "$root/${prefix}docs/adr/README.md" <<'EOF'
 # ADR 索引
 
 - [0002 verify](0002-verify-hard-gate.md)
@@ -178,8 +182,8 @@ TMPDIR_LATEST=""
 echo "[Scenario 4] template mode CI file with <...> placeholders -> WARN, not FAIL"
 TMPDIR_LATEST=$(mktemp -d)
 trap 'cleanup_tmp' EXIT INT TERM
-make_structured_root "$TMPDIR_LATEST"
-mkdir -p "$TMPDIR_LATEST/.github/workflows"
+make_structured_root "$TMPDIR_LATEST" "template/"
+mkdir -p "$TMPDIR_LATEST/template/.github/workflows"
 cat > "$TMPDIR_LATEST/AGENTS.md" <<'EOF'
 # Stub
 
@@ -189,7 +193,7 @@ cat > "$TMPDIR_LATEST/AGENTS.md" <<'EOF'
 | shared-dir | <shared-dir> |
 | test-dir | <test-dir> |
 EOF
-cat > "$TMPDIR_LATEST/.github/workflows/ci.yml" <<'EOF'
+cat > "$TMPDIR_LATEST/template/.github/workflows/ci.yml" <<'EOF'
 name: ci
 jobs:
   build:
@@ -205,7 +209,7 @@ TMPDIR_LATEST=""
 echo "[Scenario 5] template mode no manifest -> WARN, not FAIL"
 TMPDIR_LATEST=$(mktemp -d)
 trap 'cleanup_tmp' EXIT INT TERM
-make_structured_root "$TMPDIR_LATEST"
+make_structured_root "$TMPDIR_LATEST" "template/"
 cat > "$TMPDIR_LATEST/AGENTS.md" <<'EOF'
 # Stub
 

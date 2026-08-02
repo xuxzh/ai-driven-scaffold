@@ -116,6 +116,14 @@ file_contains() {
 # check_structure — AGENTS.md / Adoption Profile / L2 dirs / CI / ADR status
 # =========================================================================
 check_structure() {
+  # Mode-conditional prefix: scaffold self uses template/ subtree;
+  # adopted projects have everything at root.
+  if [ "$mode" = template ]; then
+    cs_prefix="template/"
+  else
+    cs_prefix=""
+  fi
+
   # AGENTS.md existence + Adoption Profile placeholder fill
   if [ ! -f AGENTS.md ]; then
     fail 'AGENTS.md is missing'
@@ -146,7 +154,7 @@ check_structure() {
 
   # CI placeholders (always WARN by design)
   found_ci=0
-  for ci_file in .github/workflows/ci.yml .gitlab-ci.yml; do
+  for ci_file in ${cs_prefix}.github/workflows/ci.yml ${cs_prefix}.gitlab-ci.yml; do
     if [ -f "$ci_file" ]; then
       found_ci=1
       if grep -Eq '<[^>]+>' "$ci_file"; then
@@ -177,10 +185,10 @@ check_structure() {
 
   # ADR status (each ADR's `## 状态` block must not be Proposed)
   for adr in \
-    docs/adr/0002-verify-hard-gate.md \
-    docs/adr/0003-multi-session-l2.md \
-    docs/adr/0004-l2-spec-and-plan.md \
-    docs/adr/0005-l3-approval-gate.md
+    ${cs_prefix}docs/adr/0002-verify-hard-gate.md \
+    ${cs_prefix}docs/adr/0003-multi-session-l2.md \
+    ${cs_prefix}docs/adr/0004-l2-spec-and-plan.md \
+    ${cs_prefix}docs/adr/0005-l3-approval-gate.md
   do
     if [ ! -f "$adr" ]; then
       fail "$adr is missing"
