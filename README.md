@@ -21,8 +21,21 @@
 ```bash
 gh repo create my-project --template https://github.com/xuxzh/ai-driven-scaffold --private --clone
 cd my-project
-# 仓库根 AGENTS.md 是脚手架本仓库专用，采用前先换成模板版
-mv template/AGENTS.md AGENTS.md
+
+# 1. template/ 升格为根(覆盖脚手架自身的 AGENTS.md / README.md 等)
+shopt -s dotglob                      # 让 cp 也复制 .gitlab-ci.yml / .github/
+cp -rT template .
+rm -rf template docs/specs docs/plans  # 移除脚手架自身的 spec/plan 历史与 template/ 自身
+mkdir -p docs/specs docs/plans
+touch docs/specs/.gitkeep docs/plans/.gitkeep
+
+# 2. 重置 git(克隆自模板仓库,不是你的)
+rm -rf .git
+git init -b main
+git add . && git commit -m "chore: bootstrap from ai-driven-scaffold"
+
+# 3. 补 Adoption Profile
+$EDITOR AGENTS.md
 ```
 
 ### 方式 2：手动克隆并裁剪
@@ -30,56 +43,53 @@ mv template/AGENTS.md AGENTS.md
 ```bash
 git clone https://github.com/xuxzh/ai-driven-scaffold my-project
 cd my-project
-# 仓库根 AGENTS.md 是脚手架本仓库专用，采用前先换成模板版
-mv template/AGENTS.md AGENTS.md
+
+# 1. template/ 升格为根
+shopt -s dotglob
+cp -rT template .
+rm -rf template docs/specs docs/plans
+mkdir -p docs/specs docs/plans
+touch docs/specs/.gitkeep docs/plans/.gitkeep
+
+# 2. 重置 git
 rm -rf .git
 git init -b main
+git add . && git commit -m "chore: bootstrap from ai-driven-scaffold"
+
+# 3. 补 Adoption Profile
+$EDITOR AGENTS.md
 ```
 
 ### 方式 3：把治理层注入既有项目
 
 ```bash
-# 假设你的项目根目录在 ~/my-existing-project
 cd ~/my-existing-project
 
-# 0. 临时克隆模板到 /tmp（不污染你的项目）
+# 0. 临时克隆模板
 git clone https://github.com/xuxzh/ai-driven-scaffold /tmp/ai-scaffold
 
-# 1. 复制治理文档
-cp -r /tmp/ai-scaffold/docs/ai docs/
-cp -r /tmp/ai-scaffold/docs/adr docs/
-cp /tmp/ai-scaffold/template/AGENTS.md AGENTS.md
+# 1. 复制下发物(路径都从根改成 template/)
+cp -r /tmp/ai-scaffold/template/docs/ai docs/
+cp -r /tmp/ai-scaffold/template/docs/adr docs/
+cp /tmp/ai-scaffold/template/docs/CONTEXT.md docs/
+cp -r /tmp/ai-scaffold/template/scripts ./scripts
+cp /tmp/ai-scaffold/template/AGENTS.md ./AGENTS.md
+cp /tmp/ai-scaffold/template/CLAUDE.md ./CLAUDE.md
+cp /tmp/ai-scaffold/template/.gitlab-ci.yml ./.gitlab-ci.yml
+cp -rn /tmp/ai-scaffold/template/.github ./.github   # -n 避免覆盖既有 workflows
 
-# 2. 如果项目还没有 docs/specs/ 和 docs/plans/，创建它们
+# 2. 补空目录
 mkdir -p docs/specs docs/plans
 touch docs/specs/.gitkeep docs/plans/.gitkeep
 
-# 3. 编辑 AGENTS.md 顶部的"用户项目元信息（Adoption Profile）"段落
-#    把 5 个占位符（<pm> / <app-dir> / <entry-file> / <shared-dir> / <test-dir>）
-#    替换为你的项目实际值
+# 3. 补 Adoption Profile
+$EDITOR AGENTS.md
 
-# 4. 清理临时克隆
+# 4. 清理
 rm -rf /tmp/ai-scaffold
 ```
 
-> **注意**：`cp -r docs/ai docs/` 要求 `docs/` 目录已存在；如不存在，先 `mkdir -p docs/` 再复制。
-
-### 接入后必做清理（三种方式通用）
-
-`docs/specs/` 和 `docs/plans/` 在本脚手架自身演进时承载了脚手架的 spec/plan 历史（如 `adoption-self-check`、`scaffold-governance-tightening`）。这些是脚手架自身的演进记录，**不应**跟到你的目标项目。接入完成后：
-
-```bash
-# 保留 .gitkeep 作为空目录占位，删除其他所有历史文件
-find docs/specs docs/plans -type f ! -name '.gitkeep' -delete
-```
-
-清理后两个目录应只剩 `.gitkeep`，等待你的目标项目首次 L2 任务生成 `docs/specs/<date>-<name>.md` 与 `docs/plans/<date>-<name>.md`。如果只想保留脚手架自身治理（不需要 docs/specs、docs/plans 这两个空目录），可以直接：
-
-```bash
-rm -rf docs/specs docs/plans
-```
-
-但**不推荐**——L2+ 任务需要它们承载 spec/plan 交付物，提前建好可避免后续流程卡壳。
+> **注意**：`cp -rn` 在 `.github/` 已存在时不会覆盖；若既有项目已有 workflows，需手动 `diff` 后再合并。
 
 ## 接入后的 5 步
 
