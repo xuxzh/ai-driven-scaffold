@@ -1,5 +1,7 @@
 # L2 接力纸面演练（2026-08）
 
+> **快照说明**：本文为演练当时（2026-08）的仓库结构快照记录。文中引用的 `.superpowers/sdd/...`、`scripts/...` 等路径可能已在后续重构（见 `2026-08-02-template-restructure`）中调整；本文保留原样作为历史记录，不作为当前路径权威。
+
 > 本文件为 Task 6 指定的"模拟一次 L2 接力"演练，**纸面演练**——不触发真实 agent / 不写实现代码 / 不修改任何规范文件。所有"会话"边界与"交付物"行为均按 [`docs/ai/runbooks/session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 与 [`docs/ai/runbooks/l2-multi-session-runbook.md`](../runbooks/l2-multi-session-runbook.md) 的现有纪律还原。
 >
 > 演练背景：父计划 `docs/plans/2026-08-01-ai-session-batch-and-dogfood.md` Task 6 第 1 段。本演练**不**新增规则、不修改 ADR；只验证"新 Session 仅凭仓库文件即可恢复任务并执行"是否成立。

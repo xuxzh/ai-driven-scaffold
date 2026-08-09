@@ -1,5 +1,7 @@
 # 三任务 Batch 纸面演练（2026-08）
 
+> **快照说明**：本文为演练当时（2026-08）的仓库结构快照记录。文中引用的 `.superpowers/sdd/...`、`scripts/...` 等路径可能已在后续重构（见 `2026-08-02-template-restructure`）中调整；本文保留原样作为历史记录，不作为当前路径权威。
+
 > 本文件为 Task 6 指定的"模拟一次三任务 batch"演练，**纸面演练**——不触发真实并行 agent / 不写实现代码 / 不修改任何脚本或规范文件。所有"并行" / "串行" / "集成"行为均按 [`docs/ai/runbooks/batch-ai-execution-runbook.md`](../runbooks/batch-ai-execution-runbook.md) 与 [`docs/ai/runbooks/session-handoff-protocol.md`](../runbooks/session-handoff-protocol.md) 的现有纪律还原。
 >
 > 演练背景：父计划 `docs/plans/2026-08-01-ai-session-batch-and-dogfood.md` Task 6 第 2 段。本演练**不**新增规则、**不**修改脚本、**不**改 `scripts/scaffold-doctor.sh` 任何内容；只验证"3 个子任务（含 1 个 Shared Path 命中）拆分、并行判定、文件所有权、局部验证、集成 full verify、失败隔离"是否成立。

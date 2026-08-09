@@ -1,5 +1,7 @@
 # AI 治理 v2 Dogfood 报告（2026-08）
 
+> **快照说明**：本文为演练当时（2026-08）的仓库结构快照记录。文中引用的 `.superpowers/sdd/...`、`scripts/...` 等路径可能已在后续重构（见 `2026-08-02-template-restructure`）中调整；本文保留原样作为历史记录，不作为当前路径权威。
+
 > 本文件按 [`docs/ai/dogfood/README.md`](./README.md) 规范汇总 Plan C Task 5 实施成果，作为 Plan C Task 5 计划要求的最终交付物。
 
 ## 任务清单
