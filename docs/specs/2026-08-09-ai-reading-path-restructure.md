@@ -276,10 +276,17 @@
 
 ## 验证证据（实施 session 末尾必填）
 
+> 本表由**实施 session**在跑完验证后填写；规划 session 不允许填写，仅交付 spec + plan 双份。
+
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| | | | |
+| (基线)`bash template/scripts/scaffold-doctor.sh --template` | 0 | Summary: 0 fail(s), 0 warning(s) | Task 0 基线 |
+| (基线)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | Task 0 基线 |
+| (基线)`python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | clean | Task 0 基线 |
+| (Task 1 后)`bash template/scripts/scaffold-doctor.sh --template` | 0 | 0 fail / 0 warning | AGENTS 入口重构（删 11 链 + 分流表）后 |
+| (Task 2 后)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 4 summary 删除后无断链（历史 plan 的 summary 引用为反引号纯路径，非链接） |
+| (Task 7 后 / 最终)`bash template/scripts/scaffold-doctor.sh --template` | 0 | 0 fail / 0 warning | 全 Task 完成 |
+| (最终)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 全 Task 完成 |
+| (最终)`python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | clean | 全 Task 完成 |
 
-未跑项：
-
-> 本段由**实施 session**填写；规划 Session 不允许填写。
+未跑项：无（doctor / link / governance 三档每 Task 末尾均跑，全退出码 0）
