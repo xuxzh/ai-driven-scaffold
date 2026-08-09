@@ -59,6 +59,18 @@ class TestCheckSpecAndPlanNaming(unittest.TestCase):
         self._write("docs/plans", "2026-08-01-bar-baz.md")
         self.assertEqual(run_checker(self.tmpdir).returncode, 0)
 
+    # 合法:task-packets 目录的合法命名应通过(TARGET_DIRS 须含 docs/task-packets)
+    def test_valid_task_packets_return_zero(self):
+        self._write("docs/task-packets", "2026-08-01-pkt.md")
+        self.assertEqual(run_checker(self.tmpdir).returncode, 0)
+
+    # 非法:task-packets 目录的非法命名应报违例
+    def test_invalid_task_packets_return_one(self):
+        self._write("docs/task-packets", "foo.md")
+        result = run_checker(self.tmpdir)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("docs/task-packets/foo.md", result.stdout)
+
     # 合法：闰年 2028-02-29 应通过
     def test_leap_day_2028_accepted(self):
         self._write("docs/specs", "2028-02-29-leap.md")

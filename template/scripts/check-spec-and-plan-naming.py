@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""check-spec-and-plan-naming.py — docs/specs / docs/plans 命名只读检查器
+"""check-spec-and-plan-naming.py — docs/specs / docs/plans / docs/task-packets 命名只读检查器
 
-仅校验 ``<root>/docs/specs/*.md`` 与 ``<root>/docs/plans/*.md`` 的直接子级
+仅校验 ``<root>/docs/specs/*.md`` 与 ``<root>/docs/plans/*.md`` 与 ``<root>/docs/task-packets/*.md`` 的直接子级
 文件名是否匹配 ``<YYYY-MM-DD>-<kebab-name>.md``：
 
 - 日期段须为 ``YYYY-MM-DD`` 且是真实日历日（``datetime.date.fromisoformat`` 可解析）
@@ -20,7 +20,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-TARGET_DIRS = ("docs/specs", "docs/plans")
+TARGET_DIRS = ("docs/specs", "docs/plans", "docs/task-packets")
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 DATE_PREFIX_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})(?:-(.+))?$")
 
