@@ -16,6 +16,22 @@
 
 主分支保护是进入实现前的通用准入条件。`main` / `master` 只作为稳定集成分支，不直接承载开发提交；实质性编辑前必须先进入任务分支或隔离 worktree。具体工作方式见 [branch-strategy.md](./branch-strategy.md)。
 
+## 进入实现前准入门禁
+
+AI 进入实质性编辑前，必须先满足以下准入条件：
+
+- 任何代码改动前，先说明任务级别：`L0`、`L1`、`L2` 或 `L3`（见上方等级矩阵）
+- 当前分支检查：不得在 `main` / `master` 直接编辑或提交开发改动（详见 [branch-strategy.md](./branch-strategy.md)）
+- 分支与 worktree 选择：默认策略由 [branch-strategy.md](./branch-strategy.md) 的等级矩阵决定
+- 主锚点文件：最接近行为控制处的文件或符号
+- 非目标：本次明确不改的行为、模块或文档
+- 最小验证命令：能证明当前切片成立的最窄检查（按 [verification-baseline.md](./verification-baseline.md) 分层基线）
+- 是否需要 spec/plan：`L2` 及以上必须先查验正式 spec 和 plan 双份（详见 [ADR-0004](../adr/0004-l2-spec-and-plan.md)），`L1` 至少需要 task packet
+- 正式 spec 和 plan 统一位于 `docs/specs/`、`docs/plans/`；聊天计划、临时 TODO、`update_plan` 输出不算正式文档
+- 用户明确指定 `L2` 或 `L3` 时，AI 无权自行降级；如分级存在争议，按更高风险级别处理
+- `L3` 不允许被当作普通 `L2` 直接执行，必须明确人工主导和 AI 的批准边界；实施 session 启动前必须收“已批准”信号（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）
+- 是否需要文档回写：触及长期边界、默认做法、验证路径或高频坑时需要（详见 [doc-rewriting-rules.md](./doc-rewriting-rules.md)）
+
 ## 等级矩阵（统一语义，权威定义）
 
 > 下表为本仓库任务分级的**唯一权威定义**。AGENTS.md / template/AGENTS.md / runbook / checklist 只允许摘要与链接，不允许重新发明条件。

@@ -100,37 +100,10 @@ L2 与 L3 都不允许规划者把 spec 与 plan 合并为一份文件；两者�
 | 评审 | [review-checklist.md](./checklists/review-checklist.md) | 先找行为回归、边界破坏、验证缺失和测试缺口；review report 必含测试盲区 + 未跑项确认。 |
 | `L3` CI、依赖、鉴权、安全、跨 workspace、仓库级约定 | [task-levels.md](./task-levels.md)、[ADR-0005](../adr/0005-l3-approval-gate.md) | 人工主导；先查验正式 spec 和 plan 双份 + 实施 session 启动前收"已批准"信号；AI 只做分析、草案、验证辅助和明确批准范围内的受控 patch。 |
 
-## 进入实现前准入门禁
-
-AI 进入实质性编辑前，必须先满足以下准入条件：
-
-- 任何代码改动前，先说明任务级别：`L0`、`L1`、`L2` 或 `L3`（详见 [task-levels.md](./task-levels.md)）
-- 当前分支检查：不得在 `main` / `master` 直接编辑或提交开发改动（详见 [branch-strategy.md](./branch-strategy.md)）
-- 分支与 worktree 选择：默认策略由 [branch-strategy.md](./branch-strategy.md) 的等级矩阵决定；本索引不重复定义
-- 主锚点文件：最接近行为控制处的文件或符号
-- 非目标：本次明确不改的行为、模块或文档
-- 最小验证命令：能证明当前切片成立的最窄检查
-- 是否需要 spec/plan：`L2` 及以上必须先查验正式 spec 和 plan 双份，`L1` 至少需要 task packet
-- 正式 spec 和 plan 统一位于 `docs/specs/`、`docs/plans/`；聊天计划、临时 TODO、`update_plan` 输出不算正式文档
-- 用户明确指定 `L2` 或 `L3` 时，AI 无权自行降级；如分级存在争议，按更高风险级别处理
-- `L3` 不允许被当作普通 `L2` 直接执行，必须明确人工主导和 AI 的批准边界；实施 session 启动前必须收"已批准"信号（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）
-- 是否需要文档回写：触及长期边界、默认做法、验证路径或高频坑时需要（详见 [doc-rewriting-rules.md](./doc-rewriting-rules.md)）
-
 ## 验证入口
 
-- 完整验证：项目根目录的 `verify` 命令（具体定义见 `AGENTS.md` 顶部"用户项目元信息"）
-- 局部验证：按 [verification-baseline.md](./verification-baseline.md) 的分层基线选择最窄但足够的检查
-- 基础命令：`<pm> lint`、`<pm> typecheck`、`<pm> test`、`<pm> build`（其中 `<pm>` 是项目实际包管理器）
-
-AI 汇报时必须说明实际运行了哪些命令、哪些通过、哪些未运行及原因。
+局部验证按 [verification-baseline.md](./verification-baseline.md) 的分层基线选择最窄但足够的检查；完整验证入口见 `AGENTS.md` 顶部“用户项目元信息”。
 
 ## 文档回写规则
 
-详见 [doc-rewriting-rules.md](./doc-rewriting-rules.md)。简要复述：
-
-- 改动改变长期边界、默认做法或验证路径 → 回写
-- 修复暴露出未来高概率重复出现的坑 → 回写
-- 新增或拒绝某个会影响后续 AI 判断的长期决策 → 回写
-- CI、部署、依赖、安全或环境行为发生变化 → 回写
-
-判断依据进入 `docs/specs/`、`docs/adr/`、`docs/ai/runbooks/`、`docs/ai/checklists/` 或 `AGENTS.md`，不要只留在聊天记录里。
+详见 [doc-rewriting-rules.md](./doc-rewriting-rules.md)。
