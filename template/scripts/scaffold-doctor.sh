@@ -3,7 +3,7 @@
 #
 # Aggregates four categories of read-only checks:
 #   check_structure        AGENTS.md / Adoption Profile / docs/specs / docs/plans
-#                          / ADR status / CI placeholders
+#                          / docs/task-packets / ADR status / CI placeholders
 #   check_links            python3 scripts/check-markdown-links.py [--template]
 #   check_consistency      python3 scripts/check-governance-consistency.py [--template]
 #   check_verify_profile   adopted mode only: verify entry in common manifests
@@ -150,6 +150,11 @@ check_structure() {
     pass 'docs/plans exists'
   else
     fail 'docs/plans is missing'
+  fi
+  if [ -d docs/task-packets ]; then
+    pass 'docs/task-packets exists'
+  else
+    fail 'docs/task-packets is missing'
   fi
 
   # CI placeholders (always WARN by design)
