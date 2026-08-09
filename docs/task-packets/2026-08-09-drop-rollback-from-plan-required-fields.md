@@ -57,6 +57,9 @@
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| | | | |
+| `bash template/scripts/scaffold-doctor.sh --template` | 0 | Summary: 0 fail(s), 0 warning(s) | 删 line 31 回滚后 |
+| `python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | clean | |
+| `python3 template/scripts/check-spec-and-plan-naming.py` | 0 | clean | |
+| `rg "回滚" template/docs/ai/checklists/review-checklist.md` | 0 | 仅 line 57 命中 | line 31 回滚已删；line 57 PR 描述字段保留 |
 
-未跑项：
+未跑项：无（doctor / governance / naming 均跑，全退出码 0）
