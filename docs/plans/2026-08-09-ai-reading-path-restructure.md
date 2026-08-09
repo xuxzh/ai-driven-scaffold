@@ -544,26 +544,27 @@ wc -l AGENTS.md template/docs/ai/context-index.md  # 对照 ≤250 行目标（�
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| (基线)`bash template/scripts/scaffold-doctor.sh --template` | | | Task 0 基线 |
-| (基线)`python3 template/scripts/check-markdown-links.py --root . --template` | | | Task 0 基线 |
-| (基线)`python3 template/scripts/check-governance-consistency.py --root . --template` | | | Task 0 基线 |
-| (Task 1 后)`bash template/scripts/scaffold-doctor.sh --template` | | | |
-| (Task 2 后)`python3 template/scripts/check-markdown-links.py --root . --template` | | | summary 删除后无断链 |
-| (Task 7 后 / 最终)`bash template/scripts/scaffold-doctor.sh --template` | | | |
-| (最终)`python3 template/scripts/check-governance-consistency.py --root . --template` | | | |
+| (基线)`bash template/scripts/scaffold-doctor.sh --template` | 0 | Summary: 0 fail(s), 0 warning(s) | Task 0 基线 |
+| (基线)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | Task 0 基线 |
+| (基线)`python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | clean | Task 0 基线 |
+| (Task 1 后)`bash template/scripts/scaffold-doctor.sh --template` | 0 | 0 fail / 0 warning | AGENTS 入口重构（删 11 链 + 分流表）后 |
+| (Task 2 后)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 4 summary 删除后无断链（历史 plan 的 summary 引用为反引号纯路径，非链接） |
+| (Task 7 后 / 最终)`bash template/scripts/scaffold-doctor.sh --template` | 0 | 0 fail / 0 warning | 全 Task 完成 |
+| (最终)`python3 template/scripts/check-markdown-links.py --root . --template` | 0 | 0 broken | 全 Task 完成 |
+| (最终)`python3 template/scripts/check-governance-consistency.py --root . --template` | 0 | clean | 全 Task 完成 |
 
-未跑项：
+未跑项：无（doctor / link / governance 三档每 Task 末尾均跑，全退出码 0）
 
 ## Session Handoff
 
 - Task Level: L2
-- Current Phase: 规划完成（spec 已确认 + plan 草稿产出），待进入实施 session
-- Status: blocked（等待用户批准进入实施 session 的信号）
-- Completed: spec 确认；plan 8 个 Task 切片产出；baseline 验证全绿；summary 引用依赖摸清（根 AGENTS + template AGENTS + 历史 plan batch-and-dogfood + commit-convention 反向引用）
-- Artifacts: `docs/specs/2026-08-09-ai-reading-path-restructure.md`、`docs/plans/2026-08-09-ai-reading-path-restructure.md`（本文件）
-- Decisions: TL;DR 用 `## TL;DR` 二级标题（spec Open Q1 默认）；分流表只按 L 级别分流，session 角色分流交 context-index（spec Open Q2 默认）；Task 顺序"先重构 AGENTS.md 移除引用 → 再删 summary"，保证每 Task 末尾无断链；Task 3 合并 context-index 去规则化与 task-levels 收口门禁于同一 commit，避免门禁悬空
-- Assumptions: 4 个 full 补 TL;DR 能覆盖原 summary 的快速浏览价值；`check-governance-consistency.py` 不硬编码 summary 路径（已验证，删除安全）；新增 ADR-0006 不会触发 governance 一致性 fail（Task 7 步骤 4 有兜底校验）
-- Open Questions: TL;DR 段是否需要在 `spec-and-plan-naming.md` 或模板里正式约束为必填？（本 plan 仅作为习惯引入，未升为硬约束——评审 session 决定是否回写为规则）
-- Verification: plan 为规划产物，未跑实施验证；baseline（Task 0 前置）已跑通 0 fail / 0 warning
-- Next Allowed Actions: 用户批准进入实施 session 后 → 按 Task 1→7 顺序执行 → 每 Task 末尾 commit + 验证全绿 → 收尾跑全 Task 验证 + 核对 spec 验收标准 → 填 `## 验证证据` 表 → 进入评审 session
+- Current Phase: 实施完成（7 Task 全部 commit + 验证全绿），待进入评审 session
+- Status: blocked（等待用户指示进入评审 session 或直接合并）
+- Completed: spec 确认 + plan 产出 + 7 个 Task 全部实施完成（Task 1 AGENTS 入口重构 / Task 2 删 summary + TL;DR / Task 3 context-index 去规则化 + task-levels 收口门禁 / Task 4 ADR 降级 / Task 5 l2-runbook 去重 + doc-rewriting-rules TL;DR 同步 / Task 6 断链修复 / Task 7 新增 ADR-0006）；每 Task 末尾 3 验证全绿；全 Task 收尾验证 + spec 验收标准核对全达成；L0 必读量 185 行（目标 ≤250）
+- Artifacts: `docs/specs/2026-08-09-ai-reading-path-restructure.md`、`docs/plans/2026-08-09-ai-reading-path-restructure.md`（本文件）、`template/docs/adr/0006-reading-path-layering.md`（新增 ADR）
+- Decisions: TL;DR 用 `## TL;DR` 二级标题（spec Open Q1 默认）；分流表只按 L 级别分流（spec Open Q2 默认）；Task 顺序“先重构 AGENTS.md 移除引用 → 再删 summary”保证每 Task 末尾无断链；Task 3 合并 context-index 去规则化与 task-levels 收口门禁于同一 commit；实施发现 verification-baseline / completion-criteria 本无 summary 但仍补 TL;DR（四层分离模型规则层标配）；历史 plan batch-and-dogfood 的 summary 引用为反引号纯路径非链接，删 summary 后不断链，未改
+- Assumptions: 4 个 full 补 TL;DR 覆盖原 summary 价值（已达成）；`check-governance-consistency.py` 不硬编码 summary 路径（已验证删除安全）；新增 ADR-0006 未触发 governance fail（已验证）
+- Open Questions: TL;DR 段是否需在 `spec-and-plan-naming.md` 或模板正式约束为必填？（本 plan 仅作为习惯引入，评审 session 决定是否回写为规则）
+- Verification: 全 Task 收尾验证全绿（doctor 0 fail/0 warning、link 0 broken、governance clean）；spec 验收标准全达成（4 summary 删、5 full 有 TL;DR、AGENTS 无通读清单有分流表、context-index 无准入门禁、governance 无同步阅读、3 分钟短路径唯一权威、L0 必读 185 行）
+- Next Allowed Actions: 进入评审 session（按 [review-checklist.md](../../template/docs/ai/checklists/review-checklist.md)）核对分流表唯一性、断链清零、TL;DR 覆盖率、spec 验收标准；评审后决定合并到 main 或返工
 - Prohibited Scope: 实施 session 不得改任何治理文件的规则语义；不得改 Adoption Profile 10 字段；不得改模板骨架字段；不得引入新机制；不得在 main 提交；不得跳过任一 Task 的"改动后验证"步骤
