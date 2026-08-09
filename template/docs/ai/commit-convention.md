@@ -1,6 +1,12 @@
 # Commit Convention
 
-> **这是单点定义文件**。所有 git 提交信息、PR/MR 描述的格式、AI 提交边界与硬约束都按此文件。Summary 仅提供快速入口（见 [commit-convention-summary.md](./commit-convention-summary.md)）；具体 type 语义、scope 规则、breaking change 标记与 AI 行为约束以本文为权威。
+> **这是单点定义文件**。所有 git 提交信息、PR/MR 描述的格式、AI 提交边界与硬约束都按此文件。
+
+## TL;DR
+
+- **格式**：`<type>(<scope>): <subject>`；scope 可省；subject ≤72 字符、祈使语气、不写句号。
+- **Type 白名单（11）**：`feat` / `fix` / `docs` / `style` / `refactor` / `perf` / `test` / `build` / `ci` / `chore` / `revert`。
+- **AI 硬约束**：默认不自动 commit；不跳 hooks；不 amend 未授权提交；不 force-push 共享分支。
 
 ## 目的
 
@@ -166,7 +172,6 @@ Refs: docs/plans/2026-08-01-ai-session-batch-and-dogfood.md
 
 ## 关联
 
-- 提交边界摘要：[commit-convention-summary.md](./commit-convention-summary.md)
 - AI 角色边界：[ai-role-boundaries.md](./ai-role-boundaries.md)
 - 任务分级：[task-levels.md](./task-levels.md)
 - 完成定义：[completion-criteria.md](./completion-criteria.md)

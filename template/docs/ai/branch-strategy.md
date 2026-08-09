@@ -2,6 +2,13 @@
 
 > **这是单点定义文件**。所有改动前的分支检查、worktree 选择、命名约定都按此文件。任务等级矩阵见 [task-levels.md](./task-levels.md)。
 
+## TL;DR
+
+- **四个概念**：工作区落盘 / 分支（`refs/heads`）/ 提交（快照）/ worktree（`.worktrees/<branch>/`）。
+- **主分支保护**：`main` / `master` 只作稳定集成分支，不直接承载开发提交。
+- **默认策略**：所有等级必走任务分支；`L1+` 强制独立 worktree（含 `L2` spec / plan 阶段）。
+- **Strict Isolation**：Adoption Profile 声明后所有等级（含 `L0`）强制 worktree。
+
 ## 四个概念的区分
 
 本仓库的"工作区落盘 / 分支 / 提交 / worktree"是四个独立概念，必须区分清楚：
