@@ -1,5 +1,7 @@
 # 任务包模板
 
+> 命名遵循 [spec-and-plan-naming.md](../spec-and-plan-naming.md) 的 `<YYYY-MM-DD>-<kebab-name>.md` 格式；task-packet 不适用 `## 元信息` 段与状态机。
+
 > **L2+ 批量协作时**（把一次实施拆给多个 worker agent 并行落地），本模板的"8 个批量子字段"（`Owner` / `Owned Paths` / `Shared Paths` / `Prohibited Paths` / `Depends On` / `Local Verify` / `Integration Owner` / `Integration Verify`）为**必填**；可并行判定、文件所有权、共享文件独占、失败隔离的完整纪律见 [`docs/ai/runbooks/batch-ai-execution-runbook.md`](../runbooks/batch-ai-execution-runbook.md)。L0 / L1 任务这 8 个字段可标注"不适用（单 agent 串行）"。
 
 ## 目标
