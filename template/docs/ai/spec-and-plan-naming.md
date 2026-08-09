@@ -15,8 +15,8 @@
 ## 路径基准
 
 - `docs/specs`、`docs/plans`、`docs/task-packets` 路径**相对于项目根**。
-- monorepo:改动落在单个子包时,spec / plan / task-packet 放 `<pkg>/docs/specs/`;跨包 L2 放仓库根 `docs/specs/`。
-- 命名检查脚本支持子包场景:`python3 scripts/check-spec-and-plan-naming.py --root <pkg>`;doctor 默认查根,子包项目在各包内运行。
+- monorepo:改动落在单个子包时,spec / plan / task-packet 放该子包下(如 `packages/web/docs/specs/`);跨包 L2 放仓库根 `docs/specs/`。
+- 命名检查脚本支持子包场景:`python3 scripts/check-spec-and-plan-naming.py --root packages/web`;doctor 默认查根,子包项目在各包内运行。
 
 ## 文件命名
 
