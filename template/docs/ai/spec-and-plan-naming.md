@@ -6,8 +6,17 @@
 
 - `docs/specs/<date>-<name>.md`
 - `docs/plans/<date>-<name>.md`
+- `docs/task-packets/<date>-<name>.md`
+
+> **适用差异**:命名格式(下文)三类资产统一;`## 元信息` 段与状态机**仅 spec / plan 必填**,task-packet 是一次性 L1 资产,不适用元信息段与状态机(详见各自模板)。
 
 设计原则参见 [ADR-0004](../adr/0004-l2-spec-and-plan.md);本文档落地 ADR-0004 中未约束的命名细节与元信息字段。
+
+## 路径基准
+
+- `docs/specs`、`docs/plans`、`docs/task-packets` 路径**相对于项目根**。
+- monorepo:改动落在单个子包时,spec / plan / task-packet 放 `<pkg>/docs/specs/`;跨包 L2 放仓库根 `docs/specs/`。
+- 命名检查脚本支持子包场景:`python3 scripts/check-spec-and-plan-naming.py --root <pkg>`;doctor 默认查根,子包项目在各包内运行。
 
 ## 文件命名
 
@@ -59,9 +68,9 @@
 - 后缀紧贴 `<name>`,不带额外分隔
 - 不要用 `-a` / `-b` 字母后缀(无法反映启动顺序)
 
-## 元信息段(顶部必填)
+## 元信息段(顶部必填,仅 spec / plan)
 
-每个 spec / plan 文件**必须在正文之前**含 `## 元信息` 段,顺序固定:
+每个 spec / plan 文件**必须在正文之前**含 `## 元信息` 段,顺序固定;task-packet 不适用本段:
 
 ```markdown
 ## 元信息
@@ -93,7 +102,7 @@ rg "^- 主题：.*auth" docs/specs/
 
 约定:查询时主题关键词必须出现在 `主题:` 行的逗号列表中,不做 fuzzy 匹配。
 
-## 状态机
+## 状态机(仅 spec / plan)
 
 ```
    draft ──(实施 session 通过 verify)──> accepted
