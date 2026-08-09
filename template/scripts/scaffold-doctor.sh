@@ -1,11 +1,12 @@
 #!/bin/sh
 # scripts/scaffold-doctor.sh — scaffold doctor (structure + links + consistency + verify)
 #
-# Aggregates four categories of read-only checks:
+# Aggregates five categories of read-only checks:
 #   check_structure        AGENTS.md / Adoption Profile / docs/specs / docs/plans
 #                          / docs/task-packets / ADR status / CI placeholders
 #   check_links            python3 scripts/check-markdown-links.py [--template]
 #   check_consistency      python3 scripts/check-governance-consistency.py [--template]
+#   check_naming           python3 scripts/check-spec-and-plan-naming.py
 #   check_verify_profile   adopted mode only: verify entry in common manifests
 #                          (pnpm/npm/yarn, uv, cargo, go, Makefile, python)
 #
@@ -99,6 +100,7 @@ fi
 script_dir=$(CDPATH= cd "$(dirname "$0")" && pwd)
 checker_links="$script_dir/check-markdown-links.py"
 checker_consistency="$script_dir/check-governance-consistency.py"
+checker_naming="$script_dir/check-spec-and-plan-naming.py"
 
 if ! cd "$target_root"; then
   fail "cannot enter target root: $target_root"
@@ -299,6 +301,46 @@ EOF
 }
 
 # =========================================================================
+# check_naming — delegates to python3 scripts/check-spec-and-plan-naming.py
+# Validates <YYYY-MM-DD>-<kebab-name>.md for docs/specs / docs/plans /
+# docs/task-packets direct children. Missing python3 → WARN (no hard fail).
+# =========================================================================
+check_naming() {
+  if [ ! -f "$checker_naming" ]; then
+    warn "naming checker script missing: $checker_naming"
+    return
+  fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    warn "python3 not available; skipping naming check"
+    return
+  fi
+
+  cn_out=$(python3 "$checker_naming" --root "$abs_root" 2>&1)
+  cn_rc=$?
+  if [ "$cn_rc" -eq 0 ]; then
+    pass 'spec/plan/task-packet naming clean'
+    return
+  fi
+  if [ "$cn_rc" -eq 2 ]; then
+    fail "naming checker parameter error: $cn_out"
+    return
+  fi
+
+  # rc == 1: emit one FAIL per non-empty finding line
+  cn_emitted=0
+  while IFS= read -r cn_line; do
+    [ -n "$cn_line" ] || continue
+    fail "naming violation: $cn_line"
+    cn_emitted=$((cn_emitted + 1))
+  done <<EOF
+$cn_out
+EOF
+  if [ "$cn_emitted" -eq 0 ]; then
+    fail "naming checker exited 1 with no findings"
+  fi
+}
+
+# =========================================================================
 # check_verify_profile — adopted mode only
 # Reads the 4 verification entry fields from AGENTS.md Adoption Profile and
 # validates each one against the project's known manifests:
@@ -421,6 +463,7 @@ print_summary() {
 check_structure
 check_links
 check_consistency
+check_naming
 if [ "$mode" = adopted ]; then
   check_verify_profile
 fi
