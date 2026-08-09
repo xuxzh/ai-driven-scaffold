@@ -249,7 +249,7 @@ L3 任务在"实施 session 启动前"增加一道门：必须先收用户"已�
 
 ## 完成定义
 
-L2 任务只有同时满足以下条件，才能称为完成（详见 [completion-criteria.md](../completion-criteria.md)）：
+L2 任务完成判据的通用五项见 [completion-criteria.md](../completion-criteria.md)；以下为 L2 三 session 串联视角的增量条件：
 
 - 3 个 session 的交付物都在仓库内（spec、plan、代码、`## 验证证据`、`review report`）
 - spec 与 plan **物理分离**（两份独立文件），spec 先经用户确认、plan 抬头引用 spec 路径
@@ -271,6 +271,18 @@ L3 任务在上述条件之外，还必须满足 [ADR-0005](../../adr/0005-l3-ap
 - 功能：[feature-delivery-runbook.md](./feature-delivery-runbook.md)
 - 缺陷修复：[bugfix-delivery-runbook.md](./bugfix-delivery-runbook.md)
 - 重构：[refactor-delivery-runbook.md](./refactor-delivery-runbook.md)
+
+## 不属于本文范围
+
+- 任务分级的判定条件与 `L0` / `L1` / `L2` / `L3` 等级矩阵：见 [task-levels.md](../task-levels.md)
+- 完成判据的通用五项：见 [completion-criteria.md](../completion-criteria.md)
+- verify 必跑 + 必汇报的硬门禁依据：见 [ADR-0002](../../adr/0002-verify-hard-gate.md)
+- session 数与序列的权威定义（`L2` 三 session / `L3` 四 session）：见 [ADR-0003](../../adr/0003-multi-session-l2.md)
+- spec / plan 内容分工与物理分离硬门禁：见 [ADR-0004](../../adr/0004-l2-spec-and-plan.md)
+- `L3` 批准门禁的最小必含项：见 [ADR-0005](../../adr/0005-l3-approval-gate.md)
+- 任务类型特定差异（feature / bugfix / refactor）：见对应 delivery runbook
+
+本文只承载 `L2` 三 session 的串联纪律与 verify 落点操作细则；通用规则不在此复述。
 
 ## 关联
 
