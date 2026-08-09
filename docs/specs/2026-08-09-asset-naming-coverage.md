@@ -5,7 +5,7 @@
 ## 元信息
 
 - 主题：naming, task-packet, template, monorepo, doctor
-- 状态：draft
+- 状态：accepted
 - 关联 ADR：ADR-0004
 
 ## 背景

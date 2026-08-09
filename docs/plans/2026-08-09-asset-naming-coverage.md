@@ -665,20 +665,26 @@ git commit -m "docs: fill verify evidence + accept asset-naming-coverage spec"
 
 | 命令 | 退出码 | 关键输出 | 备注 |
 |---|---|---|---|
-| | | | |
+| `bash template/scripts/scaffold-doctor.sh --template` | 0 | 14 PASS, 0 fail, 0 warn;含 `docs/task-packets exists` + `spec/plan/task-packet naming clean` | 完整验证入口(ADR-0002)
+| `python3 -m unittest discover -s template/scripts/tests -p "test_*.py"` | 0 | Ran 42 tests OK | 含新增 `test_valid_task_packets_return_zero` / `test_invalid_task_packets_return_one`
+| `python3 template/scripts/check-spec-and-plan-naming.py --root .` | 0 | 无输出 | 三目录(specs/plans/task-packets)命名均合法
+| `bash template/scripts/scaffold-doctor.sh --adopted $tmp`(缺 task-packets) | 1 | `FAIL docs/task-packets is missing` | 验收:缺目录 FAIL 路径
+| `bash template/scripts/scaffold-doctor.sh --adopted $tmp`(task-packets 非法命名) | 1 | `FAIL naming violation: docs/task-packets/bad.md` | 验收:命名违例 FAIL 路径
 
-未跑项:
+未跑项:无(pytest 未装,改用标准库 `python3 -m unittest` 等价覆盖,42 项全过)
 
 ## Session Handoff
 
 - Task Level: L2
-- Current Phase: plan done, awaiting user confirmation to start implementation session
-- Status: draft
-- Completed: spec 产出 + plan 产出(规划 session)
-- Artifacts: `docs/specs/2026-08-09-asset-naming-coverage.md`、`docs/plans/2026-08-09-asset-naming-coverage.md`
-- Decisions: 不改名 spec-and-plan-naming.md(外科优先);命名检查接入 doctor;路径基准走纯文档方案 C;不给 task-packet 加元信息段/状态机;doctor 接入 naming check 时 python3 缺失降级 WARN 不硬失败
-- Assumptions: 本仓库既有 specs/plans/task-packets 命名均合法(已预检,接入 naming check 后基线不变红);adopted 项目复制 scripts/ 目录(既有约定,doctor 已依赖 check-markdown-links.py 等)
+- Current Phase: implementation complete, awaiting final whole-branch review
+- Status: accepted
+- Completed: spec + plan(规划 session)+ 任务 1–7 实施(subagent-driven,逐任务 review clean)+ 任务 8 verify 回填
+- Artifacts: `docs/specs/2026-08-09-asset-naming-coverage.md`(状态已转 accepted)、`docs/plans/2026-08-09-asset-naming-coverage.md`
+- Commits: `0862b68`(spec+plan) → `3bdef36`(T1) → `760634e`(T2) → `e1316ad`(T3) → `b3cead6`(T4) → `b26d415`(T5) → `d18d0fb`(T6) → `9b4548b`(T7)
+- Decisions: 不改名 spec-and-plan-naming.md(外科优先);命名检查接入 doctor;路径基准走纯文档方案 C;不给 task-packet 加元信息段/状态机;doctor 接入 naming check 时 python3 缺失降级 WARN 不硬失败;pytest 缺失改用 stdlib unittest 等价覆盖
+- Assumptions(已验证): 本仓库既有 specs/plans/task-packets 命名均合法(接入 naming check 后基线 0 fail);adopted 项目复制 scripts/ 目录(既有约定,doctor 已依赖 check-markdown-links.py 等)
 - Open Questions: 无
-- Verification: 待实施 session 跑 `bash template/scripts/scaffold-doctor.sh --template` + `python3 -m pytest template/scripts/tests/`
-- Next Allowed Actions: 用户确认 plan → 实施 session 执行任务 1–8 → 回填验证证据 → spec 状态转 accepted
+- Minor findings(留 final review triage): 任务 4 路径基准段 `--root <pkg>` 用尖括号占位符,建议改反引号写法避免与占位符语义混淆
+- Verification: `scaffold-doctor.sh --template` exit 0(14 PASS,含 `docs/task-packets exists` + `spec/plan/task-packet naming clean`);`python3 -m unittest` 42 项 OK;naming check exit 0
+- Next Allowed Actions: 最终整支 review → 决定合并到 main / PR
 - Prohibited Scope: 不改名 spec-and-plan-naming.md;不加 Adoption Profile 的 Spec Root 字段;不让 doctor 自动 mkdir;不改 feature-spec.md / implementation-plan.md 模板结构
