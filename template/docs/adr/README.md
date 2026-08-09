@@ -9,6 +9,7 @@
 - [0003 L2 三 Session / L3 四 Session 串行（规划 / 实施 / 评审）](0003-multi-session-l2.md)
 - [0004 L2 任务默认 spec + plan 都写（修订 ADR-0001 L2 段）](0004-l2-spec-and-plan.md)
 - [0005 L3 任务 Pre-Implementation Approval Gate（L3 实施 session 启动前必须收用户批准）](0005-l3-approval-gate.md)
+- [0006 AI 阅读路径四层分离与分流入口](0006-reading-path-layering.md)
 
 ADR-0002 至 ADR-0005 是当前治理基线的硬约束依据，状态应保持为 `Accepted` 或后续更明确的修订状态。
 
