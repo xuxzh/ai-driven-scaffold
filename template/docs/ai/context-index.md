@@ -15,7 +15,7 @@
 
 ### 深路径（L2+ 多 session 用）
 
-新会话必须先读取 [`docs/ai/runbooks/session-handoff-protocol.md`](./runbooks/session-handoff-protocol.md) 再读 Handoff，按当前阶段取不同落点：L2 设计与实施 Session 在 `docs/plans/<date>-<name>.md` 末尾的 `## Session Handoff` 恢复；L3 设计 Session 仅有 spec、无 plan 时，则在 `docs/specs/<date>-<name>.md` 的 `## Session Handoff` 恢复（feature-spec 模板里明确写了"仅 L2 任务使用；非 L2 任务可删除本段"——L3 设计 Session 也要填该段，再流转到 plan；该含义与 template 原文有出入，本节以本节为准）。仅凭 Handoff 中的阶段、产物、验证和允许动作恢复状态；任一协议门禁失败时停止，不读取聊天历史补足。
+新会话必须先读取 [`docs/ai/runbooks/session-handoff-protocol.md`](./runbooks/session-handoff-protocol.md) 再读 Handoff，按当前阶段取不同落点：L2 设计与实施 Session 在 `docs/plans/<date>-<name>.md` 末尾的 `## Session Handoff` 恢复；L3 设计 Session 仅有 spec、无 plan 时，则在 `docs/specs/<date>-<name>.md` 的 `## Session Handoff` 恢复（feature-spec 模板里明确写了"仅 L2 任务使用；非 L2 任务可删除本段"——L3 设计 Session 也要填该段，再流转到 plan）。仅凭 Handoff 中的阶段、产物、验证和允许动作恢复状态；任一协议门禁失败时停止，不读取聊天历史补足。
 
 L2 任务按 [ADR-0003](../adr/0003-multi-session-l2.md) 串行 3 个 session（规划 / 实施 / 评审）；L3 任务将 L2 的"规划 Session"拆为"设计 / 计划"双 Session，并在实施 Session 启动前收用户明确批准信号（详见 [ADR-0005](../adr/0005-l3-approval-gate.md)）。每个 session 的阅读入口**按角色**分流——会话边界 = 角色边界，详见 [`docs/ai/ai-role-boundaries.md`](./ai-role-boundaries.md)。
 
